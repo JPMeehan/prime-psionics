@@ -31,5 +31,17 @@
       "flags": {}
     }
   ],
+  "documentTypes": {
+    "Item": {
+      "power": {
+        "htmlFields": [],
+        "filePathFields": {
+          "img": [
+            "IMAGE"
+          ]
+        }
+      }
+    }
+  },
   "url": "https://github.com/JPMeehan/prime-psionics"
 }
