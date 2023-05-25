@@ -22,5 +22,14 @@
       "url": "https://joseph-meehan.carrd.co"
     }
   ],
+  "esmodules": ["Prime Psionics.mjs"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
   "url": "https://github.com/JPMeehan/prime-psionics"
 }
