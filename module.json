@@ -10,8 +10,7 @@
     "systems": [
       {
         "id": "dnd5e",
-        "type": "system",
-        "compatibility": {}
+        "type": "system"
       }
     ]
   },
@@ -20,8 +19,8 @@
       "name": "Joseph Meehan",
       "discord": "ChaosOS#1948",
       "email": "jpmeehan5@gmail.com",
-      "url": "https://joseph-meehan.carrd.co",
-      "flags": {}
+      "url": "https://joseph-meehan.carrd.co"
     }
-  ]
+  ],
+  "url": "https://github.com/JPMeehan/prime-psionics"
 }
