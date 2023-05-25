@@ -1,0 +1,27 @@
+{
+  "id": "prime-psionics",
+  "title": "Prime Psionics",
+  "version": "0.0.1",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ]
+  },
+  "authors": [
+    {
+      "name": "Joseph Meehan",
+      "discord": "ChaosOS#1948",
+      "email": "jpmeehan5@gmail.com",
+      "url": "https://joseph-meehan.carrd.co",
+      "flags": {}
+    }
+  ]
+}
