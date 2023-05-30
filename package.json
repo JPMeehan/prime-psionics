@@ -1,0 +1,19 @@
+{
+  "name": "prime-psionics",
+  "version": "1.0.0",
+  "description": "An FVTT module that introduces powers as a new type of item for dnd5e",
+  "main": "Prime Psionics.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JPMeehan/prime-psionics.git"
+  },
+  "author": "Joseph Meehan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JPMeehan/prime-psionics/issues"
+  },
+  "homepage": "https://github.com/JPMeehan/prime-psionics#readme"
+}

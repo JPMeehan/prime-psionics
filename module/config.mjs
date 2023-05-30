@@ -1,5 +1,7 @@
 const PSIONICS = {};
 
+import { utils } from "../../../systems/dnd5e/dnd5e.mjs"
+
 /**
  * Types of components that can be required when manifesting a power.
  * @enum {object}
@@ -14,6 +16,6 @@ PSIONICS.powerComponents = {
         abbr: "ChaosOS.ComponentObservableAbbr"
     }
 };
-preLocalize("spellComponents", {keys: ["label", "abbr"]});
+utils.preLocalize("spellComponents", {keys: ["label", "abbr"]});
 
 export default PSIONICS;
