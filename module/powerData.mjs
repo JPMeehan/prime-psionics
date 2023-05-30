@@ -4,6 +4,11 @@
 // import ActivatedEffectTemplate from "./templates/activated-effect.mjs";
 // import ItemDescriptionTemplate from "./templates/item-description.mjs";
 
+import SystemDataModel from "../../../systems/dnd5e/dnd5e.mjs"
+import ItemDescriptionTemplate from "../../../systems/dnd5e/dnd5e.mjs"
+import ActivatedEffectTemplate from "../../../systems/dnd5e/dnd5e.mjs"
+import ActionTemplate from "../../../systems/dnd5e/dnd5e.mjs"
+
 /**
  * Data definition for Spell items.
  * @mixes ItemDescriptionTemplate
@@ -30,10 +35,8 @@
  * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.
  */
-export default class PowerData extends globalThis.dnd5e.dataModels.SystemDataModel.mixin(
-    globalThis.dnd5e.dataModels.item.ItemDescriptionTemplate, 
-    globalThis.dnd5e.dataModels.item.ActivatedEffectTemplate, 
-    globalThis.dnd5e.dataModels.item.ActionTemplate
+export default class PowerData extends SystemDataModel.mixin(
+    ItemDescriptionTemplate, ActivatedEffectTemplate, ActionTemplate
   ) {
     /** @inheritdoc */
     static defineSchema() {
@@ -44,7 +47,7 @@ export default class PowerData extends globalThis.dnd5e.dataModels.SystemDataMod
         school: new foundry.data.fields.StringField({required: true, label: "DND5E.SpellSchool"}),
         components: new MappingField(new foundry.data.fields.BooleanField(), {
           required: true, label: "DND5E.SpellComponents",
-          initialKeys: [...Object.keys(CONFIG.ChaosOS.powerComponents), ...Object.keys(CONFIG.DND5E.spellTags)]
+          initialKeys: [...Object.keys(CONFIG.PSIONICS.powerComponents), ...Object.keys(CONFIG.DND5E.spellTags)]
         }),
         preparation: new foundry.data.fields.SchemaField({
           mode: new foundry.data.fields.StringField({
@@ -66,32 +69,6 @@ export default class PowerData extends globalThis.dnd5e.dataModels.SystemDataMod
     /** @inheritdoc */
     static migrateData(source) {
       super.migrateData(source);
-      SpellData.#migrateComponentData(source);
-      SpellData.#migrateScaling(source);
-    }
-  
-    /* -------------------------------------------- */
-  
-    /**
-     * Migrate the spell's component object to remove any old, non-boolean values.
-     * @param {object} source  The candidate source data from which the model will be constructed.
-     */
-    static #migrateComponentData(source) {
-      if ( !source.components ) return;
-      for ( const [key, value] of Object.entries(source.components) ) {
-        if ( typeof value !== "boolean" ) delete source.components[key];
-      }
-    }
-  
-    /* -------------------------------------------- */
-  
-    /**
-     * Migrate spell scaling.
-     * @param {object} source  The candidate source data from which the model will be constructed.
-     */
-    static #migrateScaling(source) {
-      if ( !("scaling" in source) ) return;
-      if ( (source.scaling.mode === "") || (source.scaling.mode === null) ) source.scaling.mode = "none";
     }
   
     /* -------------------------------------------- */

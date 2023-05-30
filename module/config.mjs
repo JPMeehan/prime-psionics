@@ -1,10 +1,10 @@
-const Psionics = {};
+const PSIONICS = {};
 
 /**
  * Types of components that can be required when manifesting a power.
  * @enum {object}
  */
-Psionics.powerComponents = {
+PSIONICS.powerComponents = {
     auditory: {
         label: "ChaosOS.ComponentAuditory",
         abbr: "ChaosOS.ComponentAuditoryAbbr"
@@ -16,4 +16,4 @@ Psionics.powerComponents = {
 };
 preLocalize("spellComponents", {keys: ["label", "abbr"]});
 
-export default Psionics;
+export default PSIONICS;
