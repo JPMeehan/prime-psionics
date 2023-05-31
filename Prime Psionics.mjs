@@ -2,11 +2,7 @@ import PSIONICS from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
 import PowerSheet from "./module/PowerSheet.mjs";
 
-Hooks.on("init", () => {
-  console.warn("Validating Prime Psionics Initialization")
-  console.log(PSIONICS)
-  console.log(PowerData)
-  console.log(PowerSheet)
+Hooks.once("init", () => {
 
   CONFIG.PSIONICS = PSIONICS;
   
@@ -19,3 +15,21 @@ Hooks.on("init", () => {
     makeDefault: true
   });
 });
+
+Hooks.once("i18nInit", () => {
+    _localizeHelper(CONFIG.PSIONICS);
+})
+
+function _localizeHelper(object) {
+
+    for (const [key, value] of Object.entries(object)) {
+        switch (typeof(value)) {
+            case "string":
+                if (value.includes("PrimePsionics")) object[key] = game.i18n.localize(value)
+                break;
+            case "object":
+                _localizeHelper(object[key])
+                break;
+        }
+    }
+}

@@ -44,7 +44,11 @@ export default class PowerData extends dataModels.SystemDataModel.mixin(
         school: new foundry.data.fields.StringField({required: true, label: "DND5E.SpellSchool"}),
         components: new dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
           required: true, label: "DND5E.SpellComponents",
-          initialKeys: [...Object.keys(CONFIG.PSIONICS.powerComponents), ...Object.keys(CONFIG.DND5E.spellTags)]
+          initialKeys: [
+            ...Object.keys(CONFIG.DND5E.spellComponents),
+            ...Object.keys(CONFIG.PSIONICS.powerComponents), 
+            ...Object.keys(CONFIG.DND5E.spellTags)
+          ]
         }),
         preparation: new foundry.data.fields.SchemaField({
           mode: new foundry.data.fields.StringField({

@@ -1,11 +1,18 @@
+import { applications } from "../../../systems/dnd5e/dnd5e.mjs";
 
-export default class PowerSheet extends ItemSheet {
+export default class PowerSheet extends applications.item.ItemSheet5e {
     get template() {
         return `/modules/prime-psionics/templates/power-sheet.hbs`;
     }
 
     async getData(options={}) {
         const context = await super.getData(options);
+
+        context.powerComponents = {
+            ...CONFIG.DND5E.spellComponents, 
+            ...CONFIG.PSIONICS.powerComponents,
+            ...CONFIG.DND5E.spellTags
+        }
         return context;
     }
 }

@@ -1,4 +1,7 @@
 {
+    "PrimePsionics.PowerName": "Power Name",
+    "PrimePsionics.PowerDetails": "Power Details",
+    "PrimePsionics.PowerComponents": "Power Components",
     "PrimePsionics.ComponentAuditory": "Auditory",
     "PrimePsionics.ComponentAuditoryAbbr": "A",
     "PrimePsionics.ComponentObservable": "Observable",
