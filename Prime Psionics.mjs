@@ -38,13 +38,15 @@ function _localizeHelper(object) {
 Hooks.on("renderActorSheet5e", (app, html, context) => {
   if ( !game.user.isGM && app.actor.limited ) return true;
   if (context.isCharacter || context.isNPC) {
+    const owner = context.actor.isOwner;
     const powers = context.items.filter(i => i.type === "prime-psionics.power")
+    const levels = context.system.spells;
     const spellbook = context.spellbook;
     const useLabels = {"-20": "-", "-10": "-", 0: "&infin;"};
     const sections = {atwill: -20, innate: -10, pact: 0.5 };
 
     const registerSection = (sl, i, label, {prepMode="prepared", value, max, override}={}) => {
-      const aeOverride = foundry.utils.hasProperty(this.actor.overrides, `system.spells.spell${i}.override`);
+      const aeOverride = foundry.utils.hasProperty(context.actor.overrides, `system.spells.spell${i}.override`);
       spellbook[i] = {
         order: i,
         label: label,
