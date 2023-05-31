@@ -63,6 +63,9 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     };
 
     powers.forEach(power => {
+      foundry.utils.mergeObject(power, {
+        labels: power.system.labels
+      })
       const mode = power.system.preparation.mode || "prepared";
       let p = power.system.level;
       const pl = `spell${p}`;

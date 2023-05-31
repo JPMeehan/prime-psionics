@@ -75,9 +75,21 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
     }
 
     _preparePower() {
+      const tags = Object.fromEntries(Object.entries(CONFIG.DND5E.spellTags).map(([k, v]) => {
+        v.tag = true;
+        return [k, v];
+      }));
+      const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
       this.labels.level = CONFIG.DND5E.spellLevels[this.level];
       this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
-      // this.labels.components = 
+      this.labels.components = Object.entries(this.components).reduce((obj, [c, active]) => {
+        const config = attributes[c];
+        if ( !config || (active !== true) ) return obj;
+        obj.all.push({abbr: config.abbr, tag: config.tag});
+        if ( config.tag ) obj.tags.push(config.label);
+        else obj.ao.push(config.abbr);
+        return obj;
+      }, {all: [], ao: [], tags: []});
     }
 
     /* -------------------------------------------- */
@@ -90,9 +102,9 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
      */
     get chatProperties() {
       return [
-        this.labels.level
-        // this.parent.labels.components.vsm + (this.parent.labels.materials ? ` (${this.parent.labels.materials})` : ""),
-        // ...this.parent.labels.components.tags
+        this.labels.level,
+        this.labels.components.ao,
+        ...this.labels.components.tags
       ];
     }
   
