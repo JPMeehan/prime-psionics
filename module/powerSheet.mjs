@@ -1,6 +1,4 @@
-import { applications } from "../../../systems/dnd5e/dnd5e.mjs";
-
-export default class PowerSheet extends applications.item.ItemSheet5e {
+export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
     get template() {
         return `/modules/prime-psionics/templates/power-sheet.hbs`;
     }

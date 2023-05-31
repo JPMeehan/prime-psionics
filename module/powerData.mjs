@@ -1,11 +1,3 @@
-// import SystemDataModel from "../abstract.mjs";
-// import { FormulaField, MappingField } from "../fields.mjs";
-// import ActionTemplate from "./templates/action.mjs";
-// import ActivatedEffectTemplate from "./templates/activated-effect.mjs";
-// import ItemDescriptionTemplate from "./templates/item-description.mjs";
-
-import { dataModels } from "../../../systems/dnd5e/dnd5e.mjs"
-
 /**
  * Data definition for Spell items.
  * @mixes ItemDescriptionTemplate
@@ -32,8 +24,8 @@ import { dataModels } from "../../../systems/dnd5e/dnd5e.mjs"
  * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.
  */
-export default class PowerData extends dataModels.SystemDataModel.mixin(
-  dataModels.item.ItemDescriptionTemplate, dataModels.item.ActivatedEffectTemplate, dataModels.item.ActionTemplate
+export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
+  dnd5e.dataModels.item.ItemDescriptionTemplate, dnd5e.dataModels.item.ActivatedEffectTemplate, dnd5e.dataModels.item.ActionTemplate
   ) {
     /** @inheritdoc */
     static defineSchema() {
@@ -43,7 +35,7 @@ export default class PowerData extends dataModels.SystemDataModel.mixin(
         }),
         discipline: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.PowerDiscipline"}),
         augmenting: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.Augmenting"}),
-        components: new dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
+        components: new dnd5e.dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
           required: true, label: "DND5E.SpellComponents",
           initialKeys: [
             // ...Object.keys(CONFIG.DND5E.spellComponents),
@@ -59,7 +51,7 @@ export default class PowerData extends dataModels.SystemDataModel.mixin(
         }, {label: "DND5E.SpellPreparation"}),
         scaling: new foundry.data.fields.SchemaField({
           mode: new foundry.data.fields.StringField({required: true, initial: "none", label: "DND5E.ScalingMode"}),
-          formula: new dataModels.fields.FormulaField({required: true, nullable: true, initial: null, label: "DND5E.ScalingFormula"})
+          formula: new dnd5e.dataModels.fields.FormulaField({required: true, nullable: true, initial: null, label: "DND5E.ScalingFormula"})
         }, {label: "DND5E.LevelScaling"})
       });
     }
