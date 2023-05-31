@@ -74,7 +74,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
         return [k, v];
       }));
       const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
-      this.labels.level = CONFIG.DND5E.spellLevels[this.level];
+      this.labels.level = this.level != 0 ? CONFIG.DND5E.spellLevels[this.level] : game.i18n.localize("PrimePsionics.Talent");
       this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
       this.labels.components = Object.entries(this.components).reduce((obj, [c, active]) => {
         const config = attributes[c];

@@ -2,6 +2,7 @@
     "PrimePsionics.PowerName": "Power Name",
     "PrimePsionics.PowerDetails": "Power Details",
     "PrimePsionics.PowerLevel": "Power Level",
+    "PrimePsionics.Talent": "Talent",
     "PrimePsionics.PowerDiscipline": "Power Discipline",
     "PrimePsionics.DiscClair": "Clairsentience",
     "PrimePsionics.DiscMTC": "Metacreativity",
@@ -18,6 +19,8 @@
     "PrimePsionics.PowerManifestingHeader": "Power Manifesting",
     "PrimePsionics.Focus": "Focus",
     "PrimePsionics.PowerEffects": "Power Effects",
+    "PrimePsionics.ActionMPAK": "Melee Power Attack",
+    "PrimePsionics.ActionRPAK": "Ranged Power Attack",
     "PrimePsionics.Intensify": "Intensify",
     "TYPES.Item.prime-psionics.power": "Power"
 }

@@ -10,6 +10,8 @@ export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
             ...CONFIG.PSIONICS.powerComponents,
             ...CONFIG.DND5E.spellTags
         }
+        if (context.system.actionType === "msak") context.itemProperties[0] = game.i18n.localize("PrimePsionics.ActionMPAK")
+        if (context.system.actionType === "rsak") context.itemProperties[0] = game.i18n.localize("PrimePsionics.ActionRPAK")
 
         foundry.utils.mergeObject(context, {
             labels: context.system.labels
