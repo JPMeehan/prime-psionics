@@ -13,8 +13,11 @@ export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
         if (context.system.actionType === "msak") context.itemProperties[0] = game.i18n.localize("PrimePsionics.ActionMPAK")
         if (context.system.actionType === "rsak") context.itemProperties[0] = game.i18n.localize("PrimePsionics.ActionRPAK")
 
+        const consume = context.system.consume.type === "psionics" ? {pp: game.i18n.localize("PrimePsionics.PP")} : {}
+
         foundry.utils.mergeObject(context, {
-            labels: context.system.labels
+            labels: context.system.labels,
+            abilityConsumptionTargets: consume
         })
 
         return context;
