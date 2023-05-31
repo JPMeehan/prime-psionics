@@ -45,9 +45,9 @@
         <div class="tab details" data-group="primary" data-tab="details">
             <h3 class="form-header">{{ localize "PrimePsionics.PowerDetails" }}</h3>
 
-            {{!-- Spell Level --}}
+            {{!-- Power Level --}}
             <div class="form-group">
-                <label>{{ localize "DND5E.SpellLevel" }}</label>
+                <label>{{ localize "PrimePsionics.PowerLevel" }}</label>
                 <select name="system.level" data-dtype="Number">
                     {{#select system.level}}
                     {{#each config.spellLevels as |name lvl|}}
@@ -57,11 +57,19 @@
                 </select>
             </div>
 
-            {{!-- Spell School --}}
+            {{!-- Power Augment --}}
+            {{#if system.level}}
             <div class="form-group">
-                <label>{{ localize "DND5E.SpellSchool" }}</label>
+                <label>{{ localize "PrimePsionics.Augmenting" }}</label>
+                <input class="materials" type="text" name="system.augmenting" value="{{system.augmenting}}"/>
+            </div>
+            {{/if}}
+
+            {{!-- Power Discipline --}}
+            <div class="form-group">
+                <label>{{ localize "PrimePsionics.PowerDiscipline" }}</label>
                 <select name="system.school">
-                    {{selectOptions config.spellSchools selected=system.school blank=""}}
+                    {{selectOptions psionics.disciplines selected=system.discipline blank=""}}
                 </select>
             </div>
 
@@ -77,7 +85,7 @@
             </div>
 
             {{!-- Material Components --}}
-            <div class="form-group stacked">
+            {{!-- <div class="form-group stacked">
                 <label>{{ localize "DND5E.SpellMaterials" }}</label>
                 <input class="materials" type="text" name="system.materials.value" value="{{system.materials.value}}"/>
                 {{#if system.materials.value}}
@@ -90,7 +98,7 @@
                     <input type="checkbox" name="system.materials.consumed" {{checked system.materials.consumed}}/>
                 </div>
                 {{/if}}
-            </div>
+            </div> --}}
 
             {{!-- Preparation Mode --}}
             <div class="form-group input-select">
@@ -105,12 +113,12 @@
                 </div>
             </div>
 
-            <h3 class="form-header">{{ localize "DND5E.SpellCastingHeader" }}</h3>
+            <h3 class="form-header">{{ localize "PrimePsionics.PowerManifestingHeader" }}</h3>
 
             {{!-- Item Activation Template --}}
             {{> "dnd5e.item-activation"}}
 
-            <h3 class="form-header">{{ localize "DND5E.SpellEffects" }}</h3>
+            <h3 class="form-header">{{ localize "PrimePsionics.PowerEffects" }}</h3>
 
             {{!-- Item Action Template --}}
             {{> "dnd5e.item-action"}}

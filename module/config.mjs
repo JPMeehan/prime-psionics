@@ -15,4 +15,17 @@ PSIONICS.powerComponents = {
     }
 };
 
+/**
+ * Disciplines to which a power can belong.
+ * @enum {string}
+ */
+PSIONICS.disciplines = {
+    cla: "PrimePsionics.DiscClair",
+    mtc: "PrimePsionics.DiscMTC",
+    psk: "PrimePsionics.DiscKinesis",
+    psm: "PrimePsionics.DiscMetabolism",
+    pst: "PrimePsionics.DiscPort",
+    tlp: "PrimePsionics.DiscTelepathy",
+  };
+
 export default PSIONICS;

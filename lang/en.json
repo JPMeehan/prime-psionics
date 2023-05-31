@@ -1,10 +1,23 @@
 {
     "PrimePsionics.PowerName": "Power Name",
     "PrimePsionics.PowerDetails": "Power Details",
+    "PrimePsionics.PowerLevel": "Power Level",
+    "PrimePsionics.PowerDiscipline": "Power Discipline",
+    "PrimePsionics.DiscClair": "Clairsentience",
+    "PrimePsionics.DiscMTC": "Metacreativity",
+    "PrimePsionics.DiscKinesis": "Psychokinesis",
+    "PrimePsionics.DiscMetabolism": "Psychometabolism",
+    "PrimePsionics.DiscPort": "Psychoportation",
+    "PrimePsionics.DiscTelepathy": "Telepathy",
     "PrimePsionics.PowerComponents": "Power Components",
     "PrimePsionics.ComponentAuditory": "Auditory",
     "PrimePsionics.ComponentAuditoryAbbr": "A",
     "PrimePsionics.ComponentObservable": "Observable",
     "PrimePsionics.ComponentObservableAbbr": "O",
+    "PrimePsionics.Augmenting": "Augmenting",
+    "PrimePsionics.PowerManifestingHeader": "Power Manifesting",
+    "PrimePsionics.Focus": "Focus",
+    "PrimePsionics.PowerEffects": "Power Effects",
+    "PrimePsionics.Intensify": "Intensify",
     "TYPES.Item.prime-psionics.power": "Power"
 }

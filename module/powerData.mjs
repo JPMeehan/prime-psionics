@@ -41,11 +41,12 @@ export default class PowerData extends dataModels.SystemDataModel.mixin(
         level: new foundry.data.fields.NumberField({
           required: true, integer: true, initial: 1, min: 0, label: "DND5E.SpellLevel"
         }),
-        school: new foundry.data.fields.StringField({required: true, label: "DND5E.SpellSchool"}),
+        discipline: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.PowerDiscipline"}),
+        augmenting: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.Augmenting"}),
         components: new dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
           required: true, label: "DND5E.SpellComponents",
           initialKeys: [
-            ...Object.keys(CONFIG.DND5E.spellComponents),
+            // ...Object.keys(CONFIG.DND5E.spellComponents),
             ...Object.keys(CONFIG.PSIONICS.powerComponents), 
             ...Object.keys(CONFIG.DND5E.spellTags)
           ]
@@ -72,6 +73,21 @@ export default class PowerData extends dataModels.SystemDataModel.mixin(
       super.migrateData(source);
     }
   
+
+    /* -------------------------------------------- */
+    /*  Derived Data                                */
+    /* -------------------------------------------- */
+
+    prepareDerivedData() {
+      this.labels = {}
+      this._preparePower()
+    }
+
+    _preparePower() {
+        this.labels.level = CONFIG.DND5E.spellLevels[this.level];
+        this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
+    }
+
     /* -------------------------------------------- */
     /*  Getters                                     */
     /* -------------------------------------------- */

@@ -34,11 +34,11 @@
   "documentTypes": {
     "Item": {
       "power": {
-        "htmlFields": [],
+        "htmlFields": [
+          "description"
+        ],
         "filePathFields": {
-          "img": [
-            "IMAGE"
-          ]
+          "img": ["IMAGE"]
         }
       }
     }

@@ -7,12 +7,18 @@ export default class PowerSheet extends applications.item.ItemSheet5e {
 
     async getData(options={}) {
         const context = await super.getData(options);
-
+        const item = context.item;
+        context.psionics = CONFIG.PSIONICS;
         context.powerComponents = {
             ...CONFIG.DND5E.spellComponents, 
             ...CONFIG.PSIONICS.powerComponents,
             ...CONFIG.DND5E.spellTags
         }
+
+        foundry.utils.mergeObject(context, {
+            labels: item.labels
+        })
+
         return context;
     }
 }
