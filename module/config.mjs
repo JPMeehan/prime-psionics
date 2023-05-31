@@ -39,6 +39,25 @@ PPCONFIG.DND5E = {
         fullp: "PrimePsionics.FullP",
         halfp: "PrimePsionics.HalfP",
         thirdp: "PrimePsionics.ThirdP"
+    },
+    spellcastingTypes: {
+        psionics: {
+            label: "PrimePsionics.Psionics",
+            progression: {
+                fullp: {
+                    label: "PrimePsionics.FullP",
+                    divisor: 1
+                },
+                halfp: {
+                    label: "PrimePsionics.HalfP",
+                    divisor: 2
+                },
+                thirdp: {
+                    label: "PrimePsionics.ThirdP",
+                    divisor: 3
+                }
+            }
+        }
     }
 }
 

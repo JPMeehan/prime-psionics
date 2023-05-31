@@ -1,4 +1,5 @@
 {
+    "PrimePsionics.Psionics": "Psionics",
     "PrimePsionics.PowerName": "Power Name",
     "PrimePsionics.PowerDetails": "Power Details",
     "PrimePsionics.PowerLevel": "Power Level",
@@ -22,8 +23,8 @@
     "PrimePsionics.ActionMPAK": "Melee Power Attack",
     "PrimePsionics.ActionRPAK": "Ranged Power Attack",
     "PrimePsionics.Intensify": "Intensify",
-    "PrimePsionics.FullP": "Full Psionicist",
-    "PrimePsionics.HalfP": "Half Psionicist",
-    "PrimePsionics.ThirdP": "Third Psionicist",
+    "PrimePsionics.FullP": "Full Manifester",
+    "PrimePsionics.HalfP": "Half Manifester",
+    "PrimePsionics.ThirdP": "Third Manifester",
     "TYPES.Item.prime-psionics.power": "Power"
 }

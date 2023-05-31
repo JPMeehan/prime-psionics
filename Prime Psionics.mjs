@@ -11,6 +11,8 @@ Hooks.once("init", () => {
     "prime-psionics.power": PowerData
   });
 
+  dnd5e.utils.preLocalize("spellcastingTypes.psionics.progression", {key: "label"});
+
   Items.registerSheet("power", PowerSheet, {
     types: ["prime-psionics.power"],
     makeDefault: true
@@ -99,4 +101,21 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     })
   }
   else return true;
+})
+
+Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcasting, count) => {
+  if (!progression.hasOwnProperty("psionics")) progression.psionics = 0;
+  const prog = CONFIG.DND5E.spellcastingTypes.psionics.progression[spellcasting.progression];
+  if ( !prog ) return;
+
+  progression.psionics += Math.floor(spellcasting.levels / prog.divisor ?? 1);
+  // Single-classed, non-full progression rounds up, rather than down.
+  if ( (count === 1) && (prog.divisor > 1) && progression.psionics ) {
+    progression.psionics = Math.ceil(spellcasting.levels / prog.divisor);
+  }
+  const limit = Math.ceil( Math.min(progression.psionics, 10) / 2) * 2
+  actor.setFlag("prime-psionics", "manifestLimit", limit)
+
+  const ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
+  actor.setFlag("prime-psionics", "maxPP", ppProgression[progression.psionics])
 })
