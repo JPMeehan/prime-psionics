@@ -1,6 +1,6 @@
 import PSIONICS from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
-import PowerSheet from "./module/PowerSheet.mjs";
+import PowerSheet from "./module/powerSheet.mjs";
 
 Hooks.once("init", () => {
 
@@ -87,7 +87,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
         registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {levels: levels[pl]});
       }
 
-      // Add the spell to the relevant heading
+      // Add the power to the relevant heading
       spellbook[p].spells.push(power);
     });
     const spellList = html.find('.spellbook')

@@ -1,26 +1,20 @@
 /**
- * Data definition for Spell items.
+ * Data definition for Power items.
  * @mixes ItemDescriptionTemplate
  * @mixes ActivatedEffectTemplate
  * @mixes ActionTemplate
  *
- * @property {number} level                      Base level of the spell.
- * @property {string} school                     Magical school to which this spell belongs.
- * @property {object} components                 General components and tags for this spell.
- * @property {boolean} components.vocal          Does this spell require vocal components?
- * @property {boolean} components.somatic        Does this spell require somatic components?
- * @property {boolean} components.material       Does this spell require material components?
- * @property {boolean} components.ritual         Can this spell be cast as a ritual?
- * @property {boolean} components.concentration  Does this spell require concentration?
- * @property {object} materials                  Details on material components required for this spell.
- * @property {string} materials.value            Description of the material components required for casting.
- * @property {boolean} materials.consumed        Are these material components consumed during casting?
- * @property {number} materials.cost             GP cost for the required components.
- * @property {number} materials.supply           Quantity of this component available.
- * @property {object} preparation                Details on how this spell is prepared.
+ * @property {number} level                      Base level of the power.
+ * @property {string} school                     Psionic discipline to which this power belongs.
+ * @property {object} components                 General components and tags for this power.
+ * @property {boolean} components.auditory       Does this power manifest auditory components?
+ * @property {boolean} components.observable     Does this power manifest observable components?
+ * @property {boolean} components.ritual         Can this power be cast as a ritual?
+ * @property {boolean} components.concentration  Does this power require concentration?
+ * @property {object} preparation                Details on how this power is prepared.
  * @property {string} preparation.mode           Spell preparation mode as defined in `DND5E.spellPreparationModes`.
- * @property {boolean} preparation.prepared      Is the spell currently prepared?
- * @property {object} scaling                    Details on how casting at higher levels affects this spell.
+ * @property {boolean} preparation.prepared      Is the power currently prepared?
+ * @property {object} scaling                    Details on how casting at higher levels affects this power.
  * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.
  */
@@ -36,7 +30,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
         discipline: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.PowerDiscipline"}),
         augmenting: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.Augmenting"}),
         components: new dnd5e.dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
-          required: true, label: "DND5E.SpellComponents",
+          required: true, label: "PrimePsionics.PowerComponents",
           initialKeys: [
             ...Object.keys(CONFIG.PSIONICS.powerComponents), 
             ...Object.keys(CONFIG.DND5E.spellTags)
