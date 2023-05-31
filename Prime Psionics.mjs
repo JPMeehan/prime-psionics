@@ -87,12 +87,12 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       // Add the spell to the relevant heading
       spellbook[p].spells.push(power);
     });
-    // const tab = context.isCharacter ? 3 : 2;
-    // let spellList = html[0].children[1].children[0].children[2].children[tab]
-    let spellList = html.find('.spellbook')[0]
-    const partial = Handlebars.partials["dnd5e.actor-spellbook"]
-    spellList.innerHTML = partial(context)
-    app.activateListeners(html.find('.spellbook'))
+    const spellList = html.find('.spellbook')
+    const template = 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs'
+    renderTemplate(template, context).then((partial) => {
+      spellList.html(partial);
+      app.activateListeners(spellList);
+    })
   }
   else return true;
 })

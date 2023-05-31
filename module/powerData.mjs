@@ -77,6 +77,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
     _preparePower() {
       this.labels.level = CONFIG.DND5E.spellLevels[this.level];
       this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
+      // this.labels.components = 
     }
 
     /* -------------------------------------------- */
@@ -89,9 +90,9 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
      */
     get chatProperties() {
       return [
-        this.parent.labels.level,
-        this.parent.labels.components.vsm + (this.parent.labels.materials ? ` (${this.parent.labels.materials})` : ""),
-        ...this.parent.labels.components.tags
+        this.labels.level
+        // this.parent.labels.components.vsm + (this.parent.labels.materials ? ` (${this.parent.labels.materials})` : ""),
+        // ...this.parent.labels.components.tags
       ];
     }
   
