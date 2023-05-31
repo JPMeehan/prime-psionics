@@ -8,7 +8,7 @@ export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
         console.warn(context)
         context.psionics = CONFIG.PSIONICS;
         context.powerComponents = {
-            ...CONFIG.DND5E.spellComponents, 
+            // ...CONFIG.DND5E.spellComponents, 
             ...CONFIG.PSIONICS.powerComponents,
             ...CONFIG.DND5E.spellTags
         }

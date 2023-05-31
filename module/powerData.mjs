@@ -38,7 +38,6 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
         components: new dnd5e.dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
           required: true, label: "DND5E.SpellComponents",
           initialKeys: [
-            // ...Object.keys(CONFIG.DND5E.spellComponents),
             ...Object.keys(CONFIG.PSIONICS.powerComponents), 
             ...Object.keys(CONFIG.DND5E.spellTags)
           ]
