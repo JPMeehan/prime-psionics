@@ -22,5 +22,8 @@
     "PrimePsionics.ActionMPAK": "Melee Power Attack",
     "PrimePsionics.ActionRPAK": "Ranged Power Attack",
     "PrimePsionics.Intensify": "Intensify",
+    "PrimePsionics.FullP": "Full Psionicist",
+    "PrimePsionics.HalfP": "Half Psionicist",
+    "PrimePsionics.ThirdP": "Third Psionicist",
     "TYPES.Item.prime-psionics.power": "Power"
 }

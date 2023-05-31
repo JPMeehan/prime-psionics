@@ -1,10 +1,13 @@
-const PSIONICS = {};
+const PPCONFIG = {
+    DND5E: {},
+    PSIONICS: {}
+}
 
 /**
  * Types of components that can be required when manifesting a power.
  * @enum {object}
  */
-PSIONICS.powerComponents = {
+PPCONFIG.PSIONICS.powerComponents = {
     auditory: {
         label: "PrimePsionics.ComponentAuditory",
         abbr: "PrimePsionics.ComponentAuditoryAbbr"
@@ -19,7 +22,7 @@ PSIONICS.powerComponents = {
  * Disciplines to which a power can belong.
  * @enum {string}
  */
-PSIONICS.disciplines = {
+PPCONFIG.PSIONICS.disciplines = {
     cla: "PrimePsionics.DiscClair",
     mtc: "PrimePsionics.DiscMTC",
     psk: "PrimePsionics.DiscKinesis",
@@ -28,4 +31,15 @@ PSIONICS.disciplines = {
     tlp: "PrimePsionics.DiscTelepathy",
   };
 
-export default PSIONICS;
+PPCONFIG.DND5E = {
+    specialTimePeriods: {
+        foc: "PrimePsionics.Focus"
+    },
+    spellProgression: {
+        fullp: "PrimePsionics.FullP",
+        halfp: "PrimePsionics.HalfP",
+        thirdp: "PrimePsionics.ThirdP"
+    }
+}
+
+export default PPCONFIG;

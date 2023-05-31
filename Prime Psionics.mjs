@@ -1,12 +1,11 @@
-import PSIONICS from "./module/config.mjs";
+import PPCONFIG from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
 import PowerSheet from "./module/powerSheet.mjs";
 
 Hooks.once("init", () => {
 
-  CONFIG.PSIONICS = PSIONICS;
 
-  CONFIG.DND5E.specialTimePeriods.foc = "PrimePsionics.Focus"
+  foundry.utils.mergeObject(CONFIG, PPCONFIG)
   
   Object.assign(CONFIG.Item.dataModels, {
     "prime-psionics.power": PowerData
