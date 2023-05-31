@@ -1,7 +1,6 @@
 import PSIONICS from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
 import PowerSheet from "./module/PowerSheet.mjs";
-import Power from "./module/power.mjs";
 
 Hooks.once("init", () => {
 

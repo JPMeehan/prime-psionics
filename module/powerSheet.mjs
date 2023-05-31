@@ -7,7 +7,7 @@ export default class PowerSheet extends applications.item.ItemSheet5e {
 
     async getData(options={}) {
         const context = await super.getData(options);
-        const item = context.item;
+        console.warn(context)
         context.psionics = CONFIG.PSIONICS;
         context.powerComponents = {
             ...CONFIG.DND5E.spellComponents, 
@@ -16,7 +16,7 @@ export default class PowerSheet extends applications.item.ItemSheet5e {
         }
 
         foundry.utils.mergeObject(context, {
-            labels: item.labels
+            labels: context.system.labels
         })
 
         return context;

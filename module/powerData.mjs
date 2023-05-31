@@ -84,8 +84,8 @@ export default class PowerData extends dataModels.SystemDataModel.mixin(
     }
 
     _preparePower() {
-        this.labels.level = CONFIG.DND5E.spellLevels[this.level];
-        this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
+      this.labels.level = CONFIG.DND5E.spellLevels[this.level];
+      this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
     }
 
     /* -------------------------------------------- */
