@@ -97,6 +97,18 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     const template = 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs'
     renderTemplate(template, context).then((partial) => {
       spellList.html(partial);
+      const maxPP = app.actor.getFlag("prime-psionics", "ppMax")
+      if (maxPP) {
+        const ppContext = {
+          pp: app.actor.getFlag("prime-psionics", "pp"),
+          ppMax: maxPP,
+          limit: app.actor.getFlag("prime-psionics", "manifestLimit")
+        }
+        console.log(spellList)
+        renderTemplate(`/modules/prime-psionics/templates/pp-partial.hbs`, ppContext).then((powerHeader) => {
+          spellList.find('.inventory-list').prepend(powerHeader)
+        })
+      }
       app.activateListeners(spellList);
     })
   }
@@ -113,11 +125,14 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   if ( (count === 1) && (prog.divisor > 1) && progression.psionics ) {
     progression.psionics = Math.ceil(spellcasting.levels / prog.divisor);
   }
+
   const limit = Math.ceil( Math.min(progression.psionics, 10) / 2) * 2
   actor.setFlag("prime-psionics", "manifestLimit", limit)
 
   const ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
-  actor.setFlag("prime-psionics", "maxPP", ppProgression[progression.psionics])
+  actor.setFlag("prime-psionics", "ppMax", ppProgression[progression.psionics])
+
+  if (actor.getFlag("prime-psionics", "pp") === undefined) actor.setFlag("prime-psionics", "pp", ppProgression[progression.psionics])
 })
 
 Hooks.on("dnd5e.preUseItem", (item, config, options) => {
