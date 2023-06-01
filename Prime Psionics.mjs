@@ -119,3 +119,13 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   const ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
   actor.setFlag("prime-psionics", "maxPP", ppProgression[progression.psionics])
 })
+
+Hooks.on("dnd5e.preUseItem", (item, config, options) => {
+  if (item.type !== 'prime-psionics.power') return true;
+
+  config.needsConfiguration = false;
+  config.consumeResource = false;
+  options.configureDialog = false;
+
+  // TODO: Augment Handling via custom dialog
+})

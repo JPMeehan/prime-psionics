@@ -60,7 +60,7 @@ PPCONFIG.DND5E = {
         }
     },
     abilityConsumptionTypes: {
-        psionics: "PrimePsionics.Psionics"
+        flags: "PrimePsionics.Flags"
     }
 }
 
