@@ -136,11 +136,24 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
 })
 
 Hooks.on("dnd5e.preUseItem", (item, config, options) => {
-  if (item.type !== 'prime-psionics.power') return true;
+  // if (item.type !== 'prime-psionics.power') return true;
+  const consumption = item.system.consume;
 
+  if (consumption.type !== "flags") return true;
+  if (consumption.target !== "pp") return true;
   config.needsConfiguration = false;
   config.consumeResource = false;
   options.configureDialog = false;
 
+  activatePower(item, config, options)
   // TODO: Augment Handling via custom dialog
+})
+
+async function activatePower(item, config, options) {
+  // TODO
+}
+
+Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
+  if (!result.longRest) return true;
+  result.updateData["flags.prime-psionics.pp"] = actor.getFlag("prime-psionics", "ppMax")
 })
