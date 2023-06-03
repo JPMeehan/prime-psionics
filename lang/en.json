@@ -24,9 +24,12 @@
     "PrimePsionics.ActionRPAK": "Ranged Power Attack",
     "PrimePsionics.Flags": "Flags",
     "PrimePsionics.PP": "Psi Points",
-    "PrimePsionics.Intensify": "Intensify",
     "PrimePsionics.FullP": "Full Manifester",
     "PrimePsionics.HalfP": "Half Manifester",
     "PrimePsionics.ThirdP": "Third Manifester",
+    "PrimePsionics.Intensify": "Intensify",
+    "PrimePsionics.PPManifest": "<span class='psi-manifest'>How many power points would you like to manifest?<br>Your Manifest Limit is {limit}</span>",
+    "PrimePsionics.TooManyPP": "You don't have that many Psi Points available!",
+    "PrimePsionics.Manifest": "Manifest Power",
     "TYPES.Item.prime-psionics.power": "Power"
 }

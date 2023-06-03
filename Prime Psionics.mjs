@@ -104,9 +104,8 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
           ppMax: maxPP,
           limit: app.actor.getFlag("prime-psionics", "manifestLimit")
         }
-        console.log(spellList)
         renderTemplate(`/modules/prime-psionics/templates/pp-partial.hbs`, ppContext).then((powerHeader) => {
-          spellList.find('.inventory-list').prepend(powerHeader)
+          spellList.find('.inventory-list').prepend(powerHeader);
         })
       }
       app.activateListeners(spellList);
@@ -136,21 +135,61 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
 })
 
 Hooks.on("dnd5e.preUseItem", (item, config, options) => {
-  // if (item.type !== 'prime-psionics.power') return true;
   const consumption = item.system.consume;
-
   if (consumption.type !== "flags") return true;
   if (consumption.target !== "pp") return true;
+  
   config.needsConfiguration = false;
   config.consumeResource = false;
   options.configureDialog = false;
 
-  activatePower(item, config, options)
-  // TODO: Augment Handling via custom dialog
+  return activatePower(item, config, options)
 })
 
 async function activatePower(item, config, options) {
-  // TODO
+
+  const content = game.i18n.format("PrimePsionics.PPManifest", {
+    limit: item.parent.getFlag("prime-psionics", "manifestLimit")
+  })
+  const input = `<input type=number class="psi-points" value="${item.system.consume.amount}" min=0>`
+
+  const dialogResult = await Dialog.wait({
+    title: "Manifest Power",
+    content: content + input,
+    buttons: {
+     manifest: {
+      icon: '<i class="fas fa-check"></i>',
+      label: game.i18n.localize("PrimePsionics.Manifest"),
+      callback: (html) => new Object({
+        manifest: true,
+        spend: html.find(".psi-points").val()
+      })
+     },
+     cancel: {
+         icon: '<i class="fas fa-times"></i>',
+         label: game.i18n.localize("Cancel"),
+         callback: () => new Object({
+          manifest: false,
+          spend: 0
+         })
+     }
+    },
+    default: "cancel",
+   });
+
+   const currentPP = item.parent.getFlag("prime-psionics", "pp")
+
+   const newPP = currentPP - dialogResult.spend
+
+   if (newPP >= 0) item.parent.setFlag("prime-psionics", "pp", newPP )
+   else {
+    dialogResult.manifest = false;
+    ui.notifications.warn(game.i18n.localize("PrimePsionics.TooManyPP"));
+   }
+   
+   return dialogResult.manifest;
+
+
 }
 
 Hooks.on("dnd5e.preRestCompleted", (actor, result) => {

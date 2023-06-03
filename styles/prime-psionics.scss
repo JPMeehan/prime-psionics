@@ -6,3 +6,19 @@
 		}
 	}
 }
+
+.dnd5e.sheet.actor .power-points .pp-input{
+	width: 30px;
+}
+
+.dialog {
+	.psi-manifest {
+	display: inline-block;
+	width: 80%;
+	} 
+	.psi-points {
+		width: 30px;
+		margin-left: 20px;
+		vertical-align: top;
+	}
+}
