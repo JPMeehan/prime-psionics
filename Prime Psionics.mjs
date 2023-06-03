@@ -41,13 +41,14 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
   if ( !game.user.isGM && app.actor.limited ) return true;
   if (context.isCharacter || context.isNPC) {
     const owner = context.actor.isOwner;
-    const powers = context.items.filter(i => i.type === "prime-psionics.power")
+    let powers = context.items.filter(i => i.type === "prime-psionics.power")
+    powers = app._filterItems(powers, app._filters.spellbook)
     const levels = context.system.spells;
     const spellbook = context.spellbook;
     const useLabels = {"-20": "-", "-10": "-", 0: "&infin;"};
     const sections = {atwill: -20, innate: -10, pact: 0.5 };
 
-    const registerSection = (sl, i, label, {prepMode="prepared", value, max, override}={}) => {
+    const registerSection = (sl, i, label, {prepMode="always", value, max, override}={}) => {
       const aeOverride = foundry.utils.hasProperty(context.actor.overrides, `system.spells.spell${i}.override`);
       spellbook[i] = {
         order: i,
@@ -69,7 +70,10 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       foundry.utils.mergeObject(power, {
         labels: power.system.labels
       })
-      const mode = power.system.preparation.mode || "prepared";
+      context.itemContext[power.id].toggleTitle = CONFIG.DND5E.spellPreparationModes.always
+      context.itemContext[power.id].toggleClass = "fixed";
+
+      const mode = "always";
       let p = power.system.level;
       const pl = `spell${p}`;
 
@@ -138,7 +142,7 @@ Hooks.on("dnd5e.preUseItem", (item, config, options) => {
   const consumption = item.system.consume;
   if (consumption.type !== "flags") return true;
   if (consumption.target !== "pp") return true;
-  
+
   config.needsConfiguration = false;
   config.consumeResource = false;
   options.configureDialog = false;

@@ -84,35 +84,6 @@
                 {{/each}}
             </div>
 
-            {{!-- Material Components --}}
-            {{!-- <div class="form-group stacked">
-                <label>{{ localize "DND5E.SpellMaterials" }}</label>
-                <input class="materials" type="text" name="system.materials.value" value="{{system.materials.value}}"/>
-                {{#if system.materials.value}}
-                <div class="spell-materials flexrow">
-                    <label>{{ localize "DND5E.Supply" }}</label>
-                    {{numberInput system.materials.supply name="system.materials.supply" placeholder="0"}}
-                    <label>{{ localize "DND5E.CostGP" }}</label>
-                    {{numberInput system.materials.cost name="system.materials.cost" placeholder="&mdash;"}}
-                    <label>{{ localize "DND5E.Consumed" }}</label>
-                    <input type="checkbox" name="system.materials.consumed" {{checked system.materials.consumed}}/>
-                </div>
-                {{/if}}
-            </div> --}}
-
-            {{!-- Preparation Mode --}}
-            <div class="form-group input-select">
-                <label>{{ localize "DND5E.SpellPreparationMode" }}</label>
-                <div class="form-fields">
-                    <label class="checkbox prepared">
-                        {{ localize "DND5E.SpellPrepared" }} <input type="checkbox" name="system.preparation.prepared" {{checked system.preparation.prepared}}/>
-                    </label>
-                    <select name="system.preparation.mode">
-                        {{ selectOptions config.spellPreparationModes selected=system.preparation.mode }}
-                    </select>
-                </div>
-            </div>
-
             <h3 class="form-header">{{ localize "PrimePsionics.PowerManifestingHeader" }}</h3>
 
             {{!-- Item Activation Template --}}
