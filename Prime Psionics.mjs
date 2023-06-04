@@ -24,7 +24,6 @@ Hooks.once("i18nInit", () => {
 })
 
 function _localizeHelper(object) {
-
     for (const [key, value] of Object.entries(object)) {
         switch (typeof(value)) {
             case "string":
@@ -89,7 +88,12 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
             override: l.override
           });
         }
-      }      
+      }
+
+      // Actual issue here - there's no presumption of the sections existing for a dedicated manifester
+      // Ergo, *most spells will be created this way*
+      // It works fine for spellcasters who can manifest
+      // But need to totally redo logic for manifesters of lower levels
       else if ( !spellbook[p] ) {
         registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {levels: levels[pl]});
       }
@@ -130,12 +134,12 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   }
 
   const limit = Math.ceil( Math.min(progression.psionics, 10) / 2) * 2
-  actor.setFlag("prime-psionics", "manifestLimit", limit)
+  // actor.setFlag("prime-psionics", "manifestLimit", limit)
 
   const ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
-  actor.setFlag("prime-psionics", "ppMax", ppProgression[progression.psionics])
+  // actor.setFlag("prime-psionics", "ppMax", ppProgression[progression.psionics])
 
-  if (actor.getFlag("prime-psionics", "pp") === undefined) actor.setFlag("prime-psionics", "pp", ppProgression[progression.psionics])
+  // if (actor.getFlag("prime-psionics", "pp") === undefined) actor.setFlag("prime-psionics", "pp", ppProgression[progression.psionics])
 })
 
 function usesPP(item) {
