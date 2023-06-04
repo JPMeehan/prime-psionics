@@ -11,9 +11,6 @@
  * @property {boolean} components.observable     Does this power manifest observable components?
  * @property {boolean} components.ritual         Can this power be cast as a ritual?
  * @property {boolean} components.concentration  Does this power require concentration?
- * @property {object} preparation                Details on how this power is prepared.
- * @property {string} preparation.mode           Spell preparation mode as defined in `DND5E.spellPreparationModes`.
- * @property {boolean} preparation.prepared      Is the power currently prepared?
  * @property {object} scaling                    Details on how casting at higher levels affects this power.
  * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.

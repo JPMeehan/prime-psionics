@@ -134,12 +134,13 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   }
 
   const limit = Math.ceil( Math.min(progression.psionics, 10) / 2) * 2
-  // actor.setFlag("prime-psionics", "manifestLimit", limit)
 
   const ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
-  // actor.setFlag("prime-psionics", "ppMax", ppProgression[progression.psionics])
 
-  // if (actor.getFlag("prime-psionics", "pp") === undefined) actor.setFlag("prime-psionics", "pp", ppProgression[progression.psionics])
+  // actor.updateSource({
+  //   "flags.prime-psionics.manifestLimit": limit,
+  //   "flags.prime-psionics.ppMax": ppProgression[progression.psionics],
+  // })
 })
 
 function usesPP(item) {
