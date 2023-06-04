@@ -48,7 +48,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     const useLabels = {"-20": "-", "-10": "-", 0: "&infin;"};
     const sections = {atwill: -20, innate: -10, pact: 0.5 };
 
-    const registerSection = (sl, i, label, {prepMode="always", value, max, override}={}) => {
+    const registerSection = (sl, i, label, {prepMode="prepared", value, max, override}={}) => {
       const aeOverride = foundry.utils.hasProperty(context.actor.overrides, `system.spells.spell${i}.override`);
       spellbook[i] = {
         order: i,
@@ -138,63 +138,42 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   if (actor.getFlag("prime-psionics", "pp") === undefined) actor.setFlag("prime-psionics", "pp", ppProgression[progression.psionics])
 })
 
-Hooks.on("dnd5e.preUseItem", (item, config, options) => {
-  const consumption = item.system.consume;
-  if (consumption.type !== "flags") return true;
-  if (consumption.target !== "pp") return true;
+function usesPP(item) {
+  const consumption = item.system.consume
+  return consumption.type === "flags" && consumption.target === "pp";
+}
 
-  config.needsConfiguration = false;
-  config.consumeResource = false;
-  options.configureDialog = false;
-
-  return activatePower(item, config, options)
-})
-
-async function activatePower(item, config, options) {
+Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
+  if (!usesPP(dialog.item)) return true;
 
   const content = game.i18n.format("PrimePsionics.PPManifest", {
-    limit: item.parent.getFlag("prime-psionics", "manifestLimit")
+    limit: dialog.item.parent.getFlag("prime-psionics", "manifestLimit")
   })
-  const input = `<input type=number class="psi-points" value="${item.system.consume.amount}" min=0>`
+  const input = `<input type=number class="psi-points" name="ppSpend" value="${dialog.item.system.consume.amount}" min=0>`
 
-  const dialogResult = await Dialog.wait({
-    title: "Manifest Power",
-    content: content + input,
-    buttons: {
-     manifest: {
-      icon: '<i class="fas fa-check"></i>',
-      label: game.i18n.localize("PrimePsionics.Manifest"),
-      callback: (html) => new Object({
-        manifest: true,
-        spend: html.find(".psi-points").val()
-      })
-     },
-     cancel: {
-         icon: '<i class="fas fa-times"></i>',
-         label: game.i18n.localize("Cancel"),
-         callback: () => new Object({
-          manifest: false,
-          spend: 0
-         })
-     }
-    },
-    default: "cancel",
-   });
+  // html.find('.window-title').html(game.i18n.localize("PrimePsionics.Manifest"))
+  html.find("#ability-use-form").append("<div>" + content + input + "</div>")
+  html.height(html.height()+10)
+  html.find("input[name='consumeResource']").parents(".form-group").remove()
 
-   const currentPP = item.parent.getFlag("prime-psionics", "pp")
+})
 
-   const newPP = currentPP - dialogResult.spend
+Hooks.on("dnd5e.preItemUsageConsumption", (item, config, options) => {
+  if (!usesPP(item)) return true;
+  config.consumeResource = false;
+})
 
-   if (newPP >= 0) item.parent.setFlag("prime-psionics", "pp", newPP )
-   else {
-    dialogResult.manifest = false;
-    ui.notifications.warn(game.i18n.localize("PrimePsionics.TooManyPP"));
-   }
-   
-   return dialogResult.manifest;
+Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
+  if (!usesPP(item)) return;
+  const currentPP = item.parent.getFlag("prime-psionics", "pp")
 
-
-}
+  const newPP = currentPP - config.ppSpend
+  if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp"] = newPP // item.parent.setFlag("prime-psionics", "pp", newPP )
+  else {
+    ui.notifications.warn(game.i18n.localize("PrimePsionics.TooManyPP"))
+    return false;
+  };
+})
 
 Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
   if (!result.longRest) return true;
