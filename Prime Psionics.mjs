@@ -90,10 +90,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
         }
       }
 
-      // Actual issue here - there's no presumption of the sections existing for a dedicated manifester
-      // Ergo, *most spells will be created this way*
-      // It works fine for spellcasters who can manifest
-      // But need to totally redo logic for manifesters of lower levels
+      // Known bug: This breaks if there's a mix of spells and powers WITHOUT spellcaster levels
       else if ( !spellbook[p] ) {
         registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {levels: levels[pl]});
       }
@@ -134,13 +131,13 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   }
 
   const limit = Math.ceil( Math.min(progression.psionics, 10) / 2) * 2
-
-  const ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
-
-  // actor.updateSource({
-  //   "flags.prime-psionics.manifestLimit": limit,
-  //   "flags.prime-psionics.ppMax": ppProgression[progression.psionics],
-  // })
+  const updates = {
+    manifestLimit: limit,
+    ppMax: CONFIG.PSIONICS.ppProgression[progression.psionics]
+  }
+  if (actor.getFlag("prime-psionics", "pp") === undefined) updates.pp = CONFIG.PSIONICS.ppProgression[progression.psionics]
+  const flags = actor.flags["prime-psionics"]
+  foundry.utils.mergeObject(flags, updates)
 })
 
 function usesPP(item) {

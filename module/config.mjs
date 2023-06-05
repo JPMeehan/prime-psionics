@@ -29,7 +29,14 @@ PPCONFIG.PSIONICS.disciplines = {
     psm: "PrimePsionics.DiscMetabolism",
     pst: "PrimePsionics.DiscPort",
     tlp: "PrimePsionics.DiscTelepathy",
-  };
+};
+
+/**
+ * Power Point Progression Array
+ * a[x] returns max power points at effective manifester level x
+ */
+
+PPCONFIG.PSIONICS.ppProgression = [0,4,6,16,20,32,38,46,54,72,82,94,94,108,108,124,124,142,152,164,178]
 
 PPCONFIG.DND5E = {
     specialTimePeriods: {
