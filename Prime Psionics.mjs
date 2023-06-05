@@ -19,6 +19,12 @@ Hooks.once("init", () => {
   });
 });
 
+/**
+ * 
+ * LOCALIZING THE CONFIG OBJECT
+ * 
+ */
+
 Hooks.once("i18nInit", () => {
     _localizeHelper(CONFIG.PSIONICS);
 })
@@ -35,6 +41,12 @@ function _localizeHelper(object) {
         }
     }
 }
+
+/**
+ * 
+ * INLINE POWER DISPLAY
+ * 
+ */
 
 Hooks.on("renderActorSheet5e", (app, html, context) => {
   if ( !game.user.isGM && app.actor.limited ) return true;
@@ -119,6 +131,12 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
   else return true;
 })
 
+/**
+ * 
+ * CALCULATE MAX PSI POINTS
+ * 
+ */
+
 Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcasting, count) => {
   if (!progression.hasOwnProperty("psionics")) progression.psionics = 0;
   const prog = CONFIG.DND5E.spellcastingTypes.psionics.progression[spellcasting.progression];
@@ -139,6 +157,18 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   const flags = actor.flags["prime-psionics"]
   foundry.utils.mergeObject(flags, updates)
 })
+
+/**
+ * 
+ * ITEM USAGE HANDLING
+ * 
+ */
+
+/**
+ * 
+ * @param {Item5e} item   Item to check 
+ * @returns {boolean}     Returns true if it spends psi points as a resource
+ */
 
 function usesPP(item) {
   const consumption = item.system.consume
@@ -176,6 +206,12 @@ Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
     return false;
   };
 })
+
+/**
+ * 
+ * POWER POINT RESET ON LR
+ * 
+ */
 
 Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
   if (!result.longRest) return true;
