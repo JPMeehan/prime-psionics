@@ -1,7 +1,7 @@
 {
   "id": "prime-psionics",
   "title": "Prime Psionics",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "compatibility": {
     "minimum": "11",
     "verified": "11"
@@ -17,7 +17,7 @@
   "authors": [
     {
       "name": "Joseph Meehan",
-      "discord": "ChaosOS#1948",
+      "discord": "chaosos",
       "email": "jpmeehan5@gmail.com",
       "url": "https://joseph-meehan.carrd.co"
     }

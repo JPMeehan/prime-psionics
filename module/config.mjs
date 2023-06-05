@@ -31,6 +31,17 @@ PPCONFIG.PSIONICS.disciplines = {
     tlp: "PrimePsionics.DiscTelepathy",
 };
 
+
+/**
+ * The available choices for how spell damage scaling may be computed.
+ * @enum {string}
+ */
+PPCONFIG.PSIONICS.powerScalingModes = {
+    none: "PrimePsionics.PowerNone",
+    talent: "PrimePsionics.Talent",
+    intensify: "PrimePsionics.Intensify"
+};
+
 /**
  * Power Point Progression Array
  * a[x] returns max power points at effective manifester level x

@@ -181,7 +181,7 @@ Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
   const content = game.i18n.format("PrimePsionics.PPManifest", {
     limit: dialog.item.parent.getFlag("prime-psionics", "manifestLimit")
   })
-  const input = `<input type=number class="psi-points" name="ppSpend" value="${dialog.item.system.consume.amount}" min=0>`
+  const input = `<input type=number class="psi-points" name="ppSpend" value="${dialog.item.system.consume.amount}" min="${dialog.item.system.consume.amount}">`
 
   // html.find('.window-title').html(game.i18n.localize("PrimePsionics.Manifest"))
   html.find("#ability-use-form").append("<div>" + content + input + "</div>")
@@ -207,6 +207,65 @@ Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
   };
 })
 
+/**
+ * SCALING
+ */
+
+Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
+  if (item.type !== "prime-psionics.power") return true;
+
+  console.log(item)
+  console.log(rollConfig)
+  if ( item.system.scaling.mode === "talent" ) {
+    let level;
+    if ( rollConfig.actor.type === "character" ) level = rollConfig.actor.system.details.level;
+    else if ( item.system.preparation.mode === "innate" ) level = Math.ceil(rollConfig.actor.system.details.cr);
+    else level = rollConfig.actor.system.details.spellLevel;
+    const add = Math.floor((level + 1) / 6);
+    if (add === 0) return true;
+    scaleDamage(rollConfig.parts, item.system.scaling.mode.formula || rollConfig.parts.join(" + "), add, rollConfig.data);
+  }
+  else if (item.system.scaling.mode === "intensify" && item.system.scaling.formula ) {
+    // System value represents "base cost"
+    // Need to determine points spent to intensify from the AbilityUseDialog
+    // Then scale per point spent on intensifying
+    // This is a complicated football because it needs to get stuffed in the message that's created
+    const intensify = 0 
+    if (intensify === 0) return true;
+    scaleDamage(rollConfig.parts, item.system.scaling.mode.formula, intensify, rollConfig.data);
+  }
+
+})
+  /**
+   * Scale an array of damage parts according to a provided scaling formula and scaling multiplier.
+   * @param {string[]} parts    The original parts of the damage formula.
+   * @param {string} scaling    The scaling formula.
+   * @param {number} times      A number of times to apply the scaling formula.
+   * @param {object} rollData   A data object that should be applied to the scaled damage roll
+   * @returns {string[]}        The parts of the damage formula with the scaling applied.
+   * @private
+   */
+function scaleDamage(parts, scaling, times, rollData) {
+  if ( times <= 0 ) return parts;
+  const p0 = new Roll(parts[0], rollData);
+  const s = new Roll(scaling, rollData).alter(times);
+
+  // Attempt to simplify by combining like dice terms
+  let simplified = false;
+  if ( (s.terms[0] instanceof Die) && (s.terms.length === 1) ) {
+    const d0 = p0.terms[0];
+    const s0 = s.terms[0];
+    if ( (d0 instanceof Die) && (d0.faces === s0.faces) && d0.modifiers.equals(s0.modifiers) ) {
+      d0.number += s0.number;
+      parts[0] = p0.formula;
+      simplified = true;
+    }
+  }
+
+  // Otherwise, add to the first part
+  if ( !simplified ) parts[0] = `${parts[0]} + ${s.formula}`;
+  return parts;
+}
 /**
  * 
  * POWER POINT RESET ON LR

@@ -100,7 +100,7 @@
                 <div class="form-fields">
                     <select name="system.scaling.mode">
                         {{#select system.scaling.mode}}
-                        {{#each config.spellScalingModes as |name key|}}
+                        {{#each powerScalingModes as |name key|}}
                         <option value="{{key}}">{{name}}</option>
                         {{/each}}
                         {{/select}}
