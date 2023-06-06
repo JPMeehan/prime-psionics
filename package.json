@@ -5,7 +5,9 @@
   "main": "Prime Psionics.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "scss": "gulp sass"
+    "build:css": "gulp sass",
+    "build:js": "gulp mjs",
+    "build": "gulp buildAll"
   },
   "repository": {
     "type": "git",

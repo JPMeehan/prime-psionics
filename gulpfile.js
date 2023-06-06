@@ -5,12 +5,14 @@ var concat = require('gulp-concat');
 var {rollup} = require('rollup')
 // var gulpIf = require('gulp-if')
 
-gulp.task('sass', function () {
+function compileSCSS () {
    return gulp.src('./styles/**/*.scss')
    .pipe(concat('prime-psionics.scss'))
    .pipe(sass().on('error', sass.logError))
    .pipe(gulp.dest('./'));
-});
+}
+
+gulp.task('sass', compileSCSS );
 
 async function compileJavascript() {
    const bundle = await rollup({
@@ -25,6 +27,6 @@ async function compileJavascript() {
    });
 }
 
-
-
 gulp.task('mjs', compileJavascript)
+
+gulp.task('buildAll', gulp.series(compileSCSS, compileJavascript))  
