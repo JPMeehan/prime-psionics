@@ -67,6 +67,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
       const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
       this.labels.level = this.level != 0 ? CONFIG.DND5E.spellLevels[this.level] : game.i18n.localize("PrimePsionics.Talent");
       this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
+      this.labels.pp = (this.consume.target === 'pp' & this.consume.type === 'flags') ? "PrimePsionics.PP" : "";
       this.labels.components = Object.entries(this.components).reduce((obj, [c, active]) => {
         const config = attributes[c];
         if ( !config || (active !== true) ) return obj;
@@ -86,8 +87,11 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
      * @type {string[]}
      */
     get chatProperties() {
+      let properties = [this.labels.level]
+      if (this.labels.pp) properties.push(this.labels.pp)
+      
       return [
-        this.labels.level,
+        ...properties,
         this.labels.components.ao,
         ...this.labels.components.tags
       ];

@@ -176,7 +176,7 @@ function usesPP(item) {
 }
 
 Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
-  if (!usesPP(dialog.item)) return true;
+  if (!usesPP(dialog.item)) return;
 
   const content = game.i18n.format("PrimePsionics.PPManifest", {
     limit: dialog.item.parent.getFlag("prime-psionics", "manifestLimit")
@@ -191,20 +191,41 @@ Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
 })
 
 Hooks.on("dnd5e.preItemUsageConsumption", (item, config, options) => {
-  if (!usesPP(item)) return true;
+  if (!usesPP(item)) return;
   config.consumeResource = false;
 })
 
 Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
   if (!usesPP(item)) return;
+  options.ppSpend = config.ppSpend 
   const currentPP = item.parent.getFlag("prime-psionics", "pp")
-
   const newPP = currentPP - config.ppSpend
-  if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp"] = newPP // item.parent.setFlag("prime-psionics", "pp", newPP )
+  if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp"] = newPP
   else {
     ui.notifications.warn(game.i18n.localize("PrimePsionics.TooManyPP"))
     return false;
   };
+})
+
+Hooks.on("dnd5e.preDisplayCard", (item, chatData, options) => {
+  if (!usesPP(item)) return;
+  console.log(item)
+  console.log(chatData)
+  console.log(options)
+  const ppText = `${options.ppSpend} ${
+    options.ppSpend === 1
+      ? game.i18n.localize("PrimePsionics.1PP")
+      : game.i18n.localize("PrimePsionics.PP")
+  }`;
+  console.log(ppText)
+  chatData.content = chatData.content.replace("PrimePsionics.PP", ppText)
+  chatData.flags["prime-psionics"] = {ppSpend: options.ppSpend};
+})
+
+Hooks.on("renderChatMessage", (app, html, context) => {
+  const ppSpend = app.getFlag("prime-psionics", "ppSpend")
+  if (ppSpend === undefined) return;
+  html.find("button[data-action='damage']")[0].dataset["ppspend"] = ppSpend
 })
 
 /**
@@ -212,29 +233,25 @@ Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
  */
 
 Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
-  if (item.type !== "prime-psionics.power") return true;
-
-  console.log(item)
-  console.log(rollConfig)
+  if (item.type !== "prime-psionics.power") return;
   if ( item.system.scaling.mode === "talent" ) {
     let level;
     if ( rollConfig.actor.type === "character" ) level = rollConfig.actor.system.details.level;
     else if ( item.system.preparation.mode === "innate" ) level = Math.ceil(rollConfig.actor.system.details.cr);
     else level = rollConfig.actor.system.details.spellLevel;
     const add = Math.floor((level + 1) / 6);
-    if (add === 0) return true;
+    if (add === 0) return;
     scaleDamage(rollConfig.parts, item.system.scaling.mode.formula || rollConfig.parts.join(" + "), add, rollConfig.data);
   }
-  else if (item.system.scaling.mode === "intensify" && item.system.scaling.formula ) {
-    // System value represents "base cost"
-    // Need to determine points spent to intensify from the AbilityUseDialog
-    // Then scale per point spent on intensifying
-    // This is a complicated football because it needs to get stuffed in the message that's created
-    const intensify = 0 
-    if (intensify === 0) return true;
-    scaleDamage(rollConfig.parts, item.system.scaling.mode.formula, intensify, rollConfig.data);
+  else if (item.system.scaling.mode === "intensify" && 
+    item.system.scaling.formula) {
+    const ppSpend = Number(rollConfig.event.target.dataset["ppspend"])
+    if (ppSpend === NaN) return;
+    const minPP = item.system.consume.amount;
+    const intensify = Math.max(0, ppSpend - minPP)
+    if (intensify === 0) return;
+    scaleDamage(rollConfig.parts, item.system.scaling.formula, intensify, rollConfig.data);
   }
-
 })
   /**
    * Scale an array of damage parts according to a provided scaling formula and scaling multiplier.
