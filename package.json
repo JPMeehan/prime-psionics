@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/JPMeehan/prime-psionics/issues"
   },
-  "homepage": "https://github.com/JPMeehan/prime-psionics#readme"
+  "homepage": "https://github.com/JPMeehan/prime-psionics#readme",
+  "dependencies": {
+    "gulp": "^4.0.2"
+  }
 }
