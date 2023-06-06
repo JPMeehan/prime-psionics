@@ -1,3 +1,5 @@
+import { usesPP } from "./utils.mjs";
+
 /**
  * Data definition for Power items.
  * @mixes ItemDescriptionTemplate
@@ -67,7 +69,8 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
       const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
       this.labels.level = this.level != 0 ? CONFIG.DND5E.spellLevels[this.level] : game.i18n.localize("PrimePsionics.Talent");
       this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
-      this.labels.pp = (this.consume.target === 'pp' & this.consume.type === 'flags') ? "PrimePsionics.PP" : "";
+      this.labels.pp = (usesPP(this.consume)) ? "PrimePsionics.PP" : "";
+      this.labels.aug = (this.augmenting) ? game.i18n.format("PrimePsionics.AugmentPower", {power: this.augmenting}) : "";
       this.labels.components = Object.entries(this.components).reduce((obj, [c, active]) => {
         const config = attributes[c];
         if ( !config || (active !== true) ) return obj;
@@ -89,6 +92,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
     get chatProperties() {
       let properties = [this.labels.level]
       if (this.labels.pp) properties.push(this.labels.pp)
+      if (this.labels.aug) properties.push(this.labels.aug)
       
       return [
         ...properties,

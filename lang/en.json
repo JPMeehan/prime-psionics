@@ -19,6 +19,7 @@
     "PrimePsionics.ComponentObservable": "Observable",
     "PrimePsionics.ComponentObservableAbbr": "O",
     "PrimePsionics.Augmenting": "Augmenting",
+    "PrimePsionics.AugmentPower": "Augments {power}",
     "PrimePsionics.PowerManifestingHeader": "Power Manifesting",
     "PrimePsionics.Focus": "Focus",
     "PrimePsionics.PowerEffects": "Power Effects",

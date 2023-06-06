@@ -1,6 +1,7 @@
 import PPCONFIG from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
 import PowerSheet from "./module/powerSheet.mjs";
+import { ppText, usesPP } from "./module/utils.mjs";
 
 Hooks.once("init", () => {
 
@@ -78,6 +79,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     };
 
     powers.forEach(power => {
+      if (usesPP(power.system.consume)) power.system.labels.pp = ppText(power.system.consume.amount);
       foundry.utils.mergeObject(power, {
         labels: power.system.labels
       })
@@ -164,26 +166,14 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
  * 
  */
 
-/**
- * 
- * @param {Item5e} item   Item to check 
- * @returns {boolean}     Returns true if it spends psi points as a resource
- */
-
-function usesPP(item) {
-  const consumption = item.system.consume
-  return consumption.type === "flags" && consumption.target === "pp";
-}
-
 Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
-  if (!usesPP(dialog.item)) return;
+  if (!usesPP(dialog.item.system.consume)) return;
 
   const content = game.i18n.format("PrimePsionics.PPManifest", {
     limit: dialog.item.parent.getFlag("prime-psionics", "manifestLimit")
   })
   const input = `<input type=number class="psi-points" name="ppSpend" value="${dialog.item.system.consume.amount}" min="${dialog.item.system.consume.amount}">`
 
-  // html.find('.window-title').html(game.i18n.localize("PrimePsionics.Manifest"))
   html.find("#ability-use-form").append("<div>" + content + input + "</div>")
   html.height(html.height()+10)
   html.find("input[name='consumeResource']").parents(".form-group").remove()
@@ -191,12 +181,12 @@ Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
 })
 
 Hooks.on("dnd5e.preItemUsageConsumption", (item, config, options) => {
-  if (!usesPP(item)) return;
+  if (!usesPP(item.system.consume)) return;
   config.consumeResource = false;
 })
 
 Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
-  if (!usesPP(item)) return;
+  if (!usesPP(item.system.consume)) return
   options.ppSpend = config.ppSpend 
   const currentPP = item.parent.getFlag("prime-psionics", "pp")
   const newPP = currentPP - config.ppSpend
@@ -208,17 +198,8 @@ Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
 })
 
 Hooks.on("dnd5e.preDisplayCard", (item, chatData, options) => {
-  if (!usesPP(item)) return;
-  console.log(item)
-  console.log(chatData)
-  console.log(options)
-  const ppText = `${options.ppSpend} ${
-    options.ppSpend === 1
-      ? game.i18n.localize("PrimePsionics.1PP")
-      : game.i18n.localize("PrimePsionics.PP")
-  }`;
-  console.log(ppText)
-  chatData.content = chatData.content.replace("PrimePsionics.PP", ppText)
+  if (!usesPP(item.system.consume)) return;
+  chatData.content = chatData.content.replace("PrimePsionics.PP", ppText(options.ppSpend))
   chatData.flags["prime-psionics"] = {ppSpend: options.ppSpend};
 })
 

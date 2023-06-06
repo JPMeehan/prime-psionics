@@ -1,3 +1,5 @@
+import { ppText, usesPP } from "./utils.mjs";
+
 export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
     get template() {
         return `/modules/prime-psionics/templates/power-sheet.hbs`;
@@ -17,6 +19,15 @@ export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
 
         context.powerScalingModes = CONFIG.PSIONICS.powerScalingModes;
 
+        const consumption = context.system.consume
+        if (usesPP(consumption)){
+            if (context.system.labels.pp) {
+                const ppLabel = ppText(consumption.amount)
+                context.system.labels.pp = ppLabel;
+                context.itemStatus = ppLabel;
+            }
+        }
+        else delete context.system.labels.pp;
         foundry.utils.mergeObject(context, {
             labels: context.system.labels,
             abilityConsumptionTargets: consume
