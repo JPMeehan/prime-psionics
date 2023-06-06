@@ -1,4 +1,4 @@
-import PSIONICS from "./config.mjs";
+import PPCONFIG from "./config.mjs";
 import PowerData from "./powerData.mjs";
 import PowerSheet from "./powerSheet.mjs";
 import { ppText, usesPP } from "./utils.mjs";

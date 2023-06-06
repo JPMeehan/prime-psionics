@@ -4,7 +4,8 @@
   "description": "An FVTT module that introduces powers as a new type of item for dnd5e",
   "main": "Prime Psionics.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "gulp sass"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,10 @@
   "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
+    "gulp-eslint7": "^0.3.2",
+    "gulp-if": "^3.0.0",
     "gulp-sass": "^5.1.0",
-    "node-sass": "^9.0.0"
+    "node-sass": "^9.0.0",
+    "rollup": "^3.23.1"
   }
 }

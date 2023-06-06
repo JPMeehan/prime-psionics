@@ -1,5 +1,6 @@
 
 # Build Artifacts
+*.map
 prime-psionics-compiled*
 prime-psionics.lock
 
