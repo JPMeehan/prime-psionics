@@ -1,6 +1,7 @@
 const PPCONFIG = {
     DND5E: {},
-    PSIONICS: {}
+    PSIONICS: {},
+    Actor: {}
 }
 
 /**
@@ -79,6 +80,12 @@ PPCONFIG.DND5E = {
     },
     abilityConsumptionTypes: {
         flags: "PrimePsionics.Flags"
+    }
+}
+
+Actor.trackableAttributes = {
+    character: {
+        bar: ["flags.prime-psionics.pp"]
     }
 }
 
