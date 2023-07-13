@@ -145,7 +145,7 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
   if ( !prog ) return;
 
   progression.psionics += Math.floor(spellcasting.levels / prog.divisor ?? 1);
-  // Single-classed, non-full progression rounds up, rather than down.
+  // Single-classed, non-full progression rounds up, rather than down, except at first level for half manifesters.
   if ( (count === 1) && (prog.divisor > 1) && progression.psionics ) {
     progression.psionics = Math.ceil(spellcasting.levels / prog.divisor);
   }
@@ -155,6 +155,7 @@ Hooks.on("dnd5e.computePsionicsProgression", (progression, actor, cls, spellcast
     manifestLimit: limit,
     ppMax: CONFIG.PSIONICS.ppProgression[progression.psionics]
   }
+  if (actor === undefined) return
   if (actor.getFlag("prime-psionics", "pp") === undefined) updates.pp = CONFIG.PSIONICS.ppProgression[progression.psionics]
   const flags = actor.flags["prime-psionics"]
   foundry.utils.mergeObject(flags, updates)
@@ -273,4 +274,34 @@ function scaleDamage(parts, scaling, times, rollData) {
 Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
   if (!result.longRest) return true;
   result.updateData["flags.prime-psionics.pp"] = actor.getFlag("prime-psionics", "ppMax")
+})
+
+/**
+ * 
+ * SPELLCASTING TABLE
+ * 
+ */
+
+Hooks.on("dnd5e.buildPsionicsSpellcastingTable", (table, item, spellcasting) => {
+
+  table.headers = [[
+    {content: game.i18n.localize("PrimePsionics.PP")},
+    {content: game.i18n.localize("PrimePsionics.PsiLimit")}
+  ]];
+
+  table.cols = [{class: "spellcasting", span: 2}];
+
+  for ( const level of Array.fromRange(CONFIG.DND5E.maxLevel, 1) ) {
+    const progression = { psionics: 0 };
+    spellcasting.levels = level;
+    globalThis.dnd5e.documents.Actor5e.computeClassProgression(progression, item, { spellcasting });
+
+    const pp = CONFIG.PSIONICS.ppProgression[progression.psionics] || "—"
+    const limit = Math.ceil( Math.min(progression.psionics, 10) / 2) * 2 || "—";
+
+    table.rows.push([
+      { class: "spell-slots", content: `${pp}` },
+      { class: "spell-slots", content: `${limit}` }
+    ]);
+  }
 })
