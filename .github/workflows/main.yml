@@ -119,7 +119,7 @@ jobs:
             module.json                          \
             README.md                            \
             LICENSE                              \
-            Prime Psionics.mjs                   \
+            prime-psionics.mjs                   \
             prime-psionics.css                   \
             templates/                           \
             lang/

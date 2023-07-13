@@ -22,7 +22,7 @@
       "url": "https://joseph-meehan.carrd.co"
     }
   ],
-  "esmodules": ["./Prime Psionics.mjs"],
+  "esmodules": ["./prime-psionics.mjs"],
   "styles": ["./prime-psionics.css"],
   "languages": [
     {

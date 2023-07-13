@@ -533,4 +533,4 @@ Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
   if (!result.longRest) return true;
   result.updateData["flags.prime-psionics.pp"] = actor.getFlag("prime-psionics", "ppMax");
 });
-//# sourceMappingURL=Prime Psionics.mjs.map
+//# sourceMappingURL=prime-psionics.mjs.map

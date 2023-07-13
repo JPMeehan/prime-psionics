@@ -20,7 +20,7 @@ async function compileJavascript() {
    //   plugins: [nodeResolve()]
    });
    await bundle.write({
-     file: "./Prime Psionics.mjs",
+     file: "./prime-psionics.mjs",
      format: "es",
      sourcemap: true,
      sourcemapFile: "module/hooks.mjs"
