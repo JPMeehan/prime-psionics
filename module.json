@@ -1,7 +1,8 @@
 {
   "id": "prime-psionics",
   "title": "Prime Psionics",
-  "version": "0.9.1",
+  "description": "An implementation of psionic powers in dnd5e via v11 module subtypes.",
+  "version": "#{VERSION}#",
   "compatibility": {
     "minimum": "11",
     "verified": "11"
@@ -46,9 +47,9 @@
       }
     }
   },
-  "url": "https://github.com/JPMeehan/prime-psionics",
+  "url": "#{URL}#",
   "readme": "https://github.com/JPMeehan/prime-psionics/blob/main/README.md",
   "bugs": "https://github.com/JPMeehan/prime-psionics/issues",
   "changelog": "https://github.com/JPMeehan/prime-psionics/blob/main/CHANGELOG.md",
-  "download": "https://github.com/JPMeehan/prime-psionics/releases/latest/download/module.zip"
+  "download": "#{DOWNLOAD}#"
 }

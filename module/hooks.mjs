@@ -3,6 +3,8 @@ import PowerData from "./powerData.mjs";
 import PowerSheet from "./powerSheet.mjs";
 import { ppText, usesPP } from "./utils.mjs";
 
+const typePower = "prime-psionics.power"
+
 Hooks.once("init", () => {
 
 
@@ -15,7 +17,7 @@ Hooks.once("init", () => {
   dnd5e.utils.preLocalize("spellcastingTypes.psionics.progression", {key: "label"});
 
   Items.registerSheet("power", PowerSheet, {
-    types: ["prime-psionics.power"],
+    types: [typePower],
     makeDefault: true
   });
 });
@@ -53,7 +55,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
   if ( !game.user.isGM && app.actor.limited ) return true;
   if (context.isCharacter || context.isNPC) {
     const owner = context.actor.isOwner;
-    let powers = context.items.filter(i => i.type === "prime-psionics.power")
+    let powers = context.items.filter(i => i.type === typePower)
     powers = app._filterItems(powers, app._filters.spellbook)
     const levels = context.system.spells;
     const spellbook = context.spellbook;
@@ -215,7 +217,7 @@ Hooks.on("renderChatMessage", (app, html, context) => {
  */
 
 Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
-  if (item.type !== "prime-psionics.power") return;
+  if (item.type !== typePower) return;
   if ( item.system.scaling.mode === "talent" ) {
     let level;
     if ( rollConfig.actor.type === "character" ) level = rollConfig.actor.system.details.level;
