@@ -228,7 +228,7 @@ class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
 
 class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
     get template() {
-        return `/modules/prime-psionics/templates/power-sheet.hbs`;
+        return `modules/prime-psionics/templates/power-sheet.hbs`;
     }
 
     async getData(options={}) {
