@@ -1,11 +1,17 @@
 <li class="items-header spellbook-header flexrow">
-    <div class="item-name flexrow">
-        <h3>{{localize "PrimePsionics.PP"}}</h3>
-    </div>
-    <div class="power-points">
-        <input class="pp-input" type="text" name="flags.prime-psionics.pp" 
-            value="{{pp}}" placeholder="0" data-dtype="Number">
-        <span class="sep"> / </span>
-        <span>{{ppMax}}</span>
-    </div>
+  <div class="item-name flexrow">
+    <h3>{{localize "PrimePsionics.PP"}}</h3>
+  </div>
+  <div class="power-points">
+    <input
+      class="pp-input"
+      type="text"
+      name="flags.prime-psionics.pp.value"
+      value="{{pp}}"
+      placeholder="0"
+      data-dtype="Number"
+    />
+    <span class="sep"> / </span>
+    <span>{{ppMax}}</span>
+  </div>
 </li>

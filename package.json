@@ -4,7 +4,6 @@
   "description": "An FVTT module that introduces powers as a new type of item for dnd5e",
   "main": "prime-psionics.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "gulp sass",
     "build:js": "gulp mjs",
     "build": "gulp buildAll"
