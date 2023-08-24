@@ -51,5 +51,6 @@
   "readme": "https://github.com/JPMeehan/prime-psionics/blob/main/README.md",
   "bugs": "https://github.com/JPMeehan/prime-psionics/issues",
   "changelog": "https://github.com/JPMeehan/prime-psionics/blob/main/CHANGELOG.md",
-  "download": "#{DOWNLOAD}#"
+  "download": "#{DOWNLOAD}#",
+  "manifest": "https://github.com/JPMeehan/prime-psionics/releases/latest/download/module.json"
 }
