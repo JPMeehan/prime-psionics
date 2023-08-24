@@ -482,9 +482,9 @@ Hooks.on("dnd5e.preItemUsageConsumption", (item, config, options) => {
 Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
   if (!usesPP(item.system.consume)) return;
   options.ppSpend = config.ppSpend;
-  const currentPP = item.parent.getFlag("prime-psionics", "pp");
+  const currentPP = item.parent.getFlag("prime-psionics", "pp")["value"];
   const newPP = currentPP - config.ppSpend;
-  if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp"] = newPP;
+  if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp.value"] = newPP;
   else {
     ui.notifications.warn(game.i18n.localize("PrimePsionics.TooManyPP"));
     return false;
