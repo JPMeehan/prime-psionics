@@ -189,7 +189,8 @@ Hooks.on(
       updates.pp.value = CONFIG.PSIONICS.ppProgression[progression.psionics];
     else if (typeof pp === "number") updates.pp.value = pp; // migration
     const flags = actor.flags["prime-psionics"];
-    foundry.utils.mergeObject(flags, updates);
+    if (flags) foundry.utils.mergeObject(flags, updates);
+    else actor.flags["prime-psionics"] = updates;
   }
 );
 
