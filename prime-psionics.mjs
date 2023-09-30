@@ -39,6 +39,18 @@ PPCONFIG.PSIONICS.powerScalingModes = {
   none: "PrimePsionics.PowerNone",
   talent: "PrimePsionics.Talent",
   intensify: "PrimePsionics.Intensify",
+  intensify2: "PrimePsionics.Intensify2",
+  intensify3: "PrimePsionics.Intensify3",
+};
+
+/**
+ * Intensify Ratios
+ * @enum {number}
+ */
+PPCONFIG.PSIONICS.scaling = {
+  intensify: 1,
+  intensify2: 2,
+  intensify3: 3,
 };
 
 /**
@@ -85,6 +97,169 @@ PPCONFIG.DND5E = {
 };
 
 /**
+ * Data definition for Power items.
+ * @mixes ItemDescriptionTemplate
+ * @mixes ActivatedEffectTemplate
+ * @mixes ActionTemplate
+ *
+ * @property {number} level                      Base level of the power.
+ * @property {string} discipline                 Psionic discipline to which this power belongs.
+ * @property {string} augmenting                 The base talent this power improves
+ * @property {object} components                 General components and tags for this power.
+ * @property {boolean} components.auditory       Does this power manifest auditory components?
+ * @property {boolean} components.observable     Does this power manifest observable components?
+ * @property {boolean} components.ritual         Can this power be cast as a ritual?
+ * @property {boolean} components.concentration  Does this power require concentration?
+ * @property {object} scaling                    Details on how casting at higher levels affects this power.
+ * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
+ * @property {string} scaling.formula            Dice formula used for scaling.
+ */
+class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
+  dnd5e.dataModels.item.ItemDescriptionTemplate,
+  dnd5e.dataModels.item.ActivatedEffectTemplate,
+  dnd5e.dataModels.item.ActionTemplate
+) {
+  /** @inheritdoc */
+  static defineSchema() {
+    return this.mergeSchema(super.defineSchema(), {
+      level: new foundry.data.fields.NumberField({
+        required: true,
+        integer: true,
+        initial: 1,
+        min: 0,
+        label: "DND5E.SpellLevel",
+      }),
+      discipline: new foundry.data.fields.StringField({
+        required: true,
+        label: "PrimePsionics.PowerDiscipline",
+      }),
+      augmenting: new foundry.data.fields.StringField({
+        required: true,
+        label: "PrimePsionics.Augmenting",
+      }),
+      components: new dnd5e.dataModels.fields.MappingField(
+        new foundry.data.fields.BooleanField(),
+        {
+          required: true,
+          label: "PrimePsionics.PowerComponents",
+          initialKeys: [
+            ...Object.keys(CONFIG.PSIONICS.powerComponents),
+            ...Object.keys(CONFIG.DND5E.spellTags),
+          ],
+        }
+      ),
+      scaling: new foundry.data.fields.SchemaField(
+        {
+          mode: new foundry.data.fields.StringField({
+            required: true,
+            initial: "none",
+            label: "DND5E.ScalingMode",
+          }),
+          formula: new dnd5e.dataModels.fields.FormulaField({
+            required: true,
+            nullable: true,
+            initial: null,
+            label: "DND5E.ScalingFormula",
+          }),
+        },
+        { label: "DND5E.LevelScaling" }
+      ),
+    });
+  }
+
+  /* -------------------------------------------- */
+  /*  Migrations                                  */
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  static migrateData(source) {
+    super.migrateData(source);
+  }
+
+  /* -------------------------------------------- */
+  /*  Derived Data                                */
+  /* -------------------------------------------- */
+
+  prepareDerivedData() {
+    this.labels = {};
+    this._preparePower();
+  }
+
+  _preparePower() {
+    const tags = Object.fromEntries(
+      Object.entries(CONFIG.DND5E.spellTags).map(([k, v]) => {
+        v.tag = true;
+        return [k, v];
+      })
+    );
+    const attributes = { ...CONFIG.PSIONICS.powerComponents, ...tags };
+    this.labels.level =
+      this.level != 0
+        ? CONFIG.DND5E.spellLevels[this.level]
+        : game.i18n.localize("PrimePsionics.Talent");
+    this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
+    this.labels.pp = this.usesPP ? "PrimePsionics.PP" : "";
+    this.labels.aug = this.augmenting
+      ? game.i18n.format("PrimePsionics.AugmentPower", {
+          power: this.augmenting,
+        })
+      : "";
+    this.labels.components = Object.entries(this.components).reduce(
+      (obj, [c, active]) => {
+        const config = attributes[c];
+        if (!config || active !== true) return obj;
+        obj.all.push({ abbr: config.abbr, tag: config.tag });
+        if (config.tag) obj.tags.push(config.label);
+        else obj.ao.push(config.abbr);
+        return obj;
+      },
+      { all: [], ao: [], tags: [] }
+    );
+  }
+
+  /* -------------------------------------------- */
+  /*  Getters                                     */
+  /* -------------------------------------------- */
+
+  /**
+   * Properties displayed in chat.
+   * @type {string[]}
+   */
+  get chatProperties() {
+    let properties = [this.labels.level];
+    if (this.labels.pp) properties.push(this.labels.pp);
+    if (this.labels.aug) properties.push(this.labels.aug);
+
+    return [
+      ...properties,
+      this.labels.components.ao,
+      ...this.labels.components.tags,
+    ];
+  }
+
+  /**
+   * @returns {boolean}   Whether this power is configured to use power points or not
+   */
+  get usesPP() {
+    return this.consume.type === "flags" && this.consume.target === "pp";
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  get _typeAbilityMod() {
+    return this.parent?.actor?.system.attributes.spellcasting || "int";
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  get _typeCriticalThreshold() {
+    return this.parent?.actor?.flags.dnd5e?.spellCriticalThreshold ?? Infinity;
+  }
+}
+
+/**
  * 
  * @param {object} consume               Effect's resource consumption.
  * @param {string} consume.type          Type of resource to consume
@@ -111,167 +286,59 @@ function ppText(pp) {
     }`;
 }
 
-/**
- * Data definition for Power items.
- * @mixes ItemDescriptionTemplate
- * @mixes ActivatedEffectTemplate
- * @mixes ActionTemplate
- *
- * @property {number} level                      Base level of the power.
- * @property {string} school                     Psionic discipline to which this power belongs.
- * @property {object} components                 General components and tags for this power.
- * @property {boolean} components.auditory       Does this power manifest auditory components?
- * @property {boolean} components.observable     Does this power manifest observable components?
- * @property {boolean} components.ritual         Can this power be cast as a ritual?
- * @property {boolean} components.concentration  Does this power require concentration?
- * @property {object} scaling                    Details on how casting at higher levels affects this power.
- * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
- * @property {string} scaling.formula            Dice formula used for scaling.
- */
-class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
-  dnd5e.dataModels.item.ItemDescriptionTemplate, dnd5e.dataModels.item.ActivatedEffectTemplate, dnd5e.dataModels.item.ActionTemplate
-  ) {
-    /** @inheritdoc */
-    static defineSchema() {
-      return this.mergeSchema(super.defineSchema(), {
-        level: new foundry.data.fields.NumberField({
-          required: true, integer: true, initial: 1, min: 0, label: "DND5E.SpellLevel"
-        }),
-        discipline: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.PowerDiscipline"}),
-        augmenting: new foundry.data.fields.StringField({required: true, label: "PrimePsionics.Augmenting"}),
-        components: new dnd5e.dataModels.fields.MappingField(new foundry.data.fields.BooleanField(), {
-          required: true, label: "PrimePsionics.PowerComponents",
-          initialKeys: [
-            ...Object.keys(CONFIG.PSIONICS.powerComponents), 
-            ...Object.keys(CONFIG.DND5E.spellTags)
-          ]
-        }),
-        scaling: new foundry.data.fields.SchemaField({
-          mode: new foundry.data.fields.StringField({required: true, initial: "none", label: "DND5E.ScalingMode"}),
-          formula: new dnd5e.dataModels.fields.FormulaField({required: true, nullable: true, initial: null, label: "DND5E.ScalingFormula"})
-        }, {label: "DND5E.LevelScaling"})
-      });
-    }
-  
-    /* -------------------------------------------- */
-    /*  Migrations                                  */
-    /* -------------------------------------------- */
-  
-    /** @inheritdoc */
-    static migrateData(source) {
-      super.migrateData(source);
-    }
-  
-
-    /* -------------------------------------------- */
-    /*  Derived Data                                */
-    /* -------------------------------------------- */
-
-    prepareDerivedData() {
-      this.labels = {};
-      this._preparePower();
-    }
-
-    _preparePower() {
-      const tags = Object.fromEntries(Object.entries(CONFIG.DND5E.spellTags).map(([k, v]) => {
-        v.tag = true;
-        return [k, v];
-      }));
-      const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
-      this.labels.level = this.level != 0 ? CONFIG.DND5E.spellLevels[this.level] : game.i18n.localize("PrimePsionics.Talent");
-      this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
-      this.labels.pp = (usesPP(this.consume)) ? "PrimePsionics.PP" : "";
-      this.labels.aug = (this.augmenting) ? game.i18n.format("PrimePsionics.AugmentPower", {power: this.augmenting}) : "";
-      this.labels.components = Object.entries(this.components).reduce((obj, [c, active]) => {
-        const config = attributes[c];
-        if ( !config || (active !== true) ) return obj;
-        obj.all.push({abbr: config.abbr, tag: config.tag});
-        if ( config.tag ) obj.tags.push(config.label);
-        else obj.ao.push(config.abbr);
-        return obj;
-      }, {all: [], ao: [], tags: []});
-    }
-
-    /* -------------------------------------------- */
-    /*  Getters                                     */
-    /* -------------------------------------------- */
-  
-    /**
-     * Properties displayed in chat.
-     * @type {string[]}
-     */
-    get chatProperties() {
-      let properties = [this.labels.level];
-      if (this.labels.pp) properties.push(this.labels.pp);
-      if (this.labels.aug) properties.push(this.labels.aug);
-      
-      return [
-        ...properties,
-        this.labels.components.ao,
-        ...this.labels.components.tags
-      ];
-    }
-  
-    /* -------------------------------------------- */
-  
-    /** @inheritdoc */
-    get _typeAbilityMod() {
-      return this.parent?.actor?.system.attributes.spellcasting || "int";
-    }
-  
-    /* -------------------------------------------- */
-  
-    /** @inheritdoc */
-    get _typeCriticalThreshold() {
-      return this.parent?.actor?.flags.dnd5e?.spellCriticalThreshold ?? Infinity;
-    }
-  
+class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
+  get template() {
+    return `modules/prime-psionics/templates/power-sheet.hbs`;
   }
 
-class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
-    get template() {
-        return `modules/prime-psionics/templates/power-sheet.hbs`;
-    }
+  async getData(options = {}) {
+    const context = await super.getData(options);
+    context.psionics = CONFIG.PSIONICS;
+    context.powerComponents = {
+      ...CONFIG.PSIONICS.powerComponents,
+      ...CONFIG.DND5E.spellTags,
+    };
+    if (context.system.actionType === "msak")
+      context.itemProperties[0] = game.i18n.localize(
+        "PrimePsionics.ActionMPAK"
+      );
+    if (context.system.actionType === "rsak")
+      context.itemProperties[0] = game.i18n.localize(
+        "PrimePsionics.ActionRPAK"
+      );
 
-    async getData(options={}) {
-        const context = await super.getData(options);
-        context.psionics = CONFIG.PSIONICS;
-        context.powerComponents = {
-            ...CONFIG.PSIONICS.powerComponents,
-            ...CONFIG.DND5E.spellTags
-        };
-        if (context.system.actionType === "msak") context.itemProperties[0] = game.i18n.localize("PrimePsionics.ActionMPAK");
-        if (context.system.actionType === "rsak") context.itemProperties[0] = game.i18n.localize("PrimePsionics.ActionRPAK");
+    const consume =
+      context.system.consume.type === "flags"
+        ? { pp: game.i18n.localize("PrimePsionics.PP") }
+        : {};
 
-        const consume = context.system.consume.type === "flags" ? {pp: game.i18n.localize("PrimePsionics.PP")} : {};
+    context.powerScalingModes = CONFIG.PSIONICS.powerScalingModes;
 
-        context.powerScalingModes = CONFIG.PSIONICS.powerScalingModes;
+    const consumption = context.system.consume;
+    if (context.system.usesPP) {
+      if (context.system.labels.pp) {
+        const ppLabel = ppText(consumption.amount);
+        context.system.labels.pp = ppLabel;
+        context.itemStatus = ppLabel;
+      }
+    } else delete context.system.labels.pp;
+    foundry.utils.mergeObject(context, {
+      labels: context.system.labels,
+      abilityConsumptionTargets: consume,
+    });
 
-        const consumption = context.system.consume;
-        if (usesPP(consumption)){
-            if (context.system.labels.pp) {
-                const ppLabel = ppText(consumption.amount);
-                context.system.labels.pp = ppLabel;
-                context.itemStatus = ppLabel;
-            }
-        }
-        else delete context.system.labels.pp;
-        foundry.utils.mergeObject(context, {
-            labels: context.system.labels,
-            abilityConsumptionTargets: consume
-        });
-
-        return context;
-    }
+    return context;
+  }
 }
 
 const typePower = "prime-psionics.power";
+const moduleName = "prime-psionics";
 
 Hooks.once("init", () => {
   foundry.utils.mergeObject(CONFIG, PPCONFIG);
 
   Object.assign(CONFIG.Item.dataModels, {
-    "prime-psionics.power": PowerData,
+    [typePower]: PowerData,
   });
 
   dnd5e.utils.preLocalize("spellcastingTypes.psionics.progression", {
@@ -356,7 +423,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     };
 
     powers.forEach((power) => {
-      if (usesPP(power.system.consume))
+      if (power.system.usesPP)
         power.system.labels.pp = ppText(power.system.consume.amount);
       foundry.utils.mergeObject(power, {
         labels: power.system.labels,
@@ -397,12 +464,12 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     const template = "systems/dnd5e/templates/actors/parts/actor-spellbook.hbs";
     renderTemplate(template, context).then((partial) => {
       spellList.html(partial);
-      let pp = app.actor.getFlag("prime-psionics", "pp");
+      let pp = app.actor.getFlag(moduleName, "pp");
       if (pp) {
         const ppContext = {
           pp: pp.value,
           ppMax: pp.max,
-          limit: app.actor.getFlag("prime-psionics", "manifestLimit"),
+          limit: app.actor.getFlag(moduleName, "manifestLimit"),
         };
         renderTemplate(
           `/modules/prime-psionics/templates/pp-partial.hbs`,
@@ -446,13 +513,13 @@ Hooks.on(
       },
     };
     if (actor === undefined) return;
-    const pp = actor.getFlag("prime-psionics", "pp");
+    const pp = actor.getFlag(moduleName, "pp");
     if (pp === undefined)
       updates.pp.value = CONFIG.PSIONICS.ppProgression[progression.psionics];
     else if (typeof pp === "number") updates.pp.value = pp; // migration
-    const flags = actor.flags["prime-psionics"];
+    const flags = actor.flags[moduleName];
     if (flags) foundry.utils.mergeObject(flags, updates);
-    else actor.flags["prime-psionics"] = updates;
+    else actor.flags[moduleName] = updates;
   }
 );
 
@@ -463,14 +530,23 @@ Hooks.on(
  */
 
 Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
-  if (!usesPP(dialog.item.system.consume)) return;
+  if (!dialog.item.system.usesPP) return;
 
-  const content = game.i18n.format("PrimePsionics.PPManifest", {
-    limit: dialog.item.parent.getFlag("prime-psionics", "manifestLimit"),
+  const limit = game.i18n.format("PrimePsionics.ManifestLimit", {
+    limit: dialog.item.parent.getFlag(moduleName, "manifestLimit"),
   });
   const input = `<input type=number class="psi-points" name="ppSpend" value="${dialog.item.system.consume.amount}" min="${dialog.item.system.consume.amount}">`;
 
-  html.find("#ability-use-form").append("<div>" + content + input + "</div>");
+  html.find(".notes").text(limit);
+
+  html
+    .find("#ability-use-form")
+    .append(
+      "<div>" +
+        game.i18n.localize("PrimePsionics.PPManifest") +
+        input +
+        "</div>"
+    );
   html.height(html.height() + 10);
   html.find("input[name='consumeResource']").parents(".form-group").remove();
 });
@@ -483,7 +559,7 @@ Hooks.on("dnd5e.preItemUsageConsumption", (item, config, options) => {
 Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
   if (!usesPP(item.system.consume)) return;
   options.ppSpend = config.ppSpend;
-  const currentPP = item.parent.getFlag("prime-psionics", "pp")["value"];
+  const currentPP = item.parent.getFlag(moduleName, "pp")["value"];
   const newPP = currentPP - config.ppSpend;
   if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp.value"] = newPP;
   else {
@@ -495,16 +571,17 @@ Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
 Hooks.on("dnd5e.preDisplayCard", (item, chatData, options) => {
   if (!usesPP(item.system.consume)) return;
   chatData.content = chatData.content.replace(
-    "PrimePsionics.PP",
+    item.system.labels.pp,
     ppText(options.ppSpend)
   );
-  chatData.flags["prime-psionics"] = { ppSpend: options.ppSpend };
+  chatData.flags[moduleName] = { ppSpend: options.ppSpend };
 });
 
 Hooks.on("renderChatMessage", (app, html, context) => {
-  const ppSpend = app.getFlag("prime-psionics", "ppSpend");
+  const ppSpend = app.getFlag(moduleName, "ppSpend");
   if (ppSpend === undefined) return;
-  html.find("button[data-action='damage']")[0].dataset["ppspend"] = ppSpend;
+  const damage = html.find("button[data-action='damage']");
+  if (damage.length) damage[0].dataset["ppspend"] = ppSpend;
 });
 
 /**
@@ -529,13 +606,16 @@ Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
       rollConfig.data
     );
   } else if (
-    item.system.scaling.mode === "intensify" &&
+    Object.keys(CONFIG.PSIONICS.scaling).includes(item.system.scaling.mode) &&
     item.system.scaling.formula
   ) {
     const ppSpend = Number(rollConfig.event.target.dataset["ppspend"]);
     if (ppSpend === NaN) return;
     const minPP = item.system.consume.amount;
-    const intensify = Math.max(0, ppSpend - minPP);
+    const intensify = Math.floor(
+      Math.max(0, ppSpend - minPP) /
+        CONFIG.PSIONICS.scaling[item.system.scaling.mode]
+    );
     if (intensify === 0) return;
     scaleDamage(
       rollConfig.parts,
@@ -587,10 +667,9 @@ function scaleDamage(parts, scaling, times, rollData) {
 
 Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
   if (!result.longRest) return true;
-  result.updateData["flags.prime-psionics.pp.value"] = actor.getFlag(
-    "prime-psionics",
-    "pp"
-  )["max"];
+  const pp = actor.getFlag(moduleName, "pp");
+  if (!pp) return;
+  result.updateData["flags.prime-psionics.pp.value"] = pp.max;
 });
 
 /**
