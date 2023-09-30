@@ -39,6 +39,18 @@ PPCONFIG.PSIONICS.powerScalingModes = {
   none: "PrimePsionics.PowerNone",
   talent: "PrimePsionics.Talent",
   intensify: "PrimePsionics.Intensify",
+  intensify2: "PrimePsionics.Intensify2",
+  intensify3: "PrimePsionics.Intensify3",
+};
+
+/**
+ * Intensify Ratios
+ * @enum {number}
+ */
+PPCONFIG.PSIONICS.scaling = {
+  intensify: 1,
+  intensify2: 2,
+  intensify3: 3,
 };
 
 /**
@@ -594,13 +606,16 @@ Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
       rollConfig.data
     );
   } else if (
-    item.system.scaling.mode === "intensify" &&
+    Object.keys(CONFIG.PSIONICS.scaling).includes(item.system.scaling.mode) &&
     item.system.scaling.formula
   ) {
     const ppSpend = Number(rollConfig.event.target.dataset["ppspend"]);
     if (ppSpend === NaN) return;
     const minPP = item.system.consume.amount;
-    const intensify = Math.max(0, ppSpend - minPP);
+    const intensify = Math.floor(
+      Math.max(0, ppSpend - minPP) /
+        CONFIG.PSIONICS.scaling[item.system.scaling.mode]
+    );
     if (intensify === 0) return;
     scaleDamage(
       rollConfig.parts,

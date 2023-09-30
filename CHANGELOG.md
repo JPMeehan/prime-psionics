@@ -2,6 +2,7 @@
 
 - Refactored number of functions. by **@jpmeehan5**
 - Fixed powers not showing how many points had been spent on them. by **@jpmeehan5**
+- Added "Intensify (2)" and "Intensify (3)" option for powers that scale per 2 or 3 pp spent on them. (#17) by **jpmeehan5**
 
 # 1.0.1
 

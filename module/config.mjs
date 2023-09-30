@@ -39,6 +39,18 @@ PPCONFIG.PSIONICS.powerScalingModes = {
   none: "PrimePsionics.PowerNone",
   talent: "PrimePsionics.Talent",
   intensify: "PrimePsionics.Intensify",
+  intensify2: "PrimePsionics.Intensify2",
+  intensify3: "PrimePsionics.Intensify3",
+};
+
+/**
+ * Intensify Ratios
+ * @enum {number}
+ */
+PPCONFIG.PSIONICS.scaling = {
+  intensify: 1,
+  intensify2: 2,
+  intensify3: 3,
 };
 
 /**
