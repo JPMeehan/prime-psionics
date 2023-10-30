@@ -38,5 +38,6 @@
   "PrimePsionics.ManifestLimit": "Your Manifest Limit is {limit}",
   "PrimePsionics.TooManyPP": "You don't have that many Psi Points available!",
   "PrimePsionics.Manifest": "Manifest Power",
+  "PrimePsionics.Sheets.Power": "Default Power Sheet",
   "TYPES.Item.prime-psionics.power": "Power"
 }

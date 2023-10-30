@@ -20,6 +20,7 @@ Hooks.once("init", () => {
   Items.registerSheet("power", PowerSheet, {
     types: [typePower],
     makeDefault: true,
+    label: "PrimePsionics.Sheets.Power",
   });
 });
 

@@ -335,6 +335,7 @@ Hooks.once("init", () => {
   Items.registerSheet("power", PowerSheet, {
     types: [typePower],
     makeDefault: true,
+    label: "PrimePsionics.Sheets.Power",
   });
 });
 
@@ -529,7 +530,6 @@ Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
     notes[0].innerHTML += `<br>${limit}`;
     html.height(html.height() + 10);
   } else notes.text(limit);
-  console.log(notes);
 
   html
     .find("#ability-use-form")
