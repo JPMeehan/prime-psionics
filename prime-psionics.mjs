@@ -64,6 +64,28 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     const spellbook = context.spellbook;
     const useLabels = { "-20": "-", "-10": "-", 0: "&infin;" };
     const sections = { atwill: -20, innate: -10, pact: 0.5 };
+    const cantripOffset =
+      !!spellbook.find((s) => s?.order === sections.atwill) +
+      !!spellbook.find((s) => s?.order === sections.innate);
+    const levelOffset =
+      cantripOffset + !!spellbook.find((s) => s?.order === sections.pact);
+
+    const emptyTen = Array.from({ length: 10 });
+    if (!!spellbook.length) {
+      // Resolving #5 - bad order for mixed psionics + spellcasting if have spells > spell level.
+      const manifestLevels = emptyTen.map((e, i) =>
+        spellbook.findIndex((s) => s?.order === i)
+      );
+      for (const index in manifestLevels) {
+        const i = Number(index);
+        if (i === 0 && manifestLevels[i] === -1) {
+          // Cantrip special case
+          spellbook.splice(cantripOffset, 0, undefined);
+        } else if (manifestLevels[i] !== i + levelOffset) {
+          spellbook.splice(i + levelOffset, 0, undefined);
+        }
+      }
+    }
 
     const registerSection = (
       sl,
@@ -105,26 +127,13 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
         CONFIG.DND5E.spellPreparationModes.always;
       context.itemContext[power.id].toggleClass = "fixed";
 
-      const mode = "always";
-      let p = power.system.level;
+      const p = power.system.level;
+      // ? power.system.level + levelOffset
+      // : power.system.level + cantripOffset;
       const pl = `spell${p}`;
 
-      if (mode in sections) {
-        p = sections[mode];
-        if (!spellbook[p]) {
-          const l = levels[mode] || {};
-          const config = CONFIG.DND5E.spellPreparationModes[mode];
-          registerSection(mode, p, config, {
-            prepMode: mode,
-            value: l.value,
-            max: l.max,
-            override: l.override,
-          });
-        }
-      }
-
       // Known bug: This breaks if there's a mix of spells and powers WITHOUT spellcaster levels
-      else if (!spellbook[p]) {
+      if (!spellbook[p]) {
         registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {
           levels: levels[pl],
         });
@@ -133,6 +142,9 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       // Add the power to the relevant heading
       spellbook[p].spells.push(power);
     });
+    for (const i in spellbook) {
+      if (spellbook[i] === undefined) delete spellbook[i];
+    }
     const spellList = html.find(".spellbook");
     const template = "systems/dnd5e/templates/actors/parts/actor-spellbook.hbs";
     renderTemplate(template, context).then((partial) => {
