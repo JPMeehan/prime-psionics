@@ -121,7 +121,6 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     };
 
     powers.forEach((power) => {
-      console.log(spellbook);
       if (power.system.usesPP)
         power.system.labels.pp = ppText(power.system.consume.amount);
       foundry.utils.mergeObject(power, {
