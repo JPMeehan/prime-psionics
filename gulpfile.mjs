@@ -4,6 +4,8 @@ import gulpSass from "gulp-sass";
 import concat from "gulp-concat";
 import { rollup } from "rollup";
 
+const sass = gulpSass(dartSass);
+
 function compileSCSS() {
   return gulp
     .src("./styles/**/*.scss")
