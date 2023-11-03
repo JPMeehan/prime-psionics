@@ -69,19 +69,21 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       !!spellbook.find((s) => s?.order === sections.innate);
     const levelOffset =
       cantripOffset + !!spellbook.find((s) => s?.order === sections.pact);
-
     const emptyTen = Array.from({ length: 10 });
     if (!!spellbook.length) {
       // Resolving #5 - bad order for mixed psionics + spellcasting if have spells > spell level.
       const manifestLevels = emptyTen.map((e, i) =>
         spellbook.findIndex((s) => s?.order === i)
       );
+      let inserted = 0;
       for (const index in manifestLevels) {
         const i = Number(index);
         if (i === 0 && manifestLevels[i] === -1) {
+          inserted += 1;
           // Cantrip special case
           spellbook.splice(cantripOffset, 0, undefined);
-        } else if (manifestLevels[i] !== i + levelOffset) {
+        } else if (manifestLevels[i] + inserted !== i + levelOffset) {
+          inserted += 1;
           spellbook.splice(i + levelOffset, 0, undefined);
         }
       }
@@ -89,27 +91,28 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
 
     const registerSection = (
       sl,
-      i,
+      p,
       label,
       { prepMode = "prepared", value, max, override } = {}
     ) => {
       const aeOverride = foundry.utils.hasProperty(
         context.actor.overrides,
-        `system.spells.spell${i}.override`
+        `system.spells.spell${p}.override`
       );
+      const i = p ? p + levelOffset : p + cantripOffset;
       spellbook[i] = {
-        order: i,
+        order: p,
         label: label,
-        usesSlots: i > 0,
+        usesSlots: p > 0,
         canCreate: owner,
-        canPrepare: context.actor.type === "character" && i >= 1,
+        canPrepare: context.actor.type === "character" && p >= 1,
         spells: [],
-        uses: useLabels[i] || value || 0,
-        slots: useLabels[i] || max || 0,
+        uses: useLabels[p] || value || 0,
+        slots: useLabels[p] || max || 0,
         override: override || 0,
         dataset: {
           type: "spell",
-          level: prepMode in sections ? 1 : i,
+          level: prepMode in sections ? 1 : p,
           "preparation.mode": prepMode,
         },
         prop: sl,
@@ -118,6 +121,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     };
 
     powers.forEach((power) => {
+      console.log(spellbook);
       if (power.system.usesPP)
         power.system.labels.pp = ppText(power.system.consume.amount);
       foundry.utils.mergeObject(power, {
@@ -128,19 +132,17 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       context.itemContext[power.id].toggleClass = "fixed";
 
       const p = power.system.level;
-      // ? power.system.level + levelOffset
-      // : power.system.level + cantripOffset;
       const pl = `spell${p}`;
-
+      const index = p ? p + levelOffset : p + cantripOffset;
       // Known bug: This breaks if there's a mix of spells and powers WITHOUT spellcaster levels
-      if (!spellbook[p]) {
+      if (!spellbook[index]) {
         registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {
           levels: levels[pl],
         });
       }
 
       // Add the power to the relevant heading
-      spellbook[p].spells.push(power);
+      spellbook[index].spells.push(power);
     });
     for (const i in spellbook) {
       if (spellbook[i] === undefined) delete spellbook[i];
