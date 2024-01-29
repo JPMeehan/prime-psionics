@@ -1,3 +1,8 @@
+![](https://img.shields.io/badge/Foundry-v11-informational)
+![Latest Release Download Count](https://img.shields.io/github/downloads/JPMeehan/prime-psionics/latest/module.zip)
+![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fprime-psionics&colorB=4aa94a)
+
+
 # Prime Psionics
 An implementation of psionic powers in dnd5e via v11 module subtypes. Features include
 
