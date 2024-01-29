@@ -1,4 +1,4 @@
-const PPCONFIG = {
+const PP_CONFIG = {
   DND5E: {},
   PSIONICS: {},
 };
@@ -7,14 +7,14 @@ const PPCONFIG = {
  * Types of components that can be required when manifesting a power.
  * @enum {object}
  */
-PPCONFIG.PSIONICS.powerComponents = {
+PP_CONFIG.PSIONICS.powerComponents = {
   auditory: {
-    label: "PrimePsionics.ComponentAuditory",
-    abbr: "PrimePsionics.ComponentAuditoryAbbr",
+    label: 'PrimePsionics.ComponentAuditory',
+    abbr: 'PrimePsionics.ComponentAuditoryAbbr',
   },
   observable: {
-    label: "PrimePsionics.ComponentObservable",
-    abbr: "PrimePsionics.ComponentObservableAbbr",
+    label: 'PrimePsionics.ComponentObservable',
+    abbr: 'PrimePsionics.ComponentObservableAbbr',
   },
 };
 
@@ -22,32 +22,32 @@ PPCONFIG.PSIONICS.powerComponents = {
  * Disciplines to which a power can belong.
  * @enum {string}
  */
-PPCONFIG.PSIONICS.disciplines = {
-  cla: "PrimePsionics.DiscClair",
-  mtc: "PrimePsionics.DiscMTC",
-  psk: "PrimePsionics.DiscKinesis",
-  psm: "PrimePsionics.DiscMetabolism",
-  pst: "PrimePsionics.DiscPort",
-  tlp: "PrimePsionics.DiscTelepathy",
+PP_CONFIG.PSIONICS.disciplines = {
+  cla: 'PrimePsionics.DiscClair',
+  mtc: 'PrimePsionics.DiscMTC',
+  psk: 'PrimePsionics.DiscKinesis',
+  psm: 'PrimePsionics.DiscMetabolism',
+  pst: 'PrimePsionics.DiscPort',
+  tlp: 'PrimePsionics.DiscTelepathy',
 };
 
 /**
  * The available choices for how spell damage scaling may be computed.
  * @enum {string}
  */
-PPCONFIG.PSIONICS.powerScalingModes = {
-  none: "PrimePsionics.PowerNone",
-  talent: "PrimePsionics.Talent",
-  intensify: "PrimePsionics.Intensify",
-  intensify2: "PrimePsionics.Intensify2",
-  intensify3: "PrimePsionics.Intensify3",
+PP_CONFIG.PSIONICS.powerScalingModes = {
+  none: 'PrimePsionics.PowerNone',
+  talent: 'PrimePsionics.Talent',
+  intensify: 'PrimePsionics.Intensify',
+  intensify2: 'PrimePsionics.Intensify2',
+  intensify3: 'PrimePsionics.Intensify3',
 };
 
 /**
  * Intensify Ratios
  * @enum {number}
  */
-PPCONFIG.PSIONICS.scaling = {
+PP_CONFIG.PSIONICS.scaling = {
   intensify: 1,
   intensify2: 2,
   intensify3: 3,
@@ -58,42 +58,42 @@ PPCONFIG.PSIONICS.scaling = {
  * a[x] returns max power points at effective manifester level x
  */
 
-PPCONFIG.PSIONICS.ppProgression = [
+PP_CONFIG.PSIONICS.ppProgression = [
   0, 4, 6, 16, 20, 32, 38, 46, 54, 72, 82, 94, 94, 108, 108, 124, 124, 142, 152,
   164, 178,
 ];
 
-PPCONFIG.DND5E = {
+PP_CONFIG.DND5E = {
   specialTimePeriods: {
-    foc: "PrimePsionics.Focus",
+    foc: 'PrimePsionics.Focus',
   },
   spellProgression: {
-    fullp: "PrimePsionics.FullP",
-    halfp: "PrimePsionics.HalfP",
-    thirdp: "PrimePsionics.ThirdP",
+    fullp: 'PrimePsionics.FullP',
+    halfp: 'PrimePsionics.HalfP',
+    thirdp: 'PrimePsionics.ThirdP',
   },
   spellcastingTypes: {
     psionics: {
-      label: "PrimePsionics.Psionics",
+      label: 'PrimePsionics.Psionics',
       progression: {
         fullp: {
-          label: "PrimePsionics.FullP",
+          label: 'PrimePsionics.FullP',
           divisor: 1,
         },
         halfp: {
-          label: "PrimePsionics.HalfP",
+          label: 'PrimePsionics.HalfP',
           divisor: 2,
         },
         thirdp: {
-          label: "PrimePsionics.ThirdP",
+          label: 'PrimePsionics.ThirdP',
           divisor: 3,
         },
       },
     },
   },
   abilityConsumptionTypes: {
-    flags: "PrimePsionics.Flags",
+    flags: 'PrimePsionics.Flags',
   },
 };
 
-export default PPCONFIG;
+export default PP_CONFIG;

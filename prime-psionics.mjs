@@ -1,26 +1,26 @@
-import PPCONFIG from "./module/config.mjs";
-import PowerData from "./module/powerData.mjs";
-import PowerSheet from "./module/powerSheet.mjs";
-import { ppText } from "./module/utils.mjs";
+import PP_CONFIG from './module/config.mjs';
+import PowerData from './module/powerData.mjs';
+import PowerSheet from './module/powerSheet.mjs';
+import { ppText } from './module/utils.mjs';
 
-const typePower = "prime-psionics.power";
-const moduleID = "prime-psionics";
+const typePower = 'prime-psionics.power';
+const moduleID = 'prime-psionics';
 
-Hooks.once("init", () => {
-  foundry.utils.mergeObject(CONFIG, PPCONFIG);
+Hooks.once('init', () => {
+  foundry.utils.mergeObject(CONFIG, PP_CONFIG);
 
   Object.assign(CONFIG.Item.dataModels, {
     [typePower]: PowerData,
   });
 
-  dnd5e.utils.preLocalize("spellcastingTypes.psionics.progression", {
-    key: "label",
+  dnd5e.utils.preLocalize('spellcastingTypes.psionics.progression', {
+    key: 'label',
   });
 
-  Items.registerSheet("power", PowerSheet, {
+  Items.registerSheet(moduleID, PowerSheet, {
     types: [typePower],
     makeDefault: true,
-    label: "PrimePsionics.Sheets.Power",
+    label: 'PrimePsionics.Sheets.Power',
   });
 });
 
@@ -30,18 +30,18 @@ Hooks.once("init", () => {
  *
  */
 
-Hooks.once("i18nInit", () => {
+Hooks.once('i18nInit', () => {
   _localizeHelper(CONFIG.PSIONICS);
 });
 
 function _localizeHelper(object) {
   for (const [key, value] of Object.entries(object)) {
     switch (typeof value) {
-      case "string":
-        if (value.includes("PrimePsionics"))
+      case 'string':
+        if (value.includes('PrimePsionics'))
           object[key] = game.i18n.localize(value);
         break;
-      case "object":
+      case 'object':
         _localizeHelper(object[key]);
         break;
     }
@@ -54,7 +54,7 @@ function _localizeHelper(object) {
  *
  */
 
-Hooks.on("renderActorSheet5e", (app, html, context) => {
+Hooks.on('renderActorSheet5e', (app, html, context) => {
   if (!game.user.isGM && app.actor.limited) return true;
   if (context.isCharacter || context.isNPC) {
     const owner = context.actor.isOwner;
@@ -62,7 +62,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     powers = app._filterItems(powers, app._filters.spellbook);
     const levels = context.system.spells;
     const spellbook = context.spellbook;
-    const useLabels = { "-20": "-", "-10": "-", 0: "&infin;" };
+    const useLabels = { '-20': '-', '-10': '-', 0: '&infin;' };
     const sections = { atwill: -20, innate: -10, pact: 0.5 };
     const cantripOffset =
       !!spellbook.find((s) => s?.order === sections.atwill) +
@@ -93,7 +93,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       sl,
       p,
       label,
-      { prepMode = "prepared", value, max, override } = {}
+      { prepMode = 'prepared', value, max, override } = {}
     ) => {
       const aeOverride = foundry.utils.hasProperty(
         context.actor.overrides,
@@ -105,15 +105,15 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
         label: label,
         usesSlots: p > 0,
         canCreate: owner,
-        canPrepare: context.actor.type === "character" && p >= 1,
+        canPrepare: context.actor.type === 'character' && p >= 1,
         spells: [],
         uses: useLabels[p] || value || 0,
         slots: useLabels[p] || max || 0,
         override: override || 0,
         dataset: {
-          type: "spell",
+          type: 'spell',
           level: prepMode in sections ? 1 : p,
-          "preparation.mode": prepMode,
+          'preparation.mode': prepMode,
         },
         prop: sl,
         editable: context.editable && !aeOverride,
@@ -128,7 +128,7 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
       });
       context.itemContext[power.id].toggleTitle =
         CONFIG.DND5E.spellPreparationModes.always;
-      context.itemContext[power.id].toggleClass = "fixed";
+      context.itemContext[power.id].toggleClass = 'fixed';
 
       const p = power.system.level;
       const pl = `spell${p}`;
@@ -146,22 +146,22 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     for (const i in spellbook) {
       if (spellbook[i] === undefined) delete spellbook[i];
     }
-    const spellList = html.find(".spellbook");
-    const template = "systems/dnd5e/templates/actors/parts/actor-spellbook.hbs";
+    const spellList = html.find('.spellbook');
+    const template = 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
     renderTemplate(template, context).then((partial) => {
       spellList.html(partial);
-      let pp = app.actor.getFlag(moduleID, "pp");
+      let pp = app.actor.getFlag(moduleID, 'pp');
       if (pp) {
         const ppContext = {
           pp: pp.value,
           ppMax: pp.max,
-          limit: app.actor.getFlag(moduleID, "manifestLimit"),
+          limit: app.actor.getFlag(moduleID, 'manifestLimit'),
         };
         renderTemplate(
           `/modules/prime-psionics/templates/pp-partial.hbs`,
           ppContext
         ).then((powerHeader) => {
-          spellList.find(".inventory-list").prepend(powerHeader);
+          spellList.find('.inventory-list').prepend(powerHeader);
         });
       }
       app.activateListeners(spellList);
@@ -176,9 +176,9 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
  */
 
 Hooks.on(
-  "dnd5e.computePsionicsProgression",
+  'dnd5e.computePsionicsProgression',
   (progression, actor, cls, spellcasting, count) => {
-    if (!progression.hasOwnProperty("psionics")) progression.psionics = 0;
+    if (!progression.hasOwnProperty('psionics')) progression.psionics = 0;
     const prog =
       CONFIG.DND5E.spellcastingTypes.psionics.progression[
         spellcasting.progression
@@ -199,10 +199,10 @@ Hooks.on(
       },
     };
     if (actor === undefined) return;
-    const pp = actor.getFlag(moduleID, "pp");
+    const pp = actor.getFlag(moduleID, 'pp');
     if (pp === undefined)
       updates.pp.value = CONFIG.PSIONICS.ppProgression[progression.psionics];
-    else if (typeof pp === "number") updates.pp.value = pp; // migration
+    else if (typeof pp === 'number') updates.pp.value = pp; // migration
     const flags = actor.flags[moduleID];
     if (flags) foundry.utils.mergeObject(flags, updates);
     else actor.flags[moduleID] = updates;
@@ -215,50 +215,50 @@ Hooks.on(
  *
  */
 
-Hooks.on("renderAbilityUseDialog", (dialog, html, data) => {
+Hooks.on('renderAbilityUseDialog', (dialog, html, data) => {
   if (!dialog.item.system.usesPP) return;
 
-  const limit = game.i18n.format("PrimePsionics.ManifestLimit", {
-    limit: dialog.item.parent.getFlag(moduleID, "manifestLimit"),
+  const limit = game.i18n.format('PrimePsionics.ManifestLimit', {
+    limit: dialog.item.parent.getFlag(moduleID, 'manifestLimit'),
   });
   const input = `<input type=number class="psi-points" name="ppSpend" value="${dialog.item.system.consume.amount}" min="${dialog.item.system.consume.amount}">`;
 
-  const notes = html.find(".notes");
+  const notes = html.find('.notes');
   if (notes[0].innerHTML) {
     notes[0].innerHTML += `<br>${limit}`;
     html.height(html.height() + 10);
   } else notes.text(limit);
 
   html
-    .find("#ability-use-form")
+    .find('#ability-use-form')
     .append(
-      "<div>" +
-        game.i18n.localize("PrimePsionics.PPManifest") +
+      '<div>' +
+        game.i18n.localize('PrimePsionics.PPManifest') +
         input +
-        "</div>"
+        '</div>'
     );
   html.height(html.height() + 10);
-  html.find("input[name='consumeResource']").parents(".form-group").remove();
+  html.find("input[name='consumeResource']").parents('.form-group').remove();
 });
 
-Hooks.on("dnd5e.preItemUsageConsumption", (item, config, options) => {
+Hooks.on('dnd5e.preItemUsageConsumption', (item, config, options) => {
   if (!item.system.usesPP) return;
   config.consumeResource = false;
 });
 
-Hooks.on("dnd5e.itemUsageConsumption", (item, config, options, usage) => {
+Hooks.on('dnd5e.itemUsageConsumption', (item, config, options, usage) => {
   if (!item.system.usesPP) return;
   options.ppSpend = config.ppSpend;
-  const currentPP = item.parent.getFlag(moduleID, "pp")["value"];
+  const currentPP = item.parent.getFlag(moduleID, 'pp')['value'];
   const newPP = currentPP - config.ppSpend;
-  if (newPP >= 0) usage.actorUpdates["flags.prime-psionics.pp.value"] = newPP;
+  if (newPP >= 0) usage.actorUpdates['flags.prime-psionics.pp.value'] = newPP;
   else {
-    ui.notifications.warn(game.i18n.localize("PrimePsionics.TooManyPP"));
+    ui.notifications.warn(game.i18n.localize('PrimePsionics.TooManyPP'));
     return false;
   }
 });
 
-Hooks.on("dnd5e.preDisplayCard", (item, chatData, options) => {
+Hooks.on('dnd5e.preDisplayCard', (item, chatData, options) => {
   if (!item.system.usesPP) return;
   chatData.content = chatData.content.replace(
     item.system.labels.pp,
@@ -267,31 +267,31 @@ Hooks.on("dnd5e.preDisplayCard", (item, chatData, options) => {
   chatData.flags[moduleID] = { ppSpend: options.ppSpend };
 });
 
-Hooks.on("renderChatMessage", (app, html, context) => {
-  const ppSpend = app.getFlag(moduleID, "ppSpend");
+Hooks.on('renderChatMessage', (app, html, context) => {
+  const ppSpend = app.getFlag(moduleID, 'ppSpend');
   if (ppSpend === undefined) return;
   const damage = html.find("button[data-action='damage']");
-  if (damage.length) damage[0].dataset["ppspend"] = ppSpend;
+  if (damage.length) damage[0].dataset['ppspend'] = ppSpend;
 });
 
 /**
  * SCALING
  */
 
-Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
+Hooks.on('dnd5e.preRollDamage', (item, rollConfig) => {
   if (item.type !== typePower) return;
-  if (item.system.scaling.mode === "talent") {
+  if (item.system.scaling.mode === 'talent') {
     let level;
-    if (rollConfig.actor.type === "character")
+    if (rollConfig.actor.type === 'character')
       level = rollConfig.actor.system.details.level;
-    else if (item.system.preparation.mode === "innate")
+    else if (item.system.preparation.mode === 'innate')
       level = Math.ceil(rollConfig.actor.system.details.cr);
     else level = rollConfig.actor.system.details.spellLevel;
     const add = Math.floor((level + 1) / 6);
     if (add === 0) return;
     scaleDamage(
       rollConfig.parts,
-      item.system.scaling.mode.formula || rollConfig.parts.join(" + "),
+      item.system.scaling.mode.formula || rollConfig.parts.join(' + '),
       add,
       rollConfig.data
     );
@@ -299,7 +299,7 @@ Hooks.on("dnd5e.preRollDamage", (item, rollConfig) => {
     Object.keys(CONFIG.PSIONICS.scaling).includes(item.system.scaling.mode) &&
     item.system.scaling.formula
   ) {
-    const ppSpend = Number(rollConfig.event.target.dataset["ppspend"]);
+    const ppSpend = Number(rollConfig.event.target.dataset['ppspend']);
     if (ppSpend === NaN) return;
     const minPP = item.system.consume.amount;
     const intensify = Math.floor(
@@ -355,11 +355,11 @@ function scaleDamage(parts, scaling, times, rollData) {
  *
  */
 
-Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
+Hooks.on('dnd5e.preRestCompleted', (actor, result) => {
   if (!result.longRest) return true;
-  const pp = actor.getFlag(moduleID, "pp");
+  const pp = actor.getFlag(moduleID, 'pp');
   if (!pp) return;
-  result.updateData["flags.prime-psionics.pp.value"] = pp.max;
+  result.updateData['flags.prime-psionics.pp.value'] = pp.max;
 });
 
 /**
@@ -369,16 +369,16 @@ Hooks.on("dnd5e.preRestCompleted", (actor, result) => {
  */
 
 Hooks.on(
-  "dnd5e.buildPsionicsSpellcastingTable",
+  'dnd5e.buildPsionicsSpellcastingTable',
   (table, item, spellcasting) => {
     table.headers = [
       [
-        { content: game.i18n.localize("PrimePsionics.PP") },
-        { content: game.i18n.localize("PrimePsionics.PsiLimit") },
+        { content: game.i18n.localize('PrimePsionics.PP') },
+        { content: game.i18n.localize('PrimePsionics.PsiLimit') },
       ],
     ];
 
-    table.cols = [{ class: "spellcasting", span: 2 }];
+    table.cols = [{ class: 'spellcasting', span: 2 }];
 
     for (const level of Array.fromRange(CONFIG.DND5E.maxLevel, 1)) {
       const progression = { psionics: 0 };
@@ -389,13 +389,13 @@ Hooks.on(
         { spellcasting }
       );
 
-      const pp = CONFIG.PSIONICS.ppProgression[progression.psionics] || "—";
+      const pp = CONFIG.PSIONICS.ppProgression[progression.psionics] || '—';
       const limit =
-        Math.ceil(Math.min(progression.psionics, 10) / 2) * 2 || "—";
+        Math.ceil(Math.min(progression.psionics, 10) / 2) * 2 || '—';
 
       table.rows.push([
-        { class: "spell-slots", content: `${pp}` },
-        { class: "spell-slots", content: `${limit}` },
+        { class: 'spell-slots', content: `${pp}` },
+        { class: 'spell-slots', content: `${limit}` },
       ]);
     }
   }

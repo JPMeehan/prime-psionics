@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Adjusted power sheet namespace to use the module's name
+
 ## 1.0.3
 
 - Added proper label to the power item sheet (#24)
