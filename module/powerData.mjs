@@ -106,7 +106,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
           power: this.augmenting,
         })
       : '';
-    this.labels.components = Object.entries(this.components).reduce(
+    this.labels.components = Object.entries(this.properties).reduce(
       (obj, [c, active]) => {
         const config = attributes[c];
         if (!config || active !== true) return obj;
@@ -128,7 +128,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
    * @type {string[]}
    */
   get chatProperties() {
-    let properties = [this.parent.labels.level];
+    let properties = [this.labels.level];
     if (this.labels.pp) properties.push(this.labels.pp);
     if (this.labels.aug) properties.push(this.labels.aug);
 
