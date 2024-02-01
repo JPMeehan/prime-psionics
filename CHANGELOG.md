@@ -6,7 +6,7 @@
   - Updated `components` to the new generic `properties` field to match base system spells. There is an automatic migration included as well as a getter for compatibility.
   - Powers display correctly on both the new and legacy character sheets
 - Added new Source field handling to the Power sheet.
-  - Added "Psion's Primer" as a default fill in for the book field
+  - Added "Psion's Primer" as a default fill in for the `book` field
 - Added new icons to match the new dnd5e aesthetic, courtesy of game-icons.net
 - Adjusted power sheet namespace to use the module's name
 
