@@ -123,7 +123,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
       this.level != 0
         ? CONFIG.DND5E.spellLevels[this.level]
         : game.i18n.localize('PrimePsionics.Talent');
-    this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline].label;
+    this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline]?.label;
     this.labels.pp = this.usesPP ? 'PrimePsionics.PP' : '';
     this.labels.aug = this.augmenting
       ? game.i18n.format('PrimePsionics.AugmentPower', {
@@ -194,7 +194,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
 
   /**
    * Provide a backwards compatible getter for accessing `components`.
-   * @deprecated since v2.5.
+   * @deprecated since v1.1.
    * @type {object}
    */
   get components() {

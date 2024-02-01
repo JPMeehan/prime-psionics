@@ -1,4 +1,4 @@
-import { ppText } from "./utils.mjs";
+import { ppText } from './utils.mjs';
 
 export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
   get template() {
@@ -12,18 +12,18 @@ export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
       ...CONFIG.PSIONICS.powerComponents,
       ...CONFIG.DND5E.spellTags,
     };
-    if (context.system.actionType === "msak")
+    if (context.system.actionType === 'msak')
       context.itemProperties[0] = game.i18n.localize(
-        "PrimePsionics.ActionMPAK"
+        'PrimePsionics.ActionMPAK'
       );
-    if (context.system.actionType === "rsak")
+    if (context.system.actionType === 'rsak')
       context.itemProperties[0] = game.i18n.localize(
-        "PrimePsionics.ActionRPAK"
+        'PrimePsionics.ActionRPAK'
       );
 
     const consume =
-      context.system.consume.type === "flags"
-        ? { pp: game.i18n.localize("PrimePsionics.PP") }
+      context.system.consume.type === 'flags'
+        ? { pp: game.i18n.localize('PrimePsionics.PP') }
         : {};
 
     context.powerScalingModes = CONFIG.PSIONICS.powerScalingModes;

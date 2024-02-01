@@ -94,6 +94,23 @@ PP_CONFIG.PSIONICS.ppProgression = [
   164, 178,
 ];
 
+/**
+ * Valid spell levels.
+ * @enum {string}
+ */
+PP_CONFIG.PSIONICS.powerLevels = {
+  0: 'PrimePsionics.Talent',
+  1: 'DND5E.SpellLevel1',
+  2: 'DND5E.SpellLevel2',
+  3: 'DND5E.SpellLevel3',
+  4: 'DND5E.SpellLevel4',
+  5: 'DND5E.SpellLevel5',
+  6: 'DND5E.SpellLevel6',
+  7: 'DND5E.SpellLevel7',
+  8: 'DND5E.SpellLevel8',
+  9: 'DND5E.SpellLevel9',
+};
+
 PP_CONFIG.DND5E = {
   itemProperties: {
     auditory: {

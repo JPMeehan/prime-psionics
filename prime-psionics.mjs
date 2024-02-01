@@ -38,7 +38,7 @@ function _localizeHelper(object) {
   for (const [key, value] of Object.entries(object)) {
     switch (typeof value) {
       case 'string':
-        if (value.includes('PrimePsionics'))
+        if (value.startsWith('PrimePsionics') || value.startsWith('DND5E'))
           object[key] = game.i18n.localize(value);
         break;
       case 'object':

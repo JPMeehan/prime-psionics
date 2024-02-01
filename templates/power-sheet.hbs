@@ -50,7 +50,7 @@
                 <label>{{ localize "PrimePsionics.PowerLevel" }}</label>
                 <select name="system.level" data-dtype="Number">
                     {{#select system.level}}
-                    {{#each config.spellLevels as |name lvl|}}
+                    {{#each psionics.powerLevels as |name lvl|}}
                     <option value="{{lvl}}">{{name}}</option>
                     {{/each}}
                     {{/select}}
@@ -69,7 +69,7 @@
             <div class="form-group">
                 <label>{{ localize "PrimePsionics.PowerDiscipline" }}</label>
                 <select name="system.discipline">
-                    {{selectOptions psionics.disciplines selected=system.discipline blank=""}}
+                    {{selectOptions psionics.disciplines selected=system.discipline labelAttr="label" blank=""}}
                 </select>
             </div>
 
