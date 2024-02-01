@@ -338,7 +338,7 @@ Hooks.on('renderChatMessage', (app, html, context) => {
   const ppSpend = app.getFlag(moduleID, 'ppSpend');
   if (ppSpend === undefined) return;
   const damage = html.find("button[data-action='damage']");
-  if (damage.length) damage[0].dataset['ppspend'] = ppSpend;
+  if (damage.length) damage[0].dataset['ppSpend'] = ppSpend;
 });
 
 /**
@@ -347,6 +347,8 @@ Hooks.on('renderChatMessage', (app, html, context) => {
 
 Hooks.on('dnd5e.preRollDamage', (item, rollConfig) => {
   if (item.type !== typePower) return;
+  console.log(item, rollConfig);
+  const firstRoll = rollConfig.rollConfigs[0];
   if (item.system.scaling.mode === 'talent') {
     let level;
     if (rollConfig.actor.type === 'character')
@@ -356,8 +358,9 @@ Hooks.on('dnd5e.preRollDamage', (item, rollConfig) => {
     else level = rollConfig.actor.system.details.spellLevel;
     const add = Math.floor((level + 1) / 6);
     if (add === 0) return;
+
     scaleDamage(
-      rollConfig.parts,
+      firstRoll.parts,
       item.system.scaling.mode.formula || rollConfig.parts.join(' + '),
       add,
       rollConfig.data
@@ -366,7 +369,7 @@ Hooks.on('dnd5e.preRollDamage', (item, rollConfig) => {
     Object.keys(CONFIG.PSIONICS.scaling).includes(item.system.scaling.mode) &&
     item.system.scaling.formula
   ) {
-    const ppSpend = Number(rollConfig.event.target.dataset['ppspend']);
+    const ppSpend = Number(rollConfig.event.target.dataset['ppSpend']);
     if (ppSpend === NaN) return;
     const minPP = item.system.consume.amount;
     const intensify = Math.floor(
@@ -375,7 +378,7 @@ Hooks.on('dnd5e.preRollDamage', (item, rollConfig) => {
     );
     if (intensify === 0) return;
     scaleDamage(
-      rollConfig.parts,
+      firstRoll.parts,
       item.system.scaling.formula,
       intensify,
       rollConfig.data
