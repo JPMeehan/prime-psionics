@@ -12,7 +12,7 @@
  * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.
  */
-export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
+export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   dnd5e.dataModels.item.ItemDescriptionTemplate,
   dnd5e.dataModels.item.ActivatedEffectTemplate,
   dnd5e.dataModels.item.ActionTemplate
@@ -59,7 +59,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
   }
 
   async getCardData(enrichmentOptions = {}) {
-    // const context = await super.getCardData(enrichmentOptions);
+    const context = await super.getCardData(enrichmentOptions);
     context.isSpell = true;
     context.subtitle = [
       this.parent.labels.level,

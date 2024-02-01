@@ -201,8 +201,6 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
     renderTemplate(spellListTemplate, context).then((partial) => {
       spellList.html(partial);
 
-      console.log(spellList);
-
       if (newCharacterSheet) {
         const schoolSlots = spellList.find('.item-detail.item-school');
         /** @type {Array<string>} */
@@ -318,7 +316,7 @@ Hooks.on('dnd5e.preItemUsageConsumption', (item, config, options) => {
 Hooks.on('dnd5e.itemUsageConsumption', (item, config, options, usage) => {
   if (!item.system.usesPP) return;
   options.ppSpend = config.ppSpend;
-  const currentPP = item.parent.getFlag(moduleID, 'pp')['value'];
+  const currentPP = item.parent.getFlag(moduleID, 'pp')?.value ?? 0;
   const newPP = currentPP - config.ppSpend;
   if (newPP >= 0) usage.actorUpdates['flags.prime-psionics.pp.value'] = newPP;
   else {
