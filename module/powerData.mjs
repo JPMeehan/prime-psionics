@@ -58,6 +58,30 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
     });
   }
 
+  async getCardData(enrichmentOptions = {}) {
+    // const context = await super.getCardData(enrichmentOptions);
+    context.isSpell = true;
+    context.subtitle = [
+      this.parent.labels.level,
+      CONFIG.PSIONICS.disciplines[this.discipline].label,
+    ].filterJoin(' &bull; ');
+    return context;
+  }
+
+  /* -------------------------------------------- */
+
+  async getFavoriteData() {
+    return foundry.utils.mergeObject(await super.getFavoriteData(), {
+      subtitle: [
+        this.parent.labels.components.ao,
+        this.parent.labels.activation,
+      ],
+      modifier: this.parent.labels.modifier,
+      range: this.range,
+      save: this.save,
+    });
+  }
+
   /* -------------------------------------------- */
   /*  Migrations                                  */
   /* -------------------------------------------- */
