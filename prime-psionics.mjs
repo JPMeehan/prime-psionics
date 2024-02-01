@@ -56,7 +56,6 @@ function _localizeHelper(object) {
 
 Hooks.on('renderActorSheet5e', (app, html, context) => {
   if (!game.user.isGM && app.actor.limited) return true;
-  console.log(app, context);
   const newCharacterSheet = app.constructor.name === 'ActorSheet5eCharacter2';
   if (context.isCharacter || context.isNPC) {
     const owner = context.actor.isOwner;
@@ -128,9 +127,55 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       foundry.utils.mergeObject(power, {
         labels: power.system.labels,
       });
-      context.itemContext[power.id].toggleTitle =
-        CONFIG.DND5E.spellPreparationModes.always;
-      context.itemContext[power.id].toggleClass = 'fixed';
+
+      // Activation
+      const cost = power.system.activation?.cost;
+      const abbr = {
+        action: 'DND5E.ActionAbbr',
+        bonus: 'DND5E.BonusActionAbbr',
+        reaction: 'DND5E.ReactionAbbr',
+        minute: 'DND5E.TimeMinuteAbbr',
+        hour: 'DND5E.TimeHourAbbr',
+        day: 'DND5E.TimeDayAbbr',
+      }[power.system.activation.type];
+
+      const itemContext = newCharacterSheet
+        ? {
+            activation:
+              cost && abbr
+                ? `${cost}${game.i18n.localize(abbr)}`
+                : item.labels.activation,
+            preparation: { applicable: false },
+          }
+        : {
+            toggleTitle: CONFIG.DND5E.spellPreparationModes.always,
+            toggleClass: 'fixed',
+          };
+
+      if (newCharacterSheet) {
+        // Range
+        const units = power.system.range?.units;
+        if (units && units !== 'none') {
+          if (units in CONFIG.DND5E.movementUnits) {
+            itemContext.range = {
+              distance: true,
+              value: power.system.range.value,
+              unit: game.i18n.localize(`DND5E.Dist${units.capitalize()}Abbr`),
+            };
+          } else itemContext.range = { distance: false };
+        }
+
+        // To Hit
+        const toHit = parseInt(power.labels.modifier);
+        if (power.hasAttack && !isNaN(toHit)) {
+          itemContext.toHit = {
+            sign: Math.sign(toHit) < 0 ? '-' : '+',
+            abs: Math.abs(toHit),
+          };
+        }
+      }
+
+      foundry.utils.mergeObject(context.itemContext[power.id], itemContext);
 
       const p = power.system.level;
       const pl = `spell${p}`;

@@ -32,32 +32,32 @@ PP_CONFIG.PSIONICS.powerComponents = {
 PP_CONFIG.PSIONICS.disciplines = {
   cla: {
     label: 'PrimePsionics.DiscClair',
-    icon: 'modules/prime-psionics/assets/icons/.svg',
+    icon: 'modules/prime-psionics/assets/icons/clairvoyance.svg',
     fullKey: 'clairvoyance',
   },
   mtc: {
     label: 'PrimePsionics.DiscMTC',
-    icon: 'modules/prime-psionics/assets/icons/.svg',
+    icon: 'modules/prime-psionics/assets/icons/metacreativity.svg',
     fullKey: 'metacreativity',
   },
   psk: {
     label: 'PrimePsionics.DiscKinesis',
-    icon: 'modules/prime-psionics/assets/icons/.svg',
+    icon: 'modules/prime-psionics/assets/icons/psychokinesis.svg',
     fullKey: 'psychokinesis',
   },
   psm: {
     label: 'PrimePsionics.DiscMetabolism',
-    icon: 'modules/prime-psionics/assets/icons/.svg',
+    icon: 'modules/prime-psionics/assets/icons/psychometabolism.svg',
     fullKey: 'psychometabolism',
   },
   pst: {
     label: 'PrimePsionics.DiscPort',
-    icon: 'modules/prime-psionics/assets/icons/.svg',
+    icon: 'modules/prime-psionics/assets/icons/psychoportation.svg',
     fullKey: 'psychoportation',
   },
   tlp: {
     label: 'PrimePsionics.DiscTelepathy',
-    icon: 'modules/prime-psionics/assets/icons/.svg',
+    icon: 'modules/prime-psionics/assets/icons/telepathy.svg',
     fullKey: 'telepathy',
   },
 };
@@ -154,6 +154,11 @@ PP_CONFIG.DND5E = {
   },
   abilityConsumptionTypes: {
     flags: 'PrimePsionics.Flags',
+  },
+  defaultArtwork: {
+    Item: {
+      [typePower]: 'modules/prime-psionics/assets/icons/power.svg',
+    },
   },
   sourceBooks: {
     "Psion's Primer":
