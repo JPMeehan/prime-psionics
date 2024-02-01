@@ -7,11 +7,7 @@
  * @property {number} level                      Base level of the power.
  * @property {string} discipline                 Psionic discipline to which this power belongs.
  * @property {string} augmenting                 The base talent this power improves
- * @property {object} components                 General components and tags for this power.
- * @property {boolean} components.auditory       Does this power manifest auditory components?
- * @property {boolean} components.observable     Does this power manifest observable components?
- * @property {boolean} components.ritual         Can this power be cast as a ritual?
- * @property {boolean} components.concentration  Does this power require concentration?
+ * @property {Set<string>} properties            General components and tags for this power.
  * @property {object} scaling                    Details on how casting at higher levels affects this power.
  * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.
@@ -29,42 +25,35 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
         integer: true,
         initial: 1,
         min: 0,
-        label: "DND5E.SpellLevel",
+        label: 'DND5E.SpellLevel',
       }),
       discipline: new foundry.data.fields.StringField({
         required: true,
-        label: "PrimePsionics.PowerDiscipline",
+        label: 'PrimePsionics.PowerDiscipline',
       }),
       augmenting: new foundry.data.fields.StringField({
         required: true,
-        label: "PrimePsionics.Augmenting",
+        label: 'PrimePsionics.Augmenting',
       }),
-      components: new dnd5e.dataModels.fields.MappingField(
-        new foundry.data.fields.BooleanField(),
-        {
-          required: true,
-          label: "PrimePsionics.PowerComponents",
-          initialKeys: [
-            ...Object.keys(CONFIG.PSIONICS.powerComponents),
-            ...Object.keys(CONFIG.DND5E.spellTags),
-          ],
-        }
+      properties: new foundry.data.fields.SetField(
+        new foundry.data.fields.StringField(),
+        { label: 'PrimePsionics.PowerComponents' }
       ),
       scaling: new foundry.data.fields.SchemaField(
         {
           mode: new foundry.data.fields.StringField({
             required: true,
-            initial: "none",
-            label: "DND5E.ScalingMode",
+            initial: 'none',
+            label: 'DND5E.ScalingMode',
           }),
           formula: new dnd5e.dataModels.fields.FormulaField({
             required: true,
             nullable: true,
             initial: null,
-            label: "DND5E.ScalingFormula",
+            label: 'DND5E.ScalingFormula',
           }),
         },
-        { label: "DND5E.LevelScaling" }
+        { label: 'DND5E.LevelScaling' }
       ),
     });
   }
@@ -76,6 +65,17 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
   /** @inheritdoc */
   static migrateData(source) {
     super.migrateData(source);
+  }
+
+  static _migrateComponentData(source) {
+    const components = filteredKeys(source.system?.components ?? {});
+    if (components.length) {
+      foundry.utils.setProperty(
+        source,
+        'flags.dnd5e.migratedProperties',
+        components
+      );
+    }
   }
 
   /* -------------------------------------------- */
@@ -98,14 +98,14 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
     this.labels.level =
       this.level != 0
         ? CONFIG.DND5E.spellLevels[this.level]
-        : game.i18n.localize("PrimePsionics.Talent");
+        : game.i18n.localize('PrimePsionics.Talent');
     this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
-    this.labels.pp = this.usesPP ? "PrimePsionics.PP" : "";
+    this.labels.pp = this.usesPP ? 'PrimePsionics.PP' : '';
     this.labels.aug = this.augmenting
-      ? game.i18n.format("PrimePsionics.AugmentPower", {
+      ? game.i18n.format('PrimePsionics.AugmentPower', {
           power: this.augmenting,
         })
-      : "";
+      : '';
     this.labels.components = Object.entries(this.components).reduce(
       (obj, [c, active]) => {
         const config = attributes[c];
@@ -128,7 +128,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
    * @type {string[]}
    */
   get chatProperties() {
-    let properties = [this.labels.level];
+    let properties = [this.parent.labels.level];
     if (this.labels.pp) properties.push(this.labels.pp);
     if (this.labels.aug) properties.push(this.labels.aug);
 
@@ -143,14 +143,14 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
    * @returns {boolean}   Whether this power is configured to use power points or not
    */
   get usesPP() {
-    return this.consume.type === "flags" && this.consume.target === "pp";
+    return this.consume.type === 'flags' && this.consume.target === 'pp';
   }
 
   /* -------------------------------------------- */
 
   /** @inheritdoc */
   get _typeAbilityMod() {
-    return this.parent?.actor?.system.attributes.spellcasting || "int";
+    return this.parent?.actor?.system.attributes.spellcasting || 'int';
   }
 
   /* -------------------------------------------- */
@@ -158,5 +158,29 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
   /** @inheritdoc */
   get _typeCriticalThreshold() {
     return this.parent?.actor?.flags.dnd5e?.spellCriticalThreshold ?? Infinity;
+  }
+
+  /**
+   * The proficiency multiplier for this item.
+   * @returns {number}
+   */
+  get proficiencyMultiplier() {
+    return 1;
+  }
+
+  /**
+   * Provide a backwards compatible getter for accessing `components`.
+   * @deprecated since v2.5.
+   * @type {object}
+   */
+  get components() {
+    foundry.utils.logCompatibilityWarning(
+      'The `system.components` property has been deprecated in favor of a standardized `system.properties` property.',
+      { since: 'DnD5e 2.5', until: 'DnD5e 2.7', once: true }
+    );
+    return this.properties.reduce((acc, p) => {
+      acc[p] = true;
+      return acc;
+    }, {});
   }
 }

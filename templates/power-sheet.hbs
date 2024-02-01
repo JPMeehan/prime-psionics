@@ -76,10 +76,9 @@
             {{!-- Spell Components --}}
             <div class="spell-components form-group stacked">
                 <label>{{ localize "PrimePsionics.PowerComponents" }}</label>
-                {{#each powerComponents as |component key|}}
+                {{#each properties}}
                 <label class="checkbox">
-                    <input type="checkbox" name="system.components.{{key}}" {{checked (lookup ../system.components key)}}>
-                    {{component.label}}
+                    <input type="checkbox" name="system.properties.{{@key}}" {{checked selected}}> {{label}}
                 </label>
                 {{/each}}
             </div>

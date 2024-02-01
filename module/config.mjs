@@ -1,3 +1,6 @@
+const typePower = 'prime-psionics.power';
+const moduleID = 'prime-psionics';
+
 const PP_CONFIG = {
   DND5E: {},
   PSIONICS: {},
@@ -64,6 +67,19 @@ PP_CONFIG.PSIONICS.ppProgression = [
 ];
 
 PP_CONFIG.DND5E = {
+  itemProperties: {
+    auditory: {
+      label: 'PrimePsionics.ComponentAuditory',
+      abbr: 'PrimePsionics.ComponentAuditoryAbbr',
+    },
+    observable: {
+      label: 'PrimePsionics.ComponentObservable',
+      abbr: 'PrimePsionics.ComponentObservableAbbr',
+    },
+  },
+  validProperties: {
+    [typePower]: new Set(['auditory', 'observable', 'concentration', 'ritual']),
+  },
   specialTimePeriods: {
     foc: 'PrimePsionics.Focus',
   },
