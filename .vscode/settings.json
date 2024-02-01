@@ -1,0 +1,12 @@
+{
+  "cSpell.words": [
+    "atwill",
+    "blindsight",
+    "darkvision",
+    "quickdraw",
+    "tremorsense",
+    "truesight"
+  ],
+  "i18n-ally.localesPaths": ["lang", "dnd5e", "foundry"],
+  "i18n-ally.keystyle": "nested"
+}

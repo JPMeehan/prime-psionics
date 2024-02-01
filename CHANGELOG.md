@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+- [BREAKING] Updated compatibility to dnd5e 3.0
+- Added new Source field handling to the Power sheet.
+
 ## 1.0.4
 
 - Adjusted power sheet namespace to use the module's name

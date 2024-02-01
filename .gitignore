@@ -1,3 +1,7 @@
+# Helpers
+foundry
+dnd5e
+
 
 # Build Artifacts
 *.map
@@ -8,7 +12,6 @@ prime-psionics.lock
 .idea/
 .nova/
 .vs/
-.vscode/
 *.code-workspace
 *.iml
 

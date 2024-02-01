@@ -94,6 +94,10 @@ PP_CONFIG.DND5E = {
   abilityConsumptionTypes: {
     flags: 'PrimePsionics.Flags',
   },
+  sourceBooks: {
+    "Psion's Primer":
+      "The Korranberg Chronicle: Psion's Primer - A Complete Psionics System",
+  },
 };
 
 export default PP_CONFIG;
