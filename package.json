@@ -4,9 +4,9 @@
   "description": "An FVTT module that introduces powers as a new type of item for dnd5e",
   "main": "prime-psionics.mjs",
   "scripts": {
-    "build:css": "gulp sass",
-    "build:js": "gulp mjs",
-    "build": "gulp buildAll"
+    "build:css": "sass ./styles/prime-psionics.scss prime-psionics.css",
+    "build:js": "rollup -c",
+    "build": "npm run build:css && npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -19,12 +19,7 @@
   },
   "homepage": "https://github.com/JPMeehan/prime-psionics#readme",
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-eslint7": "^0.3.2",
-    "gulp-if": "^3.0.0",
-    "gulp-sass": "^5.1.0",
-    "node-sass": "^9.0.0",
-    "rollup": "^3.23.1"
+    "rollup": "^3.29.4",
+    "sass": "^1.70.0"
   }
 }

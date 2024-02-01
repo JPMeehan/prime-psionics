@@ -1,11 +1,15 @@
 .dnd5e.sheet.actor .power-points .pp-input {
-  width: 30px; }
+  width: 30px;
+}
 
 .dialog .psi-manifest {
   display: inline-block;
-  width: 80%; }
-
+  width: 80%;
+}
 .dialog .psi-points {
   width: 30px;
   margin-left: 20px;
-  vertical-align: top; }
+  vertical-align: top;
+}
+
+/*# sourceMappingURL=prime-psionics.css.map */

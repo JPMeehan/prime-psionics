@@ -11,7 +11,11 @@
     "systems": [
       {
         "id": "dnd5e",
-        "type": "system"
+        "type": "system",
+        "compatibility": {
+          "minimum": "3",
+          "verified": "3"
+        }
       }
     ]
   },
