@@ -72,11 +72,15 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     context.psionics = CONFIG.PSIONICS;
     context.discipline = this.discipline;
     context.isSpell = true;
+    context.tags = this.labels.components.tags;
     context.subtitle = [
-      this.parent.labels.level,
+      this.labels.level,
       CONFIG.PSIONICS.disciplines[this.discipline].label,
     ].filterJoin(' &bull; ');
-    if (this.usesPP) context.pp = ppText(this.consume.amount, true);
+    if (this.usesPP) {
+      context.pp = ppText(this.consume.amount, true);
+      context.tags = [...context.tags, ppText(this.consume.amount)];
+    }
     context.augments = this.augmenting;
     return context;
   }
