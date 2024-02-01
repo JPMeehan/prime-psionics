@@ -3,8 +3,9 @@
 ## 1.1.0
 
 - [BREAKING] Updated compatibility to dnd5e 3.0
+  - Updated `components` to the new generic `properties` field to match base system spells. There is an automatic migration included as well as a getter for compatibility.
+  - Powers display correctly on both the new and legacy character sheets
 - Added new Source field handling to the Power sheet.
-- Updated `components` to the new generic `properties` field to match base system spells. There is an automatic migration included as well as a getter for compatibility.
 
 ## 1.0.4
 

@@ -56,10 +56,11 @@ function _localizeHelper(object) {
 
 Hooks.on('renderActorSheet5e', (app, html, context) => {
   if (!game.user.isGM && app.actor.limited) return true;
+  console.log(app, context);
   if (context.isCharacter || context.isNPC) {
     const owner = context.actor.isOwner;
     let powers = context.items.filter((i) => i.type === typePower);
-    powers = app._filterItems(powers, app._filters.spellbook);
+    powers = app._filterItems(powers, app._filters.spellbook.properties);
     const levels = context.system.spells;
     const spellbook = context.spellbook;
     const useLabels = { '-20': '-', '-10': '-', 0: '&infin;' };
@@ -93,7 +94,7 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       sl,
       p,
       label,
-      { prepMode = 'prepared', value, max, override } = {}
+      { preparationMode = 'prepared', value, max, override } = {}
     ) => {
       const aeOverride = foundry.utils.hasProperty(
         context.actor.overrides,
@@ -112,8 +113,8 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
         override: override || 0,
         dataset: {
           type: 'spell',
-          level: prepMode in sections ? 1 : p,
-          'preparation.mode': prepMode,
+          level: preparationMode in sections ? 1 : p,
+          preparationMode,
         },
         prop: sl,
         editable: context.editable && !aeOverride,
@@ -133,7 +134,6 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       const p = power.system.level;
       const pl = `spell${p}`;
       const index = p ? p + levelOffset : p + cantripOffset;
-      // Known bug: This breaks if there's a mix of spells and powers WITHOUT spellcaster levels
       if (!spellbook[index]) {
         registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {
           levels: levels[pl],
@@ -146,8 +146,14 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
     for (const i in spellbook) {
       if (spellbook[i] === undefined) delete spellbook[i];
     }
-    const spellList = html.find('.spellbook');
-    const template = 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
+    const spellList =
+      app.constructor.name === 'ActorSheet5eCharacter2'
+        ? html.find('.spells')
+        : html.find('.spellbook');
+    const template =
+      app.constructor.name === 'ActorSheet5eCharacter2'
+        ? 'systems/dnd5e/templates/actors/tabs/character-spells.hbs'
+        : 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
     renderTemplate(template, context).then((partial) => {
       spellList.html(partial);
       let pp = app.actor.getFlag(moduleID, 'pp');
