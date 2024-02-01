@@ -32,8 +32,8 @@ PP_CONFIG.PSIONICS.powerComponents = {
 PP_CONFIG.PSIONICS.disciplines = {
   cla: {
     label: 'PrimePsionics.DiscClair',
-    icon: 'modules/prime-psionics/assets/icons/clairvoyance.svg',
-    fullKey: 'clairvoyance',
+    icon: 'modules/prime-psionics/assets/icons/clairsentience.svg',
+    fullKey: 'clairsentience',
   },
   mtc: {
     label: 'PrimePsionics.DiscMTC',

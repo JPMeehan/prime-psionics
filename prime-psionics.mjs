@@ -144,7 +144,7 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
             activation:
               cost && abbr
                 ? `${cost}${game.i18n.localize(abbr)}`
-                : item.labels.activation,
+                : power.labels.activation,
             preparation: { applicable: false },
           }
         : {
@@ -200,6 +200,22 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       : 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
     renderTemplate(spellListTemplate, context).then((partial) => {
       spellList.html(partial);
+
+      console.log(spellList);
+
+      if (newCharacterSheet) {
+        const schoolSlots = spellList.find('.item-detail.item-school');
+        /** @type {Array<string>} */
+        const disciplines = Object.values(CONFIG.PSIONICS.disciplines).map(
+          (d) => d.label
+        );
+        for (const div of schoolSlots) {
+          if (disciplines.includes(div.dataset.tooltip)) {
+            div.innerHTML = `<dnd5e-icon src="modules/prime-psionics/assets/icons/${div.dataset.tooltip.toLowerCase()}.svg"></dnd5e-icon>`;
+          }
+        }
+      }
+
       let pp = app.actor.getFlag(moduleID, 'pp');
       if (pp) {
         const ppContext = {
