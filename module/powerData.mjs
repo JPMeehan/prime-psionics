@@ -99,7 +99,7 @@ export default class PowerData extends dnd5e.dataModels.SystemDataModel.mixin(
       this.level != 0
         ? CONFIG.DND5E.spellLevels[this.level]
         : game.i18n.localize('PrimePsionics.Talent');
-    this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline];
+    this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline].label;
     this.labels.pp = this.usesPP ? 'PrimePsionics.PP' : '';
     this.labels.aug = this.augmenting
       ? game.i18n.format('PrimePsionics.AugmentPower', {

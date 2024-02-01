@@ -1,20 +1,31 @@
-
 .dnd5e.sheet.actor {
-	.power-points {
-		.pp-input {
-			width: 30px;
-		}
-	}
+  .power-points {
+    .pp-input {
+      width: 30px;
+    }
+  }
+}
+
+.dnd5e2.sheet.actor {
+  .power-points {
+    .pp-input {
+      height: 100%;
+      width: 30px;
+      color: white;
+      border: none;
+      text-align: right;
+    }
+  }
 }
 
 .dialog {
-	.psi-manifest {
-		display: inline-block;
-		width: 80%;
-	} 
-	.psi-points {
-		width: 30px;
-		margin-left: 20px;
-		vertical-align: top;
-	}
+  .psi-manifest {
+    display: inline-block;
+    width: 80%;
+  }
+  .psi-points {
+    width: 30px;
+    margin-left: 20px;
+    vertical-align: top;
+  }
 }

@@ -57,6 +57,7 @@ function _localizeHelper(object) {
 Hooks.on('renderActorSheet5e', (app, html, context) => {
   if (!game.user.isGM && app.actor.limited) return true;
   console.log(app, context);
+  const newCharacterSheet = app.constructor.name === 'ActorSheet5eCharacter2';
   if (context.isCharacter || context.isNPC) {
     const owner = context.actor.isOwner;
     let powers = context.items.filter((i) => i.type === typePower);
@@ -146,15 +147,13 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
     for (const i in spellbook) {
       if (spellbook[i] === undefined) delete spellbook[i];
     }
-    const spellList =
-      app.constructor.name === 'ActorSheet5eCharacter2'
-        ? html.find('.spells')
-        : html.find('.spellbook');
-    const template =
-      app.constructor.name === 'ActorSheet5eCharacter2'
-        ? 'systems/dnd5e/templates/actors/tabs/character-spells.hbs'
-        : 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
-    renderTemplate(template, context).then((partial) => {
+    const spellList = newCharacterSheet
+      ? html.find('.spells')
+      : html.find('.spellbook');
+    const spellListTemplate = newCharacterSheet
+      ? 'systems/dnd5e/templates/actors/tabs/character-spells.hbs'
+      : 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
+    renderTemplate(spellListTemplate, context).then((partial) => {
       spellList.html(partial);
       let pp = app.actor.getFlag(moduleID, 'pp');
       if (pp) {
@@ -163,11 +162,14 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
           ppMax: pp.max,
           limit: app.actor.getFlag(moduleID, 'manifestLimit'),
         };
-        renderTemplate(
-          `/modules/prime-psionics/templates/pp-partial.hbs`,
-          ppContext
-        ).then((powerHeader) => {
-          spellList.find('.inventory-list').prepend(powerHeader);
+        const ppTemplate = newCharacterSheet
+          ? '/modules/prime-psionics/templates/pp-partial-2.hbs'
+          : '/modules/prime-psionics/templates/pp-partial.hbs';
+        renderTemplate(ppTemplate, ppContext).then((powerHeader) => {
+          const ppTarget = newCharacterSheet
+            ? 'dnd5e-inventory'
+            : '.inventory-list';
+          spellList.find(ppTarget).prepend(powerHeader);
         });
       }
       app.activateListeners(spellList);

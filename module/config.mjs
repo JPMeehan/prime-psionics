@@ -23,15 +23,43 @@ PP_CONFIG.PSIONICS.powerComponents = {
 
 /**
  * Disciplines to which a power can belong.
- * @enum {string}
+ * @typedef {object} PowerDisciplineConfiguration
+ * @property {string} label        Localized label.
+ * @property {string} icon         Spell school icon.
+ * @property {string} fullKey      Fully written key used as alternate for enrichers.
+ * @property {string} [reference]  Reference to a rule page describing this school.
  */
 PP_CONFIG.PSIONICS.disciplines = {
-  cla: 'PrimePsionics.DiscClair',
-  mtc: 'PrimePsionics.DiscMTC',
-  psk: 'PrimePsionics.DiscKinesis',
-  psm: 'PrimePsionics.DiscMetabolism',
-  pst: 'PrimePsionics.DiscPort',
-  tlp: 'PrimePsionics.DiscTelepathy',
+  cla: {
+    label: 'PrimePsionics.DiscClair',
+    icon: 'modules/prime-psionics/assets/icons/.svg',
+    fullKey: 'clairvoyance',
+  },
+  mtc: {
+    label: 'PrimePsionics.DiscMTC',
+    icon: 'modules/prime-psionics/assets/icons/.svg',
+    fullKey: 'metacreativity',
+  },
+  psk: {
+    label: 'PrimePsionics.DiscKinesis',
+    icon: 'modules/prime-psionics/assets/icons/.svg',
+    fullKey: 'psychokinesis',
+  },
+  psm: {
+    label: 'PrimePsionics.DiscMetabolism',
+    icon: 'modules/prime-psionics/assets/icons/.svg',
+    fullKey: 'psychometabolism',
+  },
+  pst: {
+    label: 'PrimePsionics.DiscPort',
+    icon: 'modules/prime-psionics/assets/icons/.svg',
+    fullKey: 'psychoportation',
+  },
+  tlp: {
+    label: 'PrimePsionics.DiscTelepathy',
+    icon: 'modules/prime-psionics/assets/icons/.svg',
+    fullKey: 'telepathy',
+  },
 };
 
 /**

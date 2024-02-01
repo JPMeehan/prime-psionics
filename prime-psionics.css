@@ -2,6 +2,14 @@
   width: 30px;
 }
 
+.dnd5e2.sheet.actor .power-points .pp-input {
+  height: 100%;
+  width: 30px;
+  color: white;
+  border: none;
+  text-align: right;
+}
+
 .dialog .psi-manifest {
   display: inline-block;
   width: 80%;
