@@ -360,7 +360,7 @@ Hooks.on('dnd5e.preRollDamage', (item, rollConfig) => {
 
     scaleDamage(
       firstRoll.parts,
-      item.system.scaling.mode.formula || rollConfig.parts.join(' + '),
+      item.system.scaling.formula || firstRoll.parts.join(' + '),
       add,
       rollConfig.data
     );
