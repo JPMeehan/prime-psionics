@@ -1,3 +1,5 @@
+import { ppText } from './utils.mjs';
+
 /**
  * Data definition for Power items.
  * @mixes ItemDescriptionTemplate
@@ -58,13 +60,24 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     });
   }
 
+  /**
+   * The handlebars template for rendering item tooltips.
+   * @type {string}
+   */
+  static ITEM_TOOLTIP_TEMPLATE =
+    'modules/prime-psionics/templates/power-tooltip.hbs';
+
   async getCardData(enrichmentOptions = {}) {
     const context = await super.getCardData(enrichmentOptions);
+    context.psionics = CONFIG.PSIONICS;
+    context.discipline = this.discipline;
     context.isSpell = true;
     context.subtitle = [
       this.parent.labels.level,
       CONFIG.PSIONICS.disciplines[this.discipline].label,
     ].filterJoin(' &bull; ');
+    if (this.usesPP) context.pp = ppText(this.consume.amount, true);
+    context.augments = this.augmenting;
     return context;
   }
 
@@ -108,10 +121,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
 
   prepareDerivedData() {
     this.labels = {};
-    this._preparePower();
-  }
 
-  _preparePower() {
     const tags = Object.fromEntries(
       Object.entries(CONFIG.DND5E.spellTags).map(([k, v]) => {
         v.tag = true;
@@ -130,17 +140,22 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
           power: this.augmenting,
         })
       : '';
-    this.labels.components = Object.entries(this.properties).reduce(
-      (obj, [c, active]) => {
+    this.labels.components = this.properties.reduce(
+      (obj, c) => {
         const config = attributes[c];
-        if (!config || active !== true) return obj;
-        obj.all.push({ abbr: config.abbr, tag: config.tag });
+        if (!config) return obj;
+        const { abbr, label, icon } = config;
+        obj.all.push({ abbr, label, icon, tag: config.tag });
         if (config.tag) obj.tags.push(config.label);
         else obj.ao.push(config.abbr);
         return obj;
       },
       { all: [], ao: [], tags: [] }
     );
+    this.labels.components.ao = new Intl.ListFormat(game.i18n.lang, {
+      style: 'narrow',
+      type: 'conjunction',
+    }).format(this.labels.components.ao);
   }
 
   /* -------------------------------------------- */
