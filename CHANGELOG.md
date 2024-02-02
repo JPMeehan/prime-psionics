@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+- Added missing .svg assets to release build
+- Fixed minor display bugs in chat cards and item sheet
+- Updated package images to new sheet and chat cards
+
 ## 1.1.0
 
 - [BREAKING] Updated compatibility to dnd5e 3.0

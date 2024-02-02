@@ -328,7 +328,7 @@ Hooks.on('dnd5e.itemUsageConsumption', (item, config, options, usage) => {
 Hooks.on('dnd5e.preDisplayCard', (item, chatData, options) => {
   if (!item.system.usesPP) return;
   chatData.content = chatData.content.replace(
-    item.system.labels.pp,
+    ppText(item.system.consume.amount),
     ppText(options.ppSpend)
   );
   chatData.flags[moduleID] = { ppSpend: options.ppSpend };

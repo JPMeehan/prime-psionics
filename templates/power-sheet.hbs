@@ -76,11 +76,24 @@
             {{!-- Power Components --}}
             <div class="spell-components form-group stacked">
                 <label>{{ localize "PrimePsionics.PowerComponents" }}</label>
+                {{!-- Manual un-sorting
                 {{#each properties}}
                 <label class="checkbox">
                     <input type="checkbox" name="system.properties.{{@key}}" {{checked selected}}> {{label}}
                 </label>
-                {{/each}}
+                {{/each}} --}}
+                <label class="checkbox">
+                    <input type="checkbox" name="system.properties.auditory" {{checked properties.auditory.selected}}> {{properties.auditory.label}}
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" name="system.properties.observable" {{checked properties.observable.selected}}> {{properties.observable.label}}
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" name="system.properties.concentration" {{checked properties.concentration.selected}}> {{properties.concentration.label}}
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" name="system.properties.ritual" {{checked properties.ritual.selected}}> {{properties.ritual.label}}
+                </label>
             </div>
 
             <h3 class="form-header">{{ localize "PrimePsionics.PowerManifestingHeader" }}</h3>
