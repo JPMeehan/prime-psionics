@@ -11,7 +11,7 @@ import { ppText } from './utils.mjs';
  * @property {string} augmenting                 The base talent this power improves
  * @property {Set<string>} properties            General components and tags for this power.
  * @property {object} scaling                    Details on how casting at higher levels affects this power.
- * @property {string} scaling.mode               Spell scaling mode as defined in `DND5E.spellScalingModes`.
+ * @property {string} scaling.mode               Spell scaling mode as defined in `PSIONICS.powerScalingModes`.
  * @property {string} scaling.formula            Dice formula used for scaling.
  */
 export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
