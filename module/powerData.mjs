@@ -39,7 +39,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       }),
       properties: new foundry.data.fields.SetField(
         new foundry.data.fields.StringField(),
-        { label: 'PrimePsionics.PowerComponents' }
+        { label: 'DND5E.Properties' }
       ),
       scaling: new foundry.data.fields.SchemaField(
         {
