@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- Added early return to render hook to prevent clobbering other modules if possible
+
 ## 1.1.1
 
 - Added missing .svg assets to release build

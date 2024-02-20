@@ -61,6 +61,7 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
     const owner = context.actor.isOwner;
     let powers = context.items.filter((i) => i.type === typePower);
     powers = app._filterItems(powers, app._filters.spellbook.properties);
+    if (!powers.length && !hasPowerPoints(app.actor)) return true;
     const levels = context.system.spells;
     const spellbook = context.spellbook;
     const useLabels = { '-20': '-', '-10': '-', 0: '&infin;' };
@@ -235,6 +236,18 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
     });
   } else return true;
 });
+
+/**
+ * Determines if an actor has exertion points
+ * @param {object} actor  The character
+ * @returns {boolean}     Whether or not the character has an exertion pool
+ */
+function hasPowerPoints(actor) {
+  for (const cls of Object.values(actor.classes)) {
+    if (cls.spellcasting.type === 'psionics') return true;
+  }
+  return false;
+}
 
 /**
  *
