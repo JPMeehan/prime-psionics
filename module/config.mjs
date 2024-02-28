@@ -1,5 +1,4 @@
-const typePower = 'prime-psionics.power';
-const moduleID = 'prime-psionics';
+import { typePower } from './utils.mjs';
 
 const PP_CONFIG = {
   DND5E: {},

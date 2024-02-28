@@ -1,10 +1,7 @@
 import PP_CONFIG from './module/config.mjs';
 import PowerData from './module/powerData.mjs';
 import PowerSheet from './module/powerSheet.mjs';
-import { ppText } from './module/utils.mjs';
-
-const typePower = 'prime-psionics.power';
-const moduleID = 'prime-psionics';
+import { typePower, moduleID, ppText } from './module/utils.mjs';
 
 Hooks.once('init', () => {
   foundry.utils.mergeObject(CONFIG, PP_CONFIG);

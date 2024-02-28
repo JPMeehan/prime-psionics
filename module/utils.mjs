@@ -1,3 +1,6 @@
+export const typePower = 'prime-psionics.power';
+export const moduleID = 'prime-psionics';
+
 /**
  *
  * @param {int} pp            Psi points a power uses
