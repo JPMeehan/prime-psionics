@@ -4,6 +4,7 @@
 
 - Added early return to render hook to prevent clobbering other modules if possible
 - Added support for innate psionics as a preparation mode
+- Improved support for NPC manifesters - if an NPC has powers, their spellcasting level will double as a manifester level
 
 ## 1.1.1
 

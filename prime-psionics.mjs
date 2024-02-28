@@ -300,23 +300,40 @@ Hooks.on(
       progression.psionics = Math.ceil(spellcasting.levels / prog.divisor);
     }
 
-    const limit = Math.ceil(Math.min(progression.psionics, 10) / 2) * 2;
-    const updates = {
-      manifestLimit: limit,
-      pp: {
-        max: CONFIG.PSIONICS.ppProgression[progression.psionics],
-      },
-    };
-    if (actor === undefined) return;
-    const pp = actor.getFlag(moduleID, 'pp');
-    if (pp === undefined)
-      updates.pp.value = CONFIG.PSIONICS.ppProgression[progression.psionics];
-    else if (typeof pp === 'number') updates.pp.value = pp; // migration
-    const flags = actor.flags[moduleID];
-    if (flags) foundry.utils.mergeObject(flags, updates);
-    else actor.flags[moduleID] = updates;
+    updateManifester(actor, progression.psionics);
   }
 );
+
+Hooks.on('dnd5e.preparePsionicsSlots', (spells, actor, progression) => {
+  if (actor.type !== 'npc' || !actor.items.some((i) => i.type === typePower))
+    return;
+  const level = foundry.utils.getProperty(actor, 'system.details.spellLevel');
+  updateManifester(actor, level);
+});
+
+/**
+ * In-memory update to the manifester
+ * @param {Actor} actor
+ * @param {number} manifesterLevel
+ * @returns
+ */
+function updateManifester(actor, manifesterLevel) {
+  const limit = Math.ceil(Math.min(manifesterLevel, 10) / 2) * 2;
+  const updates = {
+    manifestLimit: limit,
+    pp: {
+      max: CONFIG.PSIONICS.ppProgression[manifesterLevel],
+    },
+  };
+  if (actor === undefined) return;
+  const pp = actor.getFlag(moduleID, 'pp');
+  if (pp === undefined)
+    updates.pp.value = CONFIG.PSIONICS.ppProgression[manifesterLevel];
+  else if (typeof pp === 'number') updates.pp.value = pp; // migration
+  foundry.utils.mergeObject(actor.flags, {
+    [moduleID]: updates,
+  });
+}
 
 /**
  *
