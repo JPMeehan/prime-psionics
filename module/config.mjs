@@ -7,6 +7,14 @@ const PP_CONFIG = {
 };
 
 /**
+ *
+ */
+PP_CONFIG.PSIONICS.powerPreparationModes = {
+  always: 'PrimePsionics.PowerPrepKnown',
+  innate: 'PrimePsionics.PowerPrepInnate',
+};
+
+/**
  * Types of components that can be required when manifesting a power.
  * @enum {object}
  */

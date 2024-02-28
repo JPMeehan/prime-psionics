@@ -3,6 +3,7 @@
 ## 1.1.2
 
 - Added early return to render hook to prevent clobbering other modules if possible
+- Added support for innate psionics as a preparation mode
 
 ## 1.1.1
 

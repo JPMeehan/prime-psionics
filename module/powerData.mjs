@@ -41,6 +41,16 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
         new foundry.data.fields.StringField(),
         { label: 'DND5E.Properties' }
       ),
+      preparation: new foundry.data.fields.SchemaField(
+        {
+          mode: new foundry.data.fields.StringField({
+            required: true,
+            initial: 'always',
+            label: 'PrimePsionics.PowerPreparationMode',
+          }),
+        },
+        { label: 'PrimePsionics.PowerPreparation' }
+      ),
       scaling: new foundry.data.fields.SchemaField(
         {
           mode: new foundry.data.fields.StringField({
@@ -102,11 +112,6 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   /* -------------------------------------------- */
   /*  Migrations                                  */
   /* -------------------------------------------- */
-
-  /** @inheritdoc */
-  static migrateData(source) {
-    super.migrateData(source);
-  }
 
   static _migrateComponentData(source) {
     const components = filteredKeys(source.system?.components ?? {});
@@ -186,7 +191,11 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    * @returns {boolean}   Whether this power is configured to use power points or not
    */
   get usesPP() {
-    return this.consume.type === 'flags' && this.consume.target === 'pp';
+    return (
+      this.preparation.mode === 'always' &&
+      this.consume.type === 'flags' &&
+      this.consume.target === 'pp'
+    );
   }
 
   /* -------------------------------------------- */

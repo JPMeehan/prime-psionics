@@ -62,10 +62,18 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
     let powers = context.items.filter((i) => i.type === typePower);
     powers = app._filterItems(powers, app._filters.spellbook.properties);
     if (!powers.length && !hasPowerPoints(app.actor)) return true;
-    const levels = context.system.spells;
     const spellbook = context.spellbook;
-    const useLabels = { '-20': '-', '-10': '-', 0: '&infin;' };
-    const sections = { atwill: -20, innate: -10, pact: 0.5 };
+
+    const specialPowerPrepModes = {
+      innate: -5,
+    };
+    const specialPowerPrep = {};
+
+    const sections = {
+      atwill: -20,
+      innate: -10,
+      pact: 0.5,
+    };
     const cantripOffset =
       !!spellbook.find((s) => s?.order === sections.atwill) +
       !!spellbook.find((s) => s?.order === sections.innate);
@@ -95,31 +103,38 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       sl,
       p,
       label,
-      { preparationMode = 'prepared', value, max, override } = {}
+      { preparationMode = 'always', override } = {}
     ) => {
       const aeOverride = foundry.utils.hasProperty(
         context.actor.overrides,
         `system.spells.spell${p}.override`
       );
-      const i = p ? p + levelOffset : p + cantripOffset;
-      spellbook[i] = {
+      const sectionData = {
         order: p,
         label: label,
-        usesSlots: p > 0,
+        usesSlots: false,
         canCreate: owner,
-        canPrepare: context.actor.type === 'character' && p >= 1,
+        canPrepare: false,
         spells: [],
-        uses: useLabels[p] || value || 0,
-        slots: useLabels[p] || max || 0,
+        uses: '-',
+        slots: '-',
         override: override || 0,
         dataset: {
-          type: 'spell',
+          type: typePower,
           level: preparationMode in sections ? 1 : p,
           preparationMode,
         },
         prop: sl,
         editable: context.editable && !aeOverride,
       };
+
+      let i = p;
+      if (p >= 0) {
+        i = p ? p + levelOffset : p + cantripOffset;
+        spellbook[i] = sectionData;
+      } else {
+        specialPowerPrep[i] = sectionData;
+      }
     };
 
     powers.forEach((power) => {
@@ -178,21 +193,38 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
 
       foundry.utils.mergeObject(context.itemContext[power.id], itemContext);
 
-      const p = power.system.level;
+      const mode = power.system.preparation.mode;
+      const p = power.system.level || 0;
       const pl = `spell${p}`;
-      const index = p ? p + levelOffset : p + cantripOffset;
-      if (!spellbook[index]) {
-        registerSection(pl, p, CONFIG.DND5E.spellLevels[p], {
-          levels: levels[pl],
-        });
-      }
+      let index = p ? p + levelOffset : p + cantripOffset;
 
-      // Add the power to the relevant heading
-      spellbook[index].spells.push(power);
+      if (mode in specialPowerPrepModes) {
+        index = specialPowerPrepModes[mode];
+        if (!specialPowerPrep[index]) {
+          registerSection(
+            mode,
+            index,
+            CONFIG.PSIONICS.powerPreparationModes[mode],
+            { preparationMode: mode }
+          );
+        }
+        specialPowerPrep[index].spells.push(power);
+      } else {
+        if (!spellbook[index]) {
+          registerSection(pl, p, CONFIG.PSIONICS.powerLevels[p], {
+            preparationMode: power.system.preparation.mode,
+          });
+        }
+        // Add the power to the relevant heading
+        spellbook[index].spells.push(power);
+      }
     });
     for (const i in spellbook) {
       if (spellbook[i] === undefined) delete spellbook[i];
     }
+    spellbook.push(...Object.values(specialPowerPrep));
+
+    spellbook.sort((a, b) => a.order - b.order);
     const spellList = newCharacterSheet
       ? html.find('.spells')
       : html.find('.spellbook');
