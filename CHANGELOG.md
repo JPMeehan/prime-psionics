@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+
+- Removed duplicate display of powers from NPC "inventory"
+
 ## 1.1.2
 
 - Added early return to render hook to prevent clobbering other modules if possible
