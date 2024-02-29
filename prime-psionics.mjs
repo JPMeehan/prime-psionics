@@ -52,13 +52,14 @@ function _localizeHelper(object) {
  */
 
 Hooks.on('renderActorSheet5e', (app, html, context) => {
-  if (!game.user.isGM && app.actor.limited) return true;
+  const actor = app.actor;
+
+  if (!game.user.isGM && actor.limited) return true;
   const newCharacterSheet = app.constructor.name === 'ActorSheet5eCharacter2';
   if (context.isCharacter || context.isNPC) {
-    const owner = context.actor.isOwner;
     let powers = context.items.filter((i) => i.type === typePower);
     powers = app._filterItems(powers, app._filters.spellbook.properties);
-    if (!powers.length && !hasPowerPoints(app.actor)) return true;
+    if (!powers.length && !hasPowerPoints(actor)) return true;
     const spellbook = context.spellbook;
 
     const specialPowerPrepModes = {
@@ -110,7 +111,7 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
         order: p,
         label: label,
         usesSlots: false,
-        canCreate: owner,
+        canCreate: actor.isOwner,
         canPrepare: false,
         spells: [],
         uses: '-',
@@ -263,6 +264,15 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       }
       app.activateListeners(spellList);
     });
+
+    if (app.constructor.name === 'ActorSheet5eNPC') {
+      const features = html.find('dnd5e-inventory').first();
+      const inventory = features.find('ol').last();
+      for (const i of inventory.find('li')) {
+        const item = actor.items.get(i.dataset.itemId);
+        if (item.type === typePower) i.remove();
+      }
+    }
   } else return true;
 });
 
