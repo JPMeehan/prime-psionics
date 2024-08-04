@@ -55,7 +55,7 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
   const actor = app.actor;
 
   if (!game.user.isGM && actor.limited) return true;
-  const newCharacterSheet = app.constructor.name === 'ActorSheet5eCharacter2';
+  const newCharacterSheet = ['ActorSheet5eCharacter2', 'ActorSheet5eNPC2'].includes(app.constructor.name);
   if (context.isCharacter || context.isNPC) {
     let powers = context.items.filter((i) => i.type === typePower);
     powers = app._filterItems(powers, app._filters.spellbook.properties);
@@ -227,7 +227,7 @@ Hooks.on('renderActorSheet5e', (app, html, context) => {
       ? html.find('.spells')
       : html.find('.spellbook');
     const spellListTemplate = newCharacterSheet
-      ? 'systems/dnd5e/templates/actors/tabs/character-spells.hbs'
+      ? 'systems/dnd5e/templates/actors/tabs/creature-spells.hbs'
       : 'systems/dnd5e/templates/actors/parts/actor-spellbook.hbs';
     renderTemplate(spellListTemplate, context).then((partial) => {
       spellList.html(partial);
