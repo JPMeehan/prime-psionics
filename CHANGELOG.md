@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+- Updated minimum compatibility to D&D 3.3
+- Fixed bug preventing display on the revised NPC & Character sheets 
+
 ## 1.1.3
 
 - Removed duplicate display of powers from NPC "inventory"
