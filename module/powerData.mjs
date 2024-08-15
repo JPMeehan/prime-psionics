@@ -165,7 +165,23 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       style: 'narrow',
       type: 'conjunction',
     }).format(this.labels.components.ao);
+
+    this.properties.add('mgc');
   }
+
+  /** @inheritDoc */
+  prepareFinalData() {
+    this.prepareFinalActivatedEffectData();
+
+    // Necessary because excluded from valid types in Item5e#_prepareProficiency
+    if ( !this.parent.actor?.system.attributes?.prof ) {
+      this.prof = new dnd5e.documents.Proficiency(0, 0);
+      return;
+    }
+
+    this.prof = new dnd5e.documents.Proficiency(this.parent.actor.system.attributes.prof, this.proficiencyMultiplier ?? 0);
+  }
+
 
   /* -------------------------------------------- */
   /*  Getters                                     */
@@ -218,21 +234,5 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    */
   get proficiencyMultiplier() {
     return 1;
-  }
-
-  /**
-   * Provide a backwards compatible getter for accessing `components`.
-   * @deprecated since v1.1.
-   * @type {object}
-   */
-  get components() {
-    foundry.utils.logCompatibilityWarning(
-      'The `system.components` property has been deprecated in favor of a standardized `system.properties` property.',
-      { since: 'DnD5e 3.0', until: 'DnD5e 3.2', once: true }
-    );
-    return this.properties.reduce((acc, p) => {
-      acc[p] = true;
-      return acc;
-    }, {});
   }
 }
