@@ -4,7 +4,7 @@
   "description": "An implementation of psionic powers in dnd5e via v11 module subtypes.",
   "version": "#{VERSION}#",
   "compatibility": {
-    "minimum": "11",
+    "minimum": "12",
     "verified": "12"
   },
   "relationships": {
