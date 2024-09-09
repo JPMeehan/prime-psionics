@@ -8,9 +8,11 @@ export default class PowerSheet extends dnd5e.applications.item.ItemSheet5e {
   async getData(options = {}) {
     const context = await super.getData(options);
     context.psionics = CONFIG.PSIONICS;
+
     context.powerComponents = {
       ...CONFIG.PSIONICS.powerComponents,
-      ...CONFIG.DND5E.spellTags,
+      concentration: CONFIG.DND5E.itemProperties.concentration,
+      ritual: CONFIG.DND5E.itemProperties.ritual
     };
     if (context.system.actionType === 'msak')
       context.itemProperties[0] = game.i18n.localize(

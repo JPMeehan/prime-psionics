@@ -131,12 +131,10 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   prepareDerivedData() {
     this.labels = {};
 
-    const tags = Object.fromEntries(
-      Object.entries(CONFIG.DND5E.spellTags).map(([k, v]) => {
-        v.tag = true;
-        return [k, v];
-      })
-    );
+    const tags = {
+      concentration: CONFIG.DND5E.itemProperties.concentration,
+      ritual: CONFIG.DND5E.itemProperties.ritual
+    };
     const attributes = { ...CONFIG.PSIONICS.powerComponents, ...tags };
     this.labels.level =
       this.level != 0
