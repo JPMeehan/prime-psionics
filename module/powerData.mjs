@@ -1,4 +1,7 @@
-import { ppText } from './utils.mjs';
+import {ppText} from "./utils.mjs";
+
+const {ItemDescriptionTemplate, ActivitiesTemplate} = dnd5e.dataModels.item;
+const {ActivationField, DurationField, RangeField, TargetField} = dnd5e.dataModels.shared;
 
 /**
  * Data definition for Power items.
@@ -10,63 +13,52 @@ import { ppText } from './utils.mjs';
  * @property {string} discipline                 Psionic discipline to which this power belongs.
  * @property {string} augmenting                 The base talent this power improves
  * @property {Set<string>} properties            General components and tags for this power.
- * @property {object} scaling                    Details on how casting at higher levels affects this power.
- * @property {string} scaling.mode               Spell scaling mode as defined in `PSIONICS.powerScalingModes`.
- * @property {string} scaling.formula            Dice formula used for scaling.
+ * @property {string} preparation                The preparation mode as found in `CONFIG.PSIONICS.powerPreparationModes`
  */
 export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
-  dnd5e.dataModels.item.ItemDescriptionTemplate,
-  dnd5e.dataModels.item.ActivatedEffectTemplate,
-  dnd5e.dataModels.item.ActionTemplate
+  ItemDescriptionTemplate,
+  ActivitiesTemplate
 ) {
+  static LOCALIZATION_PREFIXES = [
+    "DND5E.ACTIVATION", "DND5E.DURATION", "DND5E.RANGE", "DND5E.SOURCE", "DND5E.TARGET"
+  ];
+
   /** @inheritdoc */
   static defineSchema() {
     return this.mergeSchema(super.defineSchema(), {
+      activation: new ActivationField(),
+      duration: new DurationField(),
+      range: new RangeField(),
+      target: new TargetField(),
       level: new foundry.data.fields.NumberField({
         required: true,
         integer: true,
         initial: 1,
         min: 0,
-        label: 'DND5E.SpellLevel',
+        label: "DND5E.SpellLevel"
       }),
       discipline: new foundry.data.fields.StringField({
         required: true,
-        label: 'PrimePsionics.PowerDiscipline',
+        label: "PrimePsionics.PowerDiscipline"
       }),
       augmenting: new foundry.data.fields.StringField({
         required: true,
-        label: 'PrimePsionics.Augmenting',
+        label: "PrimePsionics.Augmenting"
       }),
       properties: new foundry.data.fields.SetField(
         new foundry.data.fields.StringField(),
-        { label: 'DND5E.Properties' }
+        {label: "DND5E.Properties"}
       ),
       preparation: new foundry.data.fields.SchemaField(
         {
           mode: new foundry.data.fields.StringField({
             required: true,
-            initial: 'always',
-            label: 'PrimePsionics.PowerPreparationMode',
-          }),
+            initial: "always",
+            label: "PrimePsionics.PowerPreparationMode"
+          })
         },
-        { label: 'PrimePsionics.PowerPreparation' }
-      ),
-      scaling: new foundry.data.fields.SchemaField(
-        {
-          mode: new foundry.data.fields.StringField({
-            required: true,
-            initial: 'none',
-            label: 'DND5E.ScalingMode',
-          }),
-          formula: new dnd5e.dataModels.fields.FormulaField({
-            required: true,
-            nullable: true,
-            initial: null,
-            label: 'DND5E.ScalingFormula',
-          }),
-        },
-        { label: 'DND5E.LevelScaling' }
-      ),
+        {label: "PrimePsionics.PowerPreparation"}
+      )
     });
   }
 
@@ -75,7 +67,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    * @type {string}
    */
   static ITEM_TOOLTIP_TEMPLATE =
-    'modules/prime-psionics/templates/power-tooltip.hbs';
+    "modules/prime-psionics/templates/power-tooltip.hbs";
 
   async getCardData(enrichmentOptions = {}) {
     const context = await super.getCardData(enrichmentOptions);
@@ -85,8 +77,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     context.tags = this.labels.components.tags;
     context.subtitle = [
       this.labels.level,
-      CONFIG.PSIONICS.disciplines[this.discipline].label,
-    ].filterJoin(' &bull; ');
+      CONFIG.PSIONICS.disciplines[this.discipline].label
+    ].filterJoin(" &bull; ");
     if (this.usesPP) {
       context.pp = ppText(this.consume.amount, true);
       context.tags = [...context.tags, ppText(this.consume.amount)];
@@ -101,11 +93,11 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     return foundry.utils.mergeObject(await super.getFavoriteData(), {
       subtitle: [
         this.parent.labels.components.ao,
-        this.parent.labels.activation,
+        this.parent.labels.activation
       ],
       modifier: this.parent.labels.modifier,
       range: this.range,
-      save: this.save,
+      save: this.save
     });
   }
 
@@ -118,7 +110,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     if (components.length) {
       foundry.utils.setProperty(
         source,
-        'flags.dnd5e.migratedProperties',
+        "flags.dnd5e.migratedProperties",
         components
       );
     }
@@ -135,36 +127,36 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       concentration: CONFIG.DND5E.itemProperties.concentration,
       ritual: CONFIG.DND5E.itemProperties.ritual
     };
-    const attributes = { ...CONFIG.PSIONICS.powerComponents, ...tags };
+    const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
     this.labels.level =
       this.level != 0
         ? CONFIG.DND5E.spellLevels[this.level]
-        : game.i18n.localize('PrimePsionics.Talent');
+        : game.i18n.localize("PrimePsionics.Talent");
     this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline]?.label;
-    this.labels.pp = this.usesPP ? 'PrimePsionics.PP' : '';
+    this.labels.pp = this.usesPP ? "PrimePsionics.PP" : "";
     this.labels.aug = this.augmenting
-      ? game.i18n.format('PrimePsionics.AugmentPower', {
-          power: this.augmenting,
-        })
-      : '';
+      ? game.i18n.format("PrimePsionics.AugmentPower", {
+        power: this.augmenting
+      })
+      : "";
     this.labels.components = this.properties.reduce(
       (obj, c) => {
         const config = attributes[c];
         if (!config) return obj;
-        const { abbr, label, icon } = config;
-        obj.all.push({ abbr, label, icon, tag: config.tag });
+        const {abbr, label, icon} = config;
+        obj.all.push({abbr, label, icon, tag: config.tag});
         if (config.tag) obj.tags.push(config.label);
         else obj.ao.push(config.abbr);
         return obj;
       },
-      { all: [], ao: [], tags: [] }
+      {all: [], ao: [], tags: []}
     );
     this.labels.components.ao = new Intl.ListFormat(game.i18n.lang, {
-      style: 'narrow',
-      type: 'conjunction',
+      style: "narrow",
+      type: "conjunction"
     }).format(this.labels.components.ao);
 
-    this.properties.add('mgc');
+    this.properties.add("mgc");
   }
 
   /** @inheritDoc */
@@ -172,14 +164,13 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     this.prepareFinalActivatedEffectData();
 
     // Necessary because excluded from valid types in Item5e#_prepareProficiency
-    if ( !this.parent.actor?.system.attributes?.prof ) {
+    if (!this.parent.actor?.system.attributes?.prof) {
       this.prof = new dnd5e.documents.Proficiency(0, 0);
       return;
     }
 
     this.prof = new dnd5e.documents.Proficiency(this.parent.actor.system.attributes.prof, this.proficiencyMultiplier ?? 0);
   }
-
 
   /* -------------------------------------------- */
   /*  Getters                                     */
@@ -197,7 +188,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     return [
       ...properties,
       this.labels.components.ao,
-      ...this.labels.components.tags,
+      ...this.labels.components.tags
     ];
   }
 
@@ -206,9 +197,9 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    */
   get usesPP() {
     return (
-      this.preparation.mode === 'always' &&
-      this.consume.type === 'flags' &&
-      this.consume.target === 'pp'
+      (this.preparation.mode === "always") &&
+      (this.consume.type === "flags") &&
+      (this.consume.target === "pp")
     );
   }
 
@@ -216,7 +207,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
 
   /** @inheritdoc */
   get _typeAbilityMod() {
-    return this.parent?.actor?.system.attributes.spellcasting || 'int';
+    return this.parent?.actor?.system.attributes.spellcasting || "int";
   }
 
   /* -------------------------------------------- */
