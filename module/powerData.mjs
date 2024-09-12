@@ -35,7 +35,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
         integer: true,
         initial: 1,
         min: 0,
-        label: "DND5E.SpellLevel"
+        label: "PrimePsionics.PowerLevel"
       }),
       discipline: new foundry.data.fields.StringField({
         required: true,
@@ -58,7 +58,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
           })
         },
         {label: "PrimePsionics.PowerPreparation"}
-      )
+      ),
+      sourceClass: new foundry.data.fields.StringField({label: "DND5E.SpellSourceClass"})
     });
   }
 
@@ -260,8 +261,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   /** @inheritDoc */
   async getSheetData(context) {
     context.subtitles = [
-      {label: context.labels.discipline},
-      {label: context.labels.school}
+      {label: context.labels.level},
+      {label: context.labels.discipline}
     ];
     context.psionics = CONFIG.PSIONICS;
     context.properties.active = this.parent.labels?.components?.tags;

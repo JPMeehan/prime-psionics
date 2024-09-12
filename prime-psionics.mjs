@@ -1,7 +1,7 @@
 import PP_CONFIG from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
 import PowerSheet from "./module/powerSheet.mjs";
-import {typePower, moduleID, ppText} from "./module/utils.mjs";
+import {typePower, moduleID, modulePath, ppText} from "./module/utils.mjs";
 
 Hooks.once("init", () => {
   foundry.utils.mergeObject(CONFIG, PP_CONFIG);
@@ -16,9 +16,10 @@ Hooks.once("init", () => {
 
   Items.registerSheet(moduleID, PowerSheet, {
     types: [typePower],
-    makeDefault: true,
     label: "PrimePsionics.Sheets.Power"
   });
+
+  loadTemplates([modulePath("templates/details-power.hbs")]);
 });
 
 /**
