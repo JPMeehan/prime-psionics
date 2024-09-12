@@ -1,5 +1,6 @@
 export const typePower = "prime-psionics.power";
 export const moduleID = "prime-psionics";
+export const modulePath = (path) => "modules/prime-psionics/" + path;
 
 /**
  *

@@ -1,4 +1,4 @@
-import {ppText} from "./utils.mjs";
+import {modulePath, ppText, typePower} from "./utils.mjs";
 
 const {ItemDescriptionTemplate, ActivitiesTemplate} = dnd5e.dataModels.item;
 const {ActivationField, DurationField, RangeField, TargetField} = dnd5e.dataModels.shared;
@@ -62,12 +62,168 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     });
   }
 
+  /** @override */
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ["level", {
+        label: "DND5E.SpellLevel",
+        type: "range",
+        config: {
+          keyPath: "system.level",
+          min: 0,
+          max: Object.keys(CONFIG.DND5E.spellLevels).length - 1
+        }
+      }],
+      ["discipline", {
+        label: "PrimePsionics.PowerDiscipline",
+        type: "set",
+        config: {
+          choices: CONFIG.PSIONICS.disciplines,
+          keyPath: "system.discipline"
+        }
+      }],
+      ["properties", this.compendiumBrowserPropertiesFilter(typePower)]
+    ]);
+  }
+
+  /* -------------------------------------------- */
+  /*  Data Migrations                             */
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  static _migrateData(source) {
+    super._migrateData(source);
+    ActivitiesTemplate.migrateActivities(source);
+    PowerData.#migrateActivation(source);
+    PowerData.#migrateTarget(source);
+  }
+  /**
+   * Migrate activation data.
+   * Added in DnD5e 4.0.0.
+   * @param {object} source  The candidate source data from which the model will be constructed.
+   */
+  static #migrateActivation(source) {
+    if (source.activation?.cost) source.activation.value = source.activation.cost;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate target data.
+   * Added in DnD5e 4.0.0.
+   * @param {object} source  The candidate source data from which the model will be constructed.
+   */
+  static #migrateTarget(source) {
+    if (!("target" in source)) return;
+    source.target.affects ??= {};
+    source.target.template ??= {};
+
+    if ("units" in source.target) source.target.template.units = source.target.units;
+    if ("width" in source.target) source.target.template.width = source.target.width;
+
+    const type = source.target.type ?? source.target.template.type ?? source.target.affects.type;
+    if (type in CONFIG.DND5E.areaTargetTypes) {
+      if ("type" in source.target) source.target.template.type = type;
+      if ("value" in source.target) source.target.template.size = source.target.value;
+    } else if (type in CONFIG.DND5E.individualTargetTypes) {
+      if ("type" in source.target) source.target.affects.type = type;
+      if ("value" in source.target) source.target.affects.count = source.target.value;
+    }
+  }
+
+  /**
+   * Add additional data shims for powers.
+   */
+  _applyPowerShims() {
+    Object.defineProperty(this.activation, "cost", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `activation.cost` property on `PowerData` has been renamed `activation.value`.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return this.value;
+      },
+      configurable: true,
+      enumerable: false
+    });
+    Object.defineProperty(this, "scaling", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `scaling` property on `PowerData` has been deprecated and is now handled by individual damage parts.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return {mode: "none", formula: null};
+      },
+      configurable: true,
+      enumerable: false
+    });
+    Object.defineProperty(this.target, "value", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `target.value` property on `PowerData` has been split into `target.template.size` and `target.affects.count`.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return this.template.size || this.affects.count;
+      },
+      configurable: true,
+      enumerable: false
+    });
+    Object.defineProperty(this.target, "width", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `target.width` property on `PowerData` has been moved to `target.template.width`.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return this.template.width;
+      },
+      configurable: true,
+      enumerable: false
+    });
+    Object.defineProperty(this.target, "units", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `target.units` property on `PowerData` has been moved to `target.template.units`.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return this.template.units;
+      },
+      configurable: true,
+      enumerable: false
+    });
+    Object.defineProperty(this.target, "type", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `target.type` property on `PowerData` has been split into `target.template.type` and `target.affects.type`.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return this.template.type || this.affects.type;
+      },
+      configurable: true,
+      enumerable: false
+    });
+    const firstActivity = this.activities.contents[0] ?? {};
+    Object.defineProperty(this.target, "prompt", {
+      get() {
+        foundry.utils.logCompatibilityWarning(
+          "The `target.prompt` property on `PowerData` has moved into its activity.",
+          {since: "DnD5e 4.0", until: "DnD5e 4.4", once: true}
+        );
+        return firstActivity.target?.prompt;
+      },
+      configurable: true,
+      enumerable: false
+    });
+  }
+
+  /* -------------------------------------------- */
+  /*  Tooltips                                    */
+  /* -------------------------------------------- */
+
   /**
    * The handlebars template for rendering item tooltips.
    * @type {string}
    */
-  static ITEM_TOOLTIP_TEMPLATE =
-    "modules/prime-psionics/templates/power-tooltip.hbs";
+  static ITEM_TOOLTIP_TEMPLATE = modulePath("templates/power-tooltip.hbs");
 
   async getCardData(enrichmentOptions = {}) {
     const context = await super.getCardData(enrichmentOptions);
@@ -101,19 +257,15 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     });
   }
 
-  /* -------------------------------------------- */
-  /*  Migrations                                  */
-  /* -------------------------------------------- */
-
-  static _migrateComponentData(source) {
-    const components = filteredKeys(source.system?.components ?? {});
-    if (components.length) {
-      foundry.utils.setProperty(
-        source,
-        "flags.dnd5e.migratedProperties",
-        components
-      );
-    }
+  /** @inheritDoc */
+  async getSheetData(context) {
+    context.subtitles = [
+      {label: context.labels.discipline},
+      {label: context.labels.school}
+    ];
+    context.psionics = CONFIG.PSIONICS;
+    context.properties.active = this.parent.labels?.components?.tags;
+    context.parts = [modulePath("templates/details-power.hbs"), "dnd5e.field-uses"];
   }
 
   /* -------------------------------------------- */
@@ -121,7 +273,14 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   /* -------------------------------------------- */
 
   prepareDerivedData() {
-    this.labels = {};
+    ActivitiesTemplate._applyActivityShims.call(this);
+    this._applyPowerShims();
+    super.prepareDerivedData();
+    this.prepareDescriptionData();
+    
+    this.duration.concentration = this.properties.has("concentration");
+
+    this.labels = this.parent.labels ??= {};
 
     const tags = {
       concentration: CONFIG.DND5E.itemProperties.concentration,
@@ -132,6 +291,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       this.level != 0
         ? CONFIG.DND5E.spellLevels[this.level]
         : game.i18n.localize("PrimePsionics.Talent");
+    this.labels.discipline = CONFIG.PSIONICS.disciplines[this.discipline]?.label;
     this.labels.school = CONFIG.PSIONICS.disciplines[this.discipline]?.label;
     this.labels.pp = this.usesPP ? "PrimePsionics.PP" : "";
     this.labels.aug = this.augmenting
@@ -161,7 +321,13 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
 
   /** @inheritDoc */
   prepareFinalData() {
-    this.prepareFinalActivatedEffectData();
+    const rollData = this.parent.getRollData({deterministic: true});
+    const labels = this.parent.labels ??= {};
+    this.prepareFinalActivityData();
+    ActivationField.prepareData.call(this, rollData, labels);
+    DurationField.prepareData.call(this, rollData, labels);
+    RangeField.prepareData.call(this, rollData, labels);
+    TargetField.prepareData.call(this, rollData, labels);
 
     // Necessary because excluded from valid types in Item5e#_prepareProficiency
     if (!this.parent.actor?.system.attributes?.prof) {
@@ -175,6 +341,14 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   /* -------------------------------------------- */
   /*  Getters                                     */
   /* -------------------------------------------- */
+
+  /**
+   * Attack classification of this spell.
+   * @type {"spell"}
+   */
+  get attackClassification() {
+    return "spell";
+  }
 
   /**
    * Properties displayed in chat.
@@ -197,9 +371,9 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    */
   get usesPP() {
     return (
-      (this.preparation.mode === "always") &&
-      (this.consume.type === "flags") &&
-      (this.consume.target === "pp")
+      (this.preparation.mode === "always")
+      // (this.consume.type === "flags") &&
+      // (this.consume.target === "pp")
     );
   }
 
@@ -223,5 +397,18 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    */
   get proficiencyMultiplier() {
     return 1;
+  }
+  
+  /** @inheritDoc */
+  get scalingIncrease() {
+    if (this.level !== 0) return null;
+    return Math.floor(((this.parent.actor?.system.cantripLevel?.({system: {preparation: {mode: "prepared"}}}) ?? 0) + 1) / 6);
+  }
+
+  /** @inheritDoc */
+  getRollData(...options) {
+    const data = super.getRollData(...options);
+    // data.item.level = data.item.level + (this.parent.getFlag("dnd5e", "scaling") ?? 0);
+    return data;
   }
 }
