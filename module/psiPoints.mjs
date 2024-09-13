@@ -31,9 +31,11 @@ export default class PsiPoints {
    * @returns {{ label: string, hint: string }}  Label and hint text.
    */
   static consumptionLabels(config) {
+    const limit = this.actor.getFlag(moduleID, "manifestLimit");
+    const points = Number(this.value ?? 0) + Number(config.scaling ?? 0);
     return {
       label: game.i18n.localize("PrimePsionics.Intensify"),
-      hint: game.i18n.localize("PrimePsionics.ConsumptionHint")
+      hint: game.i18n.format("PrimePsionics.ConsumptionHint", {points, limit})
     };
   }
 }
