@@ -67,7 +67,7 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
   static get compendiumBrowserFilters() {
     return new Map([
       ["level", {
-        label: "DND5E.SpellLevel",
+        label: "PrimePsionics.PowerLevel",
         type: "range",
         config: {
           keyPath: "system.level",

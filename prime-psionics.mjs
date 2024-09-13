@@ -20,6 +20,14 @@ Hooks.once("init", () => {
   });
 
   loadTemplates([modulePath("templates/details-power.hbs")]);
+
+  dnd5e.applications.CompendiumBrowser.TABS.splice(7, 0, {
+    tab: "primePowers",
+    label: "TYPES.Item.prime-psionics.powerPl",
+    svg: modulePath("assets/icons/power.svg"),
+    documentClass: "Item",
+    types: [typePower]
+  });
 });
 
 /**
