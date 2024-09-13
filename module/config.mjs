@@ -1,4 +1,5 @@
 import {typePower} from "./utils.mjs";
+import PsiPoints from "./psiPoints.mjs";
 
 const PP_CONFIG = {
   DND5E: {},
@@ -159,8 +160,12 @@ PP_CONFIG.DND5E = {
       }
     }
   },
-  abilityConsumptionTypes: {
-    flags: "PrimePsionics.Flags"
+  activityConsumptionTypes: {
+    psiPoints: {
+      label: PsiPoints.label,
+      consume: PsiPoints.consume,
+      consumptionLabels: PsiPoints.consumptionLabels
+    }
   },
   defaultArtwork: {
     Item: {
