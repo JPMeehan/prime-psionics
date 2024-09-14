@@ -21,11 +21,11 @@ PP_CONFIG.PSIONICS.powerPreparationModes = {
 PP_CONFIG.PSIONICS.powerComponents = {
   auditory: {
     label: "PrimePsionics.ComponentAuditory",
-    abbr: "PrimePsionics.ComponentAuditoryAbbr"
+    abbreviation: "PrimePsionics.ComponentAuditoryAbbr"
   },
   observable: {
     label: "PrimePsionics.ComponentObservable",
-    abbr: "PrimePsionics.ComponentObservableAbbr"
+    abbreviation: "PrimePsionics.ComponentObservableAbbr"
   }
 };
 

@@ -304,10 +304,10 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       (obj, c) => {
         const config = attributes[c];
         if (!config) return obj;
-        const {abbr, label, icon} = config;
-        obj.all.push({abbr, label, icon, tag: config.tag});
-        if (config.tag) obj.tags.push(config.label);
-        else obj.ao.push(config.abbr);
+        const {abbreviation, label, icon} = config;
+        obj.all.push({abbreviation, label, icon, tag: config.tag});
+        if (config.isTag) obj.tags.push(config.label);
+        else obj.ao.push(config.abbreviation);
         return obj;
       },
       {all: [], ao: [], tags: []}
