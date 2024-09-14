@@ -407,9 +407,18 @@ Hooks.on(
 
 /**
  * 
- * Activity Defaults
+ * Useful Defaults
  * 
  */
+
+Hooks.on("preCreateItem", (item, data, context, userId) => {
+  if (item.type !== typePower) return;
+  const bookSource = foundry.utils.getProperty(data, "system.source.book");
+  if (!bookSource) item.updateSource({"system.source": {
+    book: "Psion's Primer",
+    license: "DMsGuild CCA"
+  }});
+});
 
 Hooks.on("preUpdateItem", (item, changes, context, userId) => {
   if (item.type !== typePower) return;
