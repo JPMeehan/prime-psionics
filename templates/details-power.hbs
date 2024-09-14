@@ -5,6 +5,10 @@
     {{!-- Spell Level --}}
     {{ formField fields.level value=source.level choices=psionics.powerLevels localize=true }}
 
+    {{#if system.level}}
+    {{ formField fields.augmenting value=source.augmenting localize=true }}
+    {{/if}}
+
     {{!-- Spell School --}}
     {{ formField fields.discipline value=source.discipline choices=psionics.disciplines
     labelAttr="label" blank="" localize=true }}
