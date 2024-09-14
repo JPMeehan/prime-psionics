@@ -237,8 +237,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       CONFIG.PSIONICS.disciplines[this.discipline].label
     ].filterJoin(" &bull; ");
     if (this.usesPP) {
-      context.pp = ppText(this.consume.amount, true);
-      context.tags = [...context.tags, ppText(this.consume.amount)];
+      context.pp = ppText(this.ppValue, true);
+      context.tags = [...context.tags, ppText(this.ppValue)];
     }
     context.augments = this.augmenting;
     return context;
@@ -371,11 +371,13 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    * @returns {boolean}   Whether this power is configured to use power points or not
    */
   get usesPP() {
-    return (
-      (this.preparation.mode === "always")
-      // (this.consume.type === "flags") &&
-      // (this.consume.target === "pp")
-    );
+    return (this.preparation.mode === "always") && this.activities.some(a => a.consumption.targets.some(c => c.type === "psiPoints"));
+  }
+
+  get ppValue() {
+    const [consumptionData] = this.activities.map(a => a.consumption.targets.find(c => c.type === "psiPoints"));
+    if (!consumptionData) return null;
+    return consumptionData.value;
   }
 
   /* -------------------------------------------- */

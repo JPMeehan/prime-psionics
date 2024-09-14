@@ -145,14 +145,13 @@ Hooks.on("renderActorSheet5e", (app, html, context) => {
     };
 
     powers.forEach((power) => {
-      if (power.system.usesPP)
-        power.system.labels.pp = ppText(power.system.consume.amount);
+      if (power.system.usesPP) power.system.labels.pp = ppText(power.system.ppValue);
       foundry.utils.mergeObject(power, {
         labels: power.system.labels
       });
 
       // Activation
-      const cost = power.system.activation?.cost;
+      const cost = power.system.activation?.value;
       const abbr = {
         action: "DND5E.ActionAbbr",
         bonus: "DND5E.BonusActionAbbr",
