@@ -2,7 +2,13 @@
 
 ## 2.0.0
 
-- Rewrite for dnd5e system 4.0.0
+- Major Rewrite for dnd5e system 4.0.0
+- Powers now use activities
+- Powers now just use the normal Item sheet
+- New custom Consumption type available for *all* item types: Power Points!
+  - New activities on a Power with a level of 1 or more will default to having a Power Point consumption type
+  - These also have a default consumption max of `"1 + @flags.prime-psionics.manifestLimit - @activity.consumption.targets.0.value"`
+- Added compatibility with the Compendium Browser
 
 ## 1.2.1
 

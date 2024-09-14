@@ -1,5 +1,6 @@
-export const typePower = 'prime-psionics.power';
-export const moduleID = 'prime-psionics';
+export const typePower = "prime-psionics.power";
+export const moduleID = "prime-psionics";
+export const modulePath = (path) => "modules/prime-psionics/" + path;
 
 /**
  *
@@ -11,8 +12,8 @@ export const moduleID = 'prime-psionics';
 export function ppText(pp, lowercase = false) {
   let text = `${pp} ${
     pp === 1
-      ? game.i18n.localize('PrimePsionics.1PP')
-      : game.i18n.localize('PrimePsionics.PP')
+      ? game.i18n.localize("PrimePsionics.1PP")
+      : game.i18n.localize("PrimePsionics.PP")
   }`;
   return lowercase ? text.toLocaleLowerCase() : text;
 }
