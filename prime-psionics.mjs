@@ -405,3 +405,35 @@ Hooks.on(
     }
   }
 );
+
+/**
+ * 
+ * Activity Defaults
+ * 
+ */
+
+Hooks.on("preUpdateItem", (item, changes, context, userId) => {
+  if (item.type !== typePower) return;
+  const activityChanges = foundry.utils.getProperty(changes, "system.activities");
+  if (!activityChanges) return;
+  const activities = foundry.utils.getProperty(item, "system.activities");
+  for (const [key, activityData] of Object.entries(activityChanges)) {
+    if (!activities.get(key) && !key.startsWith("-=")) {
+      // make changes to activity
+      if (item.system.level > 0) {
+        activityData.consumption.targets.push({
+          type: "psiPoints",
+          value: "1",
+          scaling: {
+            mode: "amount"
+          }
+        });
+        activityData.consumption.scaling.allowed = true;
+        activityData.consumption.scaling.max = "1 + @flags.prime-psionics.manifestLimit - @activity.consumption.targets.0.value";
+      }
+      else {
+        // Talents
+      }
+    }
+  }
+});

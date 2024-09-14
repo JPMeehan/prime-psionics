@@ -18,7 +18,6 @@ export default class PsiPoints {
    * @param {ActivityUsageUpdates} updates     Updates to be performed.
    */
   static async consume(config, updates) {
-    console.log(this, config, updates);
     const pp = this.actor.getFlag(moduleID, "pp");
     const expenditure = Number(this.value) + Number(config.scaling);
     updates.actor[`flags.${moduleID}.pp.value`] = pp.value - expenditure;
