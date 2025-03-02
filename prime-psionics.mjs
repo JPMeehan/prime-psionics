@@ -325,7 +325,7 @@ Hooks.on(
 Hooks.on("dnd5e.preparePsionicsSlots", (spells, actor, progression) => {
   if ((actor.type !== "npc") || !actor.items.some((i) => i.type === typePower))
     return;
-  const level = foundry.utils.getProperty(actor, "system.details.spellLevel");
+  const level = foundry.utils.getProperty(actor, "system.details.spell.level");
   updateManifester(actor, level);
 });
 

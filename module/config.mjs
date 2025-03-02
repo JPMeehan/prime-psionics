@@ -173,8 +173,7 @@ PP_CONFIG.DND5E = {
     }
   },
   sourceBooks: {
-    "Psion's Primer":
-      "The Korranberg Chronicle: Psion's Primer - A Complete Psionics System"
+    PsiPri: "Korranberg Chronicle: Psion's Primer"
   }
 };
 
