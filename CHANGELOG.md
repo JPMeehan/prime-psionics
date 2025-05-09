@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
+- Major rewrite for dnd5e system 5.0
+
 ## 2.0.2
 
 - Verified for Foundry v13
