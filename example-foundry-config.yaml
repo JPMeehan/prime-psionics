@@ -1,0 +1,3 @@
+# Copy this file and rename it to "foundry-config.yaml"
+installPath: "C:\\Program Files\\Foundry Virtual Tabletop\\Version 13" # Root of your Foundry install, used for creating symlinks for type purposes
+system: "C:\\Users\\JPMeehan\\AppData\\Local\\FoundryVTT\\Data\\systems\\dnd5e" # Folder where you've cloned the system repo

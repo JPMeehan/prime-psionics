@@ -1,5 +1,8 @@
 import {modulePath, typePower} from "./utils.mjs";
 
+/** @import {CharacterActorSheet, NPCActorSheet} from "../dnd5e/module/applications/actor/_module.mjs" */
+/** @import {ApplicationRenderContext, ApplicationRenderOptions} from "@client/applications/_types.mjs" */
+
 /**
  * Adjust the NPC and Character sheets to have a powers tab.
  */
@@ -209,6 +212,9 @@ function preparePowers(app, context) {
 }
 
 /* -------------------------------------------------- */
+
+/** @import BaseActorSheet from "../dnd5e/module/applications/actor/api/base-actor-sheet.mjs" */
+/** @import ContainerSheet from "../dnd5e/module/applications/item/container-sheet.mjs" */
 
 /**
  * Handle filter logic for filtering items on the sheet.
