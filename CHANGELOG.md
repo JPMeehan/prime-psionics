@@ -3,15 +3,7 @@
 ## 3.0.0
 
 - Major rewrite for dnd5e system 5.0
-
-## 2.0.2
-
-- Verified for Foundry v13
-
-## 2.0.1
-
 - Revised source book addition to `PsiPri: "Korranberg Chronicle: Psion's Primer"`
-- Resolved deprecation warning & updated minimum to dnd5e 4.3
 
 ## 2.0.0
 
