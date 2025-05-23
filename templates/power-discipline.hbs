@@ -1,0 +1,9 @@
+{{#if isItem}}
+<div class="item-detail item-school" data-tooltip aria-label="{{ entry.labels.discipline }}" data-column-id="powerDiscipline">
+    {{#with (lookup @root.psionics.disciplines entry.system.discipline) as |disciplineConfig|}}
+    <dnd5e-icon src="{{ disciplineConfig.icon }}"></dnd5e-icon>
+    {{/with}}
+</div>
+{{else}}
+<div class="item-detail item-school empty" data-column-id="powerDiscipline"></div>
+{{/if}}
