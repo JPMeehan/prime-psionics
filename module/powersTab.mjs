@@ -97,7 +97,10 @@ export async function renderBaseActorSheet(app, html, context, options) {
     for (const label of html.querySelectorAll("section[data-tab=\"spells\"] section.top div.spellcasting h3")) {
       if (label.innerHTML === game.i18n.format("DND5E.SpellcastingClass", {class: name})) targetHeader = label;
     }
-    if (targetHeader) manifesters.push(targetHeader.closest("div.spellcasting"));
+    if (targetHeader) {
+      targetHeader.innerHTML = game.i18n.format("PrimePsionics.ManifestingClass", {class: name});
+      manifesters.push(targetHeader.closest("div.spellcasting"));
+    }
   }
 
   if (("parts" in options) && !options.parts.includes("primePowers")) {

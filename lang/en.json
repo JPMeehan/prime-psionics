@@ -44,7 +44,8 @@
     "HalfP": "Half Manifester",
     "ThirdP": "Third Manifester",
     "TooManyPP": "You don't have that many Psi Points available!",
-    "Manifest": "Manifest Power"
+    "Manifest": "Manifest Power",
+    "ManifestingClass": "{class} Manifesting"
   },
   "TYPES.Item.prime-psionics": {
     "power": "Power",
