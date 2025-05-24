@@ -1,10 +1,10 @@
 {
   "id": "prime-psionics",
   "title": "Prime Psionics",
-  "description": "An implementation of psionic powers in dnd5e via v11 module subtypes.",
+  "description": "An implementation of psionic powers in dnd5e.",
   "version": "#{VERSION}#",
   "compatibility": {
-    "minimum": "12",
+    "minimum": "13",
     "verified": "13"
   },
   "relationships": {
@@ -13,8 +13,8 @@
         "id": "dnd5e",
         "type": "system",
         "compatibility": {
-          "minimum": "4.3",
-          "verified": "4.3"
+          "minimum": "5",
+          "verified": "5"
         }
       }
     ]

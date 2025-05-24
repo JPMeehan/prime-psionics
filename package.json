@@ -4,6 +4,7 @@
   "description": "An FVTT module that introduces powers as a new type of item for dnd5e",
   "main": "prime-psionics.mjs",
   "scripts": {
+    "createSymlinks": "node ./tools/create-symlinks.mjs",
     "build:css": "sass ./styles/prime-psionics.scss prime-psionics.css",
     "build:js": "rollup -c",
     "build": "npm run build:css && npm run build:js"
