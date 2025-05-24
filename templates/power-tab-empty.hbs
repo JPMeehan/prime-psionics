@@ -1,4 +1,22 @@
 <section class="tab {{ tab.cssClass }}" data-tab="{{ tab.id }}" data-group="{{ tab.group }}">
-  {{!-- Empty tab for reference in static TABS due to context prep limitation --}}
-  {{log this}}
+  <section class="top"></section>
+  <div class='items-section card'>
+    <div class='items-header header'>
+      <h3>{{localize 'PrimePsionics.PP'}}</h3>
+      <div class='power-points'>
+        <input
+          class='pp-input'
+          type='text'
+          name='flags.prime-psionics.pp.value'
+          value='{{actor.flags.prime-psionics.pp.value}}'
+          placeholder='0'
+          data-dtype='Number'
+        />
+        <span class='sep'> / </span>
+        <span>{{actor.flags.prime-psionics.pp.max}}</span>
+      </div>
+    </div>
+  </div>
+
+  {{!-- Remainder is added in hook due to context prep limitation --}}
 </section>

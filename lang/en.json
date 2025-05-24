@@ -8,7 +8,7 @@
     "Intensify": "Intensify",
     "ConsumptionHint": "Consume {points} Psi Points. Your Manifest Limit is {limit}.",
     "PowerNone": "None",
-    "SearchPower": "Search Powers",
+    "SearchPowers": "Search Powers",
     "PowerDiscipline": "Power Discipline",
     "DisciplineHeader": "Discipline",
     "DiscClair": "Clairsentience",
@@ -46,7 +46,7 @@
     "TooManyPP": "You don't have that many Psi Points available!",
     "Manifest": "Manifest Power"
   },
-  "TYPES.Item.prime-psionics": { 
+  "TYPES.Item.prime-psionics": {
     "power": "Power",
     "powerPl": "Powers"
   }

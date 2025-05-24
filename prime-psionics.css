@@ -2,12 +2,29 @@
   width: 30px;
 }
 
-.dnd5e2.sheet.actor .power-points .pp-input {
-  height: 100%;
-  width: 30px;
-  color: white;
-  border: none;
-  text-align: right;
+.dnd5e2.sheet.actor {
+  &.tab-primePowers .create-child {
+    display: block;
+  }
+
+  &.character .tab[data-tab="primePowers"] .top {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .card.spellcasting {
+      width: 230px;
+    }
+  }
+  .power-points .pp-input {
+    height: 100%;
+    width: 30px;
+    color: white;
+    text-align: right;
+    background: inherit;
+    border-style: hidden;
+  }
 }
 
 .dialog .psi-manifest {

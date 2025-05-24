@@ -15,7 +15,6 @@ export function addPowerTab() {
   const powerPart = {
     container: {classes: ["tab-body"], id: "tabs"},
     template: modulePath("templates/power-tab-empty.hbs"),
-    templates: [modulePath("templates/power-tab.hbs")],
     scrollable: [""]
   };
 
@@ -85,7 +84,34 @@ export async function renderBaseActorSheet(app, html, context, options) {
     });
   }
 
-  if (("parts" in options) && !options.parts.includes("primePowers")) return;
+  /** @type {HTMLDivElement[]} */
+  const manifesters = [];
+
+  for (const item of Object.values(actor.spellcastingClasses)) {
+    const sc = item.spellcasting;
+
+    if (sc.type !== "psionics") continue;
+
+    let targetHeader;
+    const name = item.system.spellcasting.progression === sc.progression ? item.name : item.subclass?.name;
+    for (const label of html.querySelectorAll("section[data-tab=\"spells\"] section.top div.spellcasting h3")) {
+      if (label.innerHTML === game.i18n.format("DND5E.SpellcastingClass", {class: name})) targetHeader = label;
+    }
+    if (targetHeader) manifesters.push(targetHeader.closest("div.spellcasting"));
+  }
+
+  if (("parts" in options) && !options.parts.includes("primePowers")) {
+    for (const manifestDiv of manifesters) manifestDiv.remove();
+    return;
+  }
+
+  const powerTab = html.querySelector("section[data-application-part=\"primePowers\"]");
+
+  const manifestationSection = powerTab.querySelector("section.top");
+
+  for (const manifestDiv of manifesters) {
+    manifestationSection.insertAdjacentElement("beforeend", manifestDiv);
+  }
 
   app._filters.powers ??= {name: "", properties: new Set()};
 
@@ -123,14 +149,12 @@ export async function renderBaseActorSheet(app, html, context, options) {
     ]
   };
 
-  const powerTab = html.querySelector("section[data-application-part=\"primePowers\"]");
-
   const contents = await foundry.applications.handlebars.renderTemplate(
-    modulePath("templates/power-tab.hbs"),
+    "systems/dnd5e/templates/inventory/inventory.hbs",
     context
   );
 
-  powerTab.insertAdjacentHTML("afterbegin", contents);
+  powerTab.insertAdjacentHTML("beforeEnd", contents);
 
   // recreate drag drop handling
   if (app.isEditable) {
