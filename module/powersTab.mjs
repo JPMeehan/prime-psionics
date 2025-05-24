@@ -15,6 +15,7 @@ export function addPowerTab() {
   const powerPart = {
     container: {classes: ["tab-body"], id: "tabs"},
     template: modulePath("templates/power-tab-empty.hbs"),
+    templates: [modulePath("templates/power-tab.hbs")],
     scrollable: [""]
   };
 
@@ -84,7 +85,7 @@ export async function renderBaseActorSheet(app, html, context, options) {
     });
   }
 
-  if (("parts" in options) && !options.parts.includes("powers")) return;
+  if (("parts" in options) && !options.parts.includes("primePowers")) return;
 
   app._filters.powers ??= {name: "", properties: new Set()};
 
@@ -122,10 +123,10 @@ export async function renderBaseActorSheet(app, html, context, options) {
     ]
   };
 
-  const powerTab = html.querySelector("section[data-application-part=\"powers\"]");
+  const powerTab = html.querySelector("section[data-application-part=\"primePowers\"]");
 
   const contents = await foundry.applications.handlebars.renderTemplate(
-    modulePath("systems/dnd5e/templates/inventory/inventory.hb"),
+    modulePath("templates/power-tab.hbs"),
     context
   );
 
@@ -133,6 +134,7 @@ export async function renderBaseActorSheet(app, html, context, options) {
 
   // recreate drag drop handling
   if (app.isEditable) {
+
     powerTab.querySelectorAll(".draggable").forEach((e) => {
       e.setAttribute("draggable", true);
       e.ondragstart = (event) => {
@@ -165,7 +167,7 @@ function preparePowers(app, context) {
       "controls"
     ]);
 
-  const powerSections = Object.entries(CONFIG.PSIONICS.disciplines).map(([i, label]) => ({
+  const powerSections = Object.entries(CONFIG.PSIONICS.powerLevels).map(([i, label]) => ({
     id: "level" + i,
     // section order not directly power order
     order: i,

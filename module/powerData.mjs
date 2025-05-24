@@ -25,33 +25,36 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
 
   /** @inheritdoc */
   static defineSchema() {
+    const fields = foundry.data.fields;
+
     return this.mergeSchema(super.defineSchema(), {
+      ability: new fields.StringField({label: "DND5E.SpellAbility"}),
       activation: new ActivationField(),
       duration: new DurationField(),
       range: new RangeField(),
       target: new TargetField(),
-      level: new foundry.data.fields.NumberField({
+      level: new fields.NumberField({
         required: true,
         integer: true,
         initial: 1,
         min: 0,
         label: "PrimePsionics.PowerLevel"
       }),
-      discipline: new foundry.data.fields.StringField({
+      discipline: new fields.StringField({
         required: true,
         label: "PrimePsionics.PowerDiscipline"
       }),
-      augmenting: new foundry.data.fields.StringField({
+      augmenting: new fields.StringField({
         required: true,
         label: "PrimePsionics.Augmenting"
       }),
-      properties: new foundry.data.fields.SetField(
-        new foundry.data.fields.StringField(),
+      properties: new fields.SetField(
+        new fields.StringField(),
         {label: "DND5E.Properties"}
       ),
-      preparation: new foundry.data.fields.SchemaField(
+      preparation: new fields.SchemaField(
         {
-          mode: new foundry.data.fields.StringField({
+          mode: new fields.StringField({
             required: true,
             initial: "always",
             label: "PrimePsionics.PowerPreparationMode"
@@ -59,9 +62,14 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
         },
         {label: "PrimePsionics.PowerPreparation"}
       ),
-      sourceClass: new foundry.data.fields.StringField({label: "DND5E.SpellSourceClass"})
+      sourceClass: new fields.StringField({label: "DND5E.SpellSourceClass"})
     });
   }
+
+  /** @inheritDoc */
+  static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+    hasEffects: true
+  }, {inplace: false}));
 
   /** @override */
   static get compendiumBrowserFilters() {
@@ -263,6 +271,14 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    */
   get attackClassification() {
     return "spell";
+  }
+
+  /** @override */
+  get availableAbilities() {
+    if (this.ability) return new Set([this.ability]);
+    const spellcasting = this.parent?.actor?.spellcastingClasses[this.sourceClass]?.spellcasting.ability
+      ?? this.parent?.actor?.system.attributes?.spellcasting;
+    return new Set(spellcasting ? [spellcasting] : []);
   }
 
   /**
