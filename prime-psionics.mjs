@@ -8,6 +8,8 @@ Hooks.once("init", () => {
 
   foundry.utils.mergeObject(CONFIG, PP_CONFIG);
 
+  CONFIG.DND5E.attackClassifications[typePower] = {label: "PrimePsionics.PowerClassification"};
+
   Object.assign(CONFIG.Item.dataModels, {
     [typePower]: PowerData
   });
@@ -15,8 +17,8 @@ Hooks.once("init", () => {
   dnd5e.utils.preLocalize("spellcastingTypes.psionics.progression", {
     key: "label"
   });
-  
-  loadTemplates([modulePath("templates/details-power.hbs")]);
+
+  foundry.applications.handlebars.loadTemplates([modulePath("templates/details-power.hbs")]);
 
   dnd5e.applications.CompendiumBrowser.TABS.splice(7, 0, {
     tab: "primePowers",
@@ -168,9 +170,9 @@ Hooks.on(
 );
 
 /**
- * 
+ *
  * Useful Defaults
- * 
+ *
  */
 
 Hooks.on("preCreateItem", (item, data, context, userId) => {

@@ -4,6 +4,7 @@
     "PowerName": "Power Name",
     "PowerDetails": "Power Details",
     "PowerLevel": "Power Level",
+    "PowerClassification": "Power",
     "Talent": "Talent",
     "Intensify": "Intensify",
     "ConsumptionHint": "Consume {points} Psi Points. Your Manifest Limit is {limit}.",

@@ -15,7 +15,7 @@ const {ActivationField, DurationField, RangeField, TargetField} = dnd5e.dataMode
  * @property {Set<string>} properties            General components and tags for this power.
  * @property {string} preparation                The preparation mode as found in `CONFIG.PSIONICS.powerPreparationModes`
  */
-export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
+export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.mixin(
   ItemDescriptionTemplate,
   ActivitiesTemplate
 ) {
@@ -150,6 +150,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
    */
   static ITEM_TOOLTIP_TEMPLATE = modulePath("templates/power-tooltip.hbs");
 
+  /* -------------------------------------------- */
+
   async getCardData(enrichmentOptions = {}) {
     const context = await super.getCardData(enrichmentOptions);
     context.psionics = CONFIG.PSIONICS;
@@ -181,6 +183,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       save: this.save
     });
   }
+
+  /* -------------------------------------------- */
 
   /** @inheritDoc */
   async getSheetData(context) {
@@ -297,6 +301,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     this.properties.add("mgc");
   }
 
+  /* -------------------------------------------- */
+
   /** @inheritDoc */
   prepareFinalData() {
     const rollData = this.parent.getRollData({deterministic: true});
@@ -322,11 +328,13 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
 
   /**
    * Attack classification of this spell.
-   * @type {"spell"}
+   * @type {string}
    */
   get attackClassification() {
-    return "spell";
+    return typePower;
   }
+
+  /* -------------------------------------------- */
 
   /** @override */
   get availableAbilities() {
@@ -335,6 +343,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
       ?? this.parent?.actor?.system.attributes?.spellcasting;
     return new Set(spellcasting ? [spellcasting] : []);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Properties displayed in chat.
@@ -352,12 +362,16 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     ];
   }
 
+  /* -------------------------------------------- */
+
   /**
    * @returns {boolean}   Whether this power is configured to use power points or not
    */
   get usesPP() {
     return (this.preparation.mode === "always") && this.activities.some(a => a.consumption.targets.some(c => c.type === "psiPoints"));
   }
+
+  /* -------------------------------------------- */
 
   get ppValue() {
     const [consumptionData] = this.activities.map(a => a.consumption.targets.find(c => c.type === "psiPoints"));
@@ -379,6 +393,8 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     return this.parent?.actor?.flags.dnd5e?.spellCriticalThreshold ?? Infinity;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * The proficiency multiplier for this item.
    * @returns {number}
@@ -387,11 +403,36 @@ export default class PowerData extends dnd5e.dataModels.ItemDataModel.mixin(
     return 1;
   }
 
+  /* -------------------------------------------- */
+
+  /** @inheritdoc */
+  get canConfigureScaling() {
+    return this.level > 0;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  get canScale() {
+    return this.level > 0;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
+  get canScaleDamage() {
+    return true;
+  }
+
+  /* -------------------------------------------- */
+
   /** @inheritDoc */
   get scalingIncrease() {
     if (this.level !== 0) return null;
     return Math.floor(((this.parent.actor?.system.cantripLevel?.({system: {preparation: {mode: "prepared"}}}) ?? 0) + 1) / 6);
   }
+
+  /* -------------------------------------------- */
 
   /** @inheritDoc */
   getRollData(...options) {

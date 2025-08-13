@@ -172,6 +172,27 @@ export async function renderBaseActorSheet(app, html, context, options) {
   }
 }
 
+/**
+ * Hook to modify context for actor sheets.
+ * @param {object} sheet    The sheet class instance
+ * @param {string} partId The part
+ * @param {object} context  The Render context
+ * @param {object} options  The Render options
+ */
+export function prepareSheetContext(sheet, partId, context, options) {
+  const actorType = sheet.document.type;
+  if (!["character", "npc"].includes(actorType)) return;
+  switch (partId) {
+    case "features":
+      removePowerFeatures(sheet, partId, context, options);
+      break;
+    case "powers":
+      preparePowerPartContext(sheet, partId, context, options);
+      if (actorType === "npc") context.showStrain = false;
+      else prepareStrainContext(sheet, partId, context, options);
+      break;
+  }
+}
 /* -------------------------------------------------- */
 
 /**
