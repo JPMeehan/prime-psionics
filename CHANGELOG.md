@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.2
+
+- Actually fixed module.json image path declaration for activities
+
 ## 3.1.1
 
 - Fixed module.json image path declaration for activities
