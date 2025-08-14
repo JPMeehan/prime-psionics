@@ -46,7 +46,7 @@
           "description.unidentified"
         ],
         "filePathFields": {
-          "img": ["activities.*.img"]
+          "IMAGE": ["activities.*.img"]
         }
       }
     }

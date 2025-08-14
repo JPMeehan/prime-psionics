@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1
+
+- Fixed module.json image path declaration for activities
+
 ## 3.1.0
 
 - Updated logic for dnd5e system 5.1
