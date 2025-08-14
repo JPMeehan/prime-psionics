@@ -440,4 +440,40 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
     // data.item.level = data.item.level + (this.parent.getFlag("dnd5e", "scaling") ?? 0);
     return data;
   }
+
+  /** @inheritdoc */
+  async _preCreate(data, options, user) {
+    if ((await super._preCreate(data, options, user)) === false) return false;
+    const bookSource = foundry.utils.getProperty(data, "system.source.book");
+    if (!bookSource) this.updateSource({source: {
+      book: "PsiPri",
+      license: "DMsGuild CCA"
+    }});
+  }
+
+  /** @inheritdoc */
+  async _preUpdate(changes, options, user) {
+    if ((await super._preUpdate(changes, options, user)) === false) return false;
+    const activityChanges = foundry.utils.getProperty(changes, "system.activities");
+    if (!activityChanges) return;
+    for (const [key, activityData] of Object.entries(activityChanges)) {
+      if (!this.activities.get(key) && !key.startsWith("-=")) {
+      // make changes to activity
+        if (this.level > 0) {
+          activityData.consumption.targets.push({
+            type: "psiPoints",
+            value: "1",
+            scaling: {
+              mode: "amount"
+            }
+          });
+          activityData.consumption.scaling.allowed = true;
+          activityData.consumption.scaling.max = "1 + @flags.prime-psionics.manifestLimit - @activity.consumption.targets.0.value";
+        }
+        else {
+        // Talents
+        }
+      }
+    }
+  }
 }

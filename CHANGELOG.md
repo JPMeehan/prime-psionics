@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+- Updated logic for dnd5e system 5.1
+
 ## 3.0.0
 
 - Major rewrite for dnd5e system 5.0
@@ -25,7 +29,7 @@
 ## 1.2.0
 
 - Updated minimum compatibility to D&D 3.3
-- Fixed bug preventing display on the revised NPC & Character sheets 
+- Fixed bug preventing display on the revised NPC & Character sheets
 
 ## 1.1.3
 

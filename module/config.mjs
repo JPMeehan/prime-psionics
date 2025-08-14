@@ -138,7 +138,9 @@ PP_CONFIG.DND5E = {
   },
   spellcasting: {
     psionics: {
+      img: "",
       label: "PrimePsionics.Psionics",
+      type: "manifester",
       order: 30,
       progression: {
         fullp: {
