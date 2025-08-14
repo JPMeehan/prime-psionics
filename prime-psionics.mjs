@@ -14,7 +14,7 @@ Hooks.once("init", () => {
     [typePower]: PowerData
   });
 
-  dnd5e.utils.preLocalize("spellcastingTypes.psionics.progression", {
+  dnd5e.utils.preLocalize("spellcasting.psionics.progression", {
     key: "label"
   });
 
@@ -70,9 +70,9 @@ Hooks.on("dnd5e.prepareSheetContext", prepareSheetContext);
 Hooks.on(
   "dnd5e.computePsionicsProgression",
   (progression, actor, cls, spellcasting, count) => {
-    if (!("psionics" in progression)) progression.psionics = 0;
+    progression.psionics ??= 0;
     const prog =
-      CONFIG.DND5E.spellcastingTypes.psionics.progression[
+      CONFIG.DND5E.spellcasting.psionics.progression[
         spellcasting.progression
       ];
     if (!prog) return;

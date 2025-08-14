@@ -136,14 +136,10 @@ PP_CONFIG.DND5E = {
   specialTimePeriods: {
     foc: "PrimePsionics.Focus"
   },
-  spellProgression: {
-    fullp: "PrimePsionics.FullP",
-    halfp: "PrimePsionics.HalfP",
-    thirdp: "PrimePsionics.ThirdP"
-  },
-  spellcastingTypes: {
+  spellcasting: {
     psionics: {
       label: "PrimePsionics.Psionics",
+      order: 30,
       progression: {
         fullp: {
           label: "PrimePsionics.FullP",
