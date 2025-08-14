@@ -1,6 +1,6 @@
 import PP_CONFIG from "./module/config.mjs";
 import PowerData from "./module/powerData.mjs";
-import {addPowerTab, renderBaseActorSheet} from "./module/powersTab.mjs";
+import {addPowerTab, prepareSheetContext, renderBaseActorSheet} from "./module/powersTab.mjs";
 import {typePower, moduleID, modulePath, ppText} from "./module/utils.mjs";
 
 Hooks.once("init", () => {
@@ -59,6 +59,7 @@ function _localizeHelper(object) {
  */
 
 Hooks.on("renderBaseActorSheet", renderBaseActorSheet);
+Hooks.on("dnd5e.prepareSheetContext", prepareSheetContext);
 
 /**
  *

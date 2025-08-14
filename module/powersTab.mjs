@@ -14,7 +14,7 @@ export function addPowerTab() {
   };
   const powerPart = {
     container: {classes: ["tab-body"], id: "tabs"},
-    template: modulePath("templates/power-tab-empty.hbs"),
+    template: modulePath("templates/power-tab.hbs"),
     scrollable: [""]
   };
 
@@ -52,16 +52,6 @@ export async function renderBaseActorSheet(app, html, context, options) {
   const actor = app.document;
   if (!["character", "npc"].includes(actor.type)) return;
 
-  // Toggle hidden on all powers in the features tab.
-  // There does not appear to be a way to do this via the filterItem hook due to lack of tab context
-  // See https://github.com/foundryvtt/dnd5e/issues/5664
-  const features = html.querySelectorAll("[data-application-part=\"features\"] li.item");
-  for (const li of features) {
-    const item = actor.items.get(li.dataset.itemId);
-    if (item.type !== typePower) continue;
-    li.classList.add("hidden");
-  }
-
   // Power creation handling
   const button = html.querySelector("button.create-child[data-action=\"addDocument\"]");
   if (button && options.isFirstRender) {
@@ -83,6 +73,8 @@ export async function renderBaseActorSheet(app, html, context, options) {
       );
     });
   }
+
+  // Move manifest headers from spells tab to powers
 
   /** @type {HTMLDivElement[]} */
   const manifesters = [];
@@ -115,13 +107,56 @@ export async function renderBaseActorSheet(app, html, context, options) {
   for (const manifestDiv of manifesters) {
     manifestationSection.insertAdjacentElement("beforeend", manifestDiv);
   }
+}
 
-  app._filters.powers ??= {name: "", properties: new Set()};
+/**
+ * Hook to modify context for actor sheets.
+ * @param {object} sheet    The sheet class instance
+ * @param {string} partId The part
+ * @param {object} context  The Render context
+ * @param {object} options  The Render options
+ */
+export function prepareSheetContext(sheet, partId, context, options) {
+  const actorType = sheet.document.type;
+  if (!["character", "npc"].includes(actorType)) return;
+  switch (partId) {
+    case "features":
+      removePowerFeatures(sheet, partId, context, options);
+      break;
+    case "primePowers":
+      preparePowerPartContext(sheet, partId, context, options);
+      break;
+  }
+}
 
+/* -------------------------------------------------- */
+
+/**
+ * Remove powers from the feature tab
+ * @param {object} sheet    The sheet class instance
+ * @param {"powers"} partId The part
+ * @param {object} context  The Render context
+ * @param {object} options  The Render options
+ */
+function removePowerFeatures(sheet, partId, context, options) {
+  const features = context.itemCategories.features ?? [];
+  context.itemCategories.features = features.filter((f) => f.type !== typePower);
+}
+
+/* -------------------------------------------------- */
+
+/**
+ * Put together context information for the inventory section
+ * @param {object} sheet    The sheet class instance
+ * @param {"powers"} partId The part
+ * @param {object} context  The Render context
+ * @param {object} options  The Render options
+ */
+function preparePowerPartContext(sheet, partId, context, options) {
   context.psionics = CONFIG.PSIONICS;
 
-  const Inventory = customElements.get(app.options.elements.inventory);
-  context.sections = Inventory.prepareSections(preparePowers(app, context));
+  const Inventory = customElements.get(sheet.options.elements.inventory);
+  context.sections = Inventory.prepareSections(preparePowers(sheet, context));
   context.listControls = {
     label: "PrimePsionics.SearchPowers",
     list: "powers",
@@ -151,59 +186,18 @@ export async function renderBaseActorSheet(app, html, context, options) {
       }
     ]
   };
-
-  const contents = await foundry.applications.handlebars.renderTemplate(
-    "systems/dnd5e/templates/inventory/inventory.hbs",
-    context
-  );
-
-  powerTab.insertAdjacentHTML("beforeEnd", contents);
-
-  // recreate drag drop handling
-  if (app.isEditable) {
-
-    powerTab.querySelectorAll(".draggable").forEach((e) => {
-      e.setAttribute("draggable", true);
-      e.ondragstart = (event) => {
-        app._onDragStart(event);
-        if (event.dataTransfer.items.length) event.stopPropagation();
-      };
-    });
-  }
-}
-
-/**
- * Hook to modify context for actor sheets.
- * @param {object} sheet    The sheet class instance
- * @param {string} partId The part
- * @param {object} context  The Render context
- * @param {object} options  The Render options
- */
-export function prepareSheetContext(sheet, partId, context, options) {
-  const actorType = sheet.document.type;
-  if (!["character", "npc"].includes(actorType)) return;
-  switch (partId) {
-    case "features":
-      removePowerFeatures(sheet, partId, context, options);
-      break;
-    case "powers":
-      preparePowerPartContext(sheet, partId, context, options);
-      if (actorType === "npc") context.showStrain = false;
-      else prepareStrainContext(sheet, partId, context, options);
-      break;
-  }
 }
 /* -------------------------------------------------- */
 
 /**
  * Helper function to put together the inventory.
- * @param {object} app        The actor sheet.
+ * @param {object} sheet      The actor sheet.
  * @param {object} context    Rendering context.
  * @returns {object[]}        Power section data.
  */
-function preparePowers(app, context) {
+function preparePowers(sheet, context) {
   const columns = customElements
-    .get(app.options.elements.inventory)
+    .get(sheet.options.elements.inventory)
     .mapColumns([
       "powerDiscipline",
       "time",
