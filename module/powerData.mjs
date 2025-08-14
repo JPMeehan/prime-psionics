@@ -1,7 +1,7 @@
-import {modulePath, ppText, typePower} from "./utils.mjs";
+import { modulePath, ppText, typePower } from "./utils.mjs";
 
-const {ItemDescriptionTemplate, ActivitiesTemplate} = dnd5e.dataModels.item;
-const {ActivationField, DurationField, RangeField, TargetField} = dnd5e.dataModels.shared;
+const { ItemDescriptionTemplate, ActivitiesTemplate } = dnd5e.dataModels.item;
+const { ActivationField, DurationField, RangeField, TargetField } = dnd5e.dataModels.shared;
 
 /**
  * Data definition for Power items.
@@ -11,16 +11,16 @@ const {ActivationField, DurationField, RangeField, TargetField} = dnd5e.dataMode
  *
  * @property {number} level                      Base level of the power.
  * @property {string} discipline                 Psionic discipline to which this power belongs.
- * @property {string} augmenting                 The base talent this power improves
+ * @property {string} augmenting                 The base talent this power improves.
  * @property {Set<string>} properties            General components and tags for this power.
- * @property {string} preparation                The preparation mode as found in `CONFIG.PSIONICS.powerPreparationModes`
+ * @property {string} preparation                The preparation mode as found in `CONFIG.PSIONICS.powerPreparationModes`.
  */
 export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.mixin(
   ItemDescriptionTemplate,
-  ActivitiesTemplate
+  ActivitiesTemplate,
 ) {
   static LOCALIZATION_PREFIXES = [
-    "DND5E.ACTIVATION", "DND5E.DURATION", "DND5E.RANGE", "DND5E.SOURCE", "DND5E.TARGET"
+    "DND5E.ACTIVATION", "DND5E.DURATION", "DND5E.RANGE", "DND5E.SOURCE", "DND5E.TARGET",
   ];
 
   /** @inheritdoc */
@@ -28,7 +28,7 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
     const fields = foundry.data.fields;
 
     return this.mergeSchema(super.defineSchema(), {
-      ability: new fields.StringField({label: "DND5E.SpellAbility"}),
+      ability: new fields.StringField({ label: "DND5E.SpellAbility" }),
       activation: new ActivationField(),
       duration: new DurationField(),
       range: new RangeField(),
@@ -38,38 +38,38 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
         integer: true,
         initial: 1,
         min: 0,
-        label: "PrimePsionics.PowerLevel"
+        label: "PrimePsionics.PowerLevel",
       }),
       discipline: new fields.StringField({
         required: true,
-        label: "PrimePsionics.PowerDiscipline"
+        label: "PrimePsionics.PowerDiscipline",
       }),
       augmenting: new fields.StringField({
         required: true,
-        label: "PrimePsionics.Augmenting"
+        label: "PrimePsionics.Augmenting",
       }),
       properties: new fields.SetField(
         new fields.StringField(),
-        {label: "DND5E.Properties"}
+        { label: "DND5E.Properties" },
       ),
       preparation: new fields.SchemaField(
         {
           mode: new fields.StringField({
             required: true,
             initial: "always",
-            label: "PrimePsionics.PowerPreparationMode"
-          })
+            label: "PrimePsionics.PowerPreparationMode",
+          }),
         },
-        {label: "PrimePsionics.PowerPreparation"}
+        { label: "PrimePsionics.PowerPreparation" },
       ),
-      sourceClass: new fields.StringField({label: "DND5E.SpellSourceClass"})
+      sourceClass: new fields.StringField({ label: "DND5E.SpellSourceClass" }),
     });
   }
 
   /** @inheritDoc */
   static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
-    hasEffects: true
-  }, {inplace: false}));
+    hasEffects: true,
+  }, { inplace: false }));
 
   /** @override */
   static get compendiumBrowserFilters() {
@@ -80,18 +80,18 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
         config: {
           keyPath: "system.level",
           min: 0,
-          max: Object.keys(CONFIG.DND5E.spellLevels).length - 1
-        }
+          max: Object.keys(CONFIG.DND5E.spellLevels).length - 1,
+        },
       }],
       ["discipline", {
         label: "PrimePsionics.PowerDiscipline",
         type: "set",
         config: {
           choices: CONFIG.PSIONICS.disciplines,
-          keyPath: "system.discipline"
-        }
+          keyPath: "system.discipline",
+        },
       }],
-      ["properties", this.compendiumBrowserPropertiesFilter(typePower)]
+      ["properties", this.compendiumBrowserPropertiesFilter(typePower)],
     ]);
   }
 
@@ -152,6 +152,7 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
 
   /* -------------------------------------------- */
 
+  /** @inheritdoc */
   async getCardData(enrichmentOptions = {}) {
     const context = await super.getCardData(enrichmentOptions);
     context.psionics = CONFIG.PSIONICS;
@@ -160,7 +161,7 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
     context.tags = this.labels.components.tags;
     context.subtitle = [
       this.labels.level,
-      CONFIG.PSIONICS.disciplines[this.discipline].label
+      CONFIG.PSIONICS.disciplines[this.discipline].label,
     ].filterJoin(" &bull; ");
     if (this.usesPP) {
       context.pp = ppText(this.ppValue, true);
@@ -172,15 +173,16 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
 
   /* -------------------------------------------- */
 
+  /** @inheritdoc */
   async getFavoriteData() {
     return foundry.utils.mergeObject(await super.getFavoriteData(), {
       subtitle: [
         this.parent.labels.components.ao,
-        this.parent.labels.activation
+        this.parent.labels.activation,
       ],
       modifier: this.parent.labels.modifier,
       range: this.range,
-      save: this.save
+      save: this.save,
     });
   }
 
@@ -189,8 +191,8 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
   /** @inheritDoc */
   async getSheetData(context) {
     context.subtitles = [
-      {label: context.labels.level},
-      {label: context.labels.discipline}
+      { label: context.labels.level },
+      { label: context.labels.discipline },
     ];
     context.psionics = CONFIG.PSIONICS;
     context.properties.active = this.parent.labels?.components?.tags;
@@ -202,39 +204,39 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
         this.parent.actor.spellcastingClasses[this.sourceClass]?.spellcasting.ability
           ?? this.parent.actor.system.attributes?.spellcasting
       ]?.label?.toLowerCase();
-      if (ability) context.defaultAbility = game.i18n.format("DND5E.DefaultSpecific", {default: ability});
+      if (ability) context.defaultAbility = game.i18n.format("DND5E.DefaultSpecific", { default: ability });
       else context.defaultAbility = game.i18n.localize("DND5E.Default");
       context.spellcastingClasses = Object.entries(this.parent.actor.spellcastingClasses ?? {})
-        .map(([value, cls]) => ({value, label: cls.name}));
+        .map(([value, cls]) => ({ value, label: cls.name }));
     }
 
     // Activation
     context.activationTypes = [
-      ...Object.entries(CONFIG.DND5E.activityActivationTypes).map(([value, {label, group}]) => {
-        return {value, label, group};
+      ...Object.entries(CONFIG.DND5E.activityActivationTypes).map(([value, { label, group }]) => {
+        return { value, label, group };
       }),
-      {value: "", label: "DND5E.NoneActionLabel"}
+      { value: "", label: "DND5E.NoneActionLabel" },
     ];
 
     // Duration
     context.durationUnits = [
-      ...Object.entries(CONFIG.DND5E.specialTimePeriods).map(([value, label]) => ({value, label})),
+      ...Object.entries(CONFIG.DND5E.specialTimePeriods).map(([value, label]) => ({ value, label })),
       ...Object.entries(CONFIG.DND5E.scalarTimePeriods).map(([value, label]) => {
-        return {value, label, group: "DND5E.DurationTime"};
+        return { value, label, group: "DND5E.DurationTime" };
       }),
       ...Object.entries(CONFIG.DND5E.permanentTimePeriods).map(([value, label]) => {
-        return {value, label, group: "DND5E.DurationPermanent"};
-      })
+        return { value, label, group: "DND5E.DurationPermanent" };
+      }),
     ];
 
     // Targets
     context.targetTypes = [
-      ...Object.entries(CONFIG.DND5E.individualTargetTypes).map(([value, {label}]) => {
-        return {value, label, group: "DND5E.TargetTypeIndividual"};
+      ...Object.entries(CONFIG.DND5E.individualTargetTypes).map(([value, { label }]) => {
+        return { value, label, group: "DND5E.TargetTypeIndividual" };
       }),
-      ...Object.entries(CONFIG.DND5E.areaTargetTypes).map(([value, {label}]) => {
-        return {value, label, group: "DND5E.TargetTypeArea"};
-      })
+      ...Object.entries(CONFIG.DND5E.areaTargetTypes).map(([value, { label }]) => {
+        return { value, label, group: "DND5E.TargetTypeArea" };
+      }),
     ];
     context.scalarTarget = this.target.affects.type
       && (CONFIG.DND5E.individualTargetTypes[this.target.affects.type]?.scalar !== false);
@@ -245,10 +247,10 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
 
     // Range
     context.rangeTypes = [
-      ...Object.entries(CONFIG.DND5E.rangeTypes).map(([value, label]) => ({value, label})),
-      ...Object.entries(CONFIG.DND5E.movementUnits).map(([value, {label}]) => {
-        return {value, label, group: "DND5E.RangeDistance"};
-      })
+      ...Object.entries(CONFIG.DND5E.rangeTypes).map(([value, label]) => ({ value, label })),
+      ...Object.entries(CONFIG.DND5E.movementUnits).map(([value, { label }]) => {
+        return { value, label, group: "DND5E.RangeDistance" };
+      }),
     ];
   }
 
@@ -256,6 +258,7 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
   /*  Derived Data                                */
   /* -------------------------------------------- */
 
+  /** @inheritdoc */
   prepareDerivedData() {
     super.prepareDerivedData();
     this.prepareDescriptionData();
@@ -266,9 +269,9 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
 
     const tags = {
       concentration: CONFIG.DND5E.itemProperties.concentration,
-      ritual: CONFIG.DND5E.itemProperties.ritual
+      ritual: CONFIG.DND5E.itemProperties.ritual,
     };
-    const attributes = {...CONFIG.PSIONICS.powerComponents, ...tags};
+    const attributes = { ...CONFIG.PSIONICS.powerComponents, ...tags };
     this.labels.level =
       this.level != 0
         ? CONFIG.DND5E.spellLevels[this.level]
@@ -278,24 +281,24 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
     this.labels.pp = this.usesPP ? "PrimePsionics.PP" : "";
     this.labels.aug = this.augmenting
       ? game.i18n.format("PrimePsionics.AugmentPower", {
-        power: this.augmenting
+        power: this.augmenting,
       })
       : "";
     this.labels.components = this.properties.reduce(
       (obj, c) => {
         const config = attributes[c];
         if (!config) return obj;
-        const {abbreviation, label, icon} = config;
-        obj.all.push({abbreviation, label, icon, tag: config.tag});
+        const { abbreviation, label, icon } = config;
+        obj.all.push({ abbreviation, label, icon, tag: config.tag });
         if (config.isTag) obj.tags.push(config.label);
         else obj.ao.push(config.abbreviation);
         return obj;
       },
-      {all: [], ao: [], tags: []}
+      { all: [], ao: [], tags: [] },
     );
     this.labels.components.ao = new Intl.ListFormat(game.i18n.lang, {
       style: "narrow",
-      type: "conjunction"
+      type: "conjunction",
     }).format(this.labels.components.ao);
 
     this.properties.add("mgc");
@@ -305,7 +308,7 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
 
   /** @inheritDoc */
   prepareFinalData() {
-    const rollData = this.parent.getRollData({deterministic: true});
+    const rollData = this.parent.getRollData({ deterministic: true });
     const labels = this.parent.labels ??= {};
     this.prepareFinalActivityData();
     ActivationField.prepareData.call(this, rollData, labels);
@@ -358,14 +361,14 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
     return [
       ...properties,
       this.labels.components.ao,
-      ...this.labels.components.tags
+      ...this.labels.components.tags,
     ];
   }
 
   /* -------------------------------------------- */
 
   /**
-   * @returns {boolean}   Whether this power is configured to use power points or not
+   * @returns {boolean}   Whether this power is configured to use power points or not.
    */
   get usesPP() {
     return (this.preparation.mode === "always") && this.activities.some(a => a.consumption.targets.some(c => c.type === "psiPoints"));
@@ -373,6 +376,10 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
 
   /* -------------------------------------------- */
 
+  /**
+   * Simplified power point cost for this power
+   * @type {number}
+   */
   get ppValue() {
     const [consumptionData] = this.activities.map(a => a.consumption.targets.find(c => c.type === "psiPoints"));
     if (!consumptionData) return null;
@@ -429,7 +436,7 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
   /** @inheritDoc */
   get scalingIncrease() {
     if (this.level !== 0) return null;
-    return Math.floor(((this.parent.actor?.system.cantripLevel?.({system: {preparation: {mode: "prepared"}}}) ?? 0) + 1) / 6);
+    return Math.floor(((this.parent.actor?.system.cantripLevel?.({ system: { preparation: { mode: "prepared" } } }) ?? 0) + 1) / 6);
   }
 
   /* -------------------------------------------- */
@@ -445,10 +452,10 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
   async _preCreate(data, options, user) {
     if ((await super._preCreate(data, options, user)) === false) return false;
     const bookSource = foundry.utils.getProperty(data, "system.source.book");
-    if (!bookSource) this.updateSource({source: {
+    if (!bookSource) this.updateSource({ source: {
       book: "PsiPri",
-      license: "DMsGuild CCA"
-    }});
+      license: "DMsGuild CCA",
+    } });
   }
 
   /** @inheritdoc */
@@ -464,8 +471,8 @@ export default class PowerData extends dnd5e.dataModels.abstract.ItemDataModel.m
             type: "psiPoints",
             value: "1",
             scaling: {
-              mode: "amount"
-            }
+              mode: "amount",
+            },
           });
           activityData.consumption.scaling.allowed = true;
           activityData.consumption.scaling.max = "1 + @flags.prime-psionics.manifestLimit - @activity.consumption.targets.0.value";

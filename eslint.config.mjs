@@ -1,4 +1,9 @@
+import {defineConfig, globalIgnores} from "eslint/config";
+import htmlEslint from "@html-eslint/eslint-plugin";
+import stylistic from "@stylistic/eslint-plugin";
+import jsdoc from "eslint-plugin-jsdoc";
 import globals from "globals";
+import parser from "@html-eslint/parser";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import js from "@eslint/js";
@@ -12,69 +17,103 @@ const compat = new FlatCompat({
   allConfig: js.configs.all
 });
 
-export default [{
-  ignores: ["foundry/**/*", "dnd5e/**/*"]
-}, ...compat.extends("eslint:recommended"), {
-  languageOptions: {
-    globals: {
-      ...globals.browser
+export default defineConfig([
+  globalIgnores(["foundry/**/*", "dnd5e/**/*"]),
+  {
+    extends: compat.extends("eslint:recommended"),
+
+    plugins: {
+      "@html-eslint": htmlEslint,
+      "@stylistic": stylistic,
+      "@jsdoc": jsdoc
     },
 
-    ecmaVersion: "latest",
-    sourceType: "module"
-  },
+    languageOptions: {
+      globals: {
+        ...globals.browser
+      },
 
-  rules: {
-    indent: ["error", 2, {
-      SwitchCase: 1
-    }],
+      ecmaVersion: "latest",
+      sourceType: "module"
+    },
 
-    "linebreak-style": ["error", "unix"],
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
-    "quote-props": ["error", "as-needed"],
-    "array-bracket-newline": ["error", "consistent"],
-    "no-unused-vars": 0,
-    "key-spacing": "error",
-    "comma-dangle": "error",
-    "space-in-parens": ["error", "never"],
-    "space-infix-ops": 2,
-    "keyword-spacing": 2,
-    "semi-spacing": 2,
-    "no-multi-spaces": 2,
-    "no-extra-semi": 2,
-    "no-whitespace-before-property": 2,
-    "space-unary-ops": 2,
+    rules: {
+      "no-undef": "off",
+      "no-unused-vars": 0,
 
-    "no-multiple-empty-lines": ["error", {
-      max: 1,
-      maxEOF: 0
-    }],
+      "@stylistic/indent": ["error", 2, {
+        SwitchCase: 1
+      }],
 
-    "object-curly-spacing": ["error", "never"],
-    "comma-spacing": ["error"],
-    "no-undef": "off",
-    "space-before-blocks": 2,
-    "arrow-spacing": 2,
-    "eol-last": ["error", "always"],
+      "@stylistic/quotes": ["error", "double"],
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/quote-props": ["error", "as-needed"],
+      "@stylistic/array-bracket-newline": ["error", "consistent"],
+      "@stylistic/key-spacing": "error",
+      "@stylistic/comma-dangle": ["error", "always-multiline"],
+      "@stylistic/space-in-parens": ["error", "never"],
+      "@stylistic/space-infix-ops": 2,
+      "@stylistic/keyword-spacing": 2,
+      "@stylistic/semi-spacing": 2,
+      "@stylistic/no-multi-spaces": 2,
+      "@stylistic/no-extra-semi": 2,
+      "@stylistic/no-whitespace-before-property": 2,
+      "@stylistic/space-unary-ops": 2,
 
-    "no-mixed-operators": ["error", {
-      allowSamePrecedence: true,
+      "@stylistic/no-multiple-empty-lines": ["error", {
+        max: 1,
+        maxEOF: 0
+      }],
 
-      groups: [[
-        "==",
-        "!=",
-        "===",
-        "!==",
-        ">",
-        ">=",
-        "<",
-        "<=",
-        "&&",
-        "||",
-        "in",
-        "instanceof"
-      ]]
-    }]
+      "@stylistic/object-curly-spacing": ["error", "always"],
+      "@stylistic/comma-spacing": ["error"],
+      "@stylistic/space-before-blocks": 2,
+      "@stylistic/arrow-spacing": 2,
+      "@stylistic/eol-last": ["error", "always"],
+
+      "@stylistic/no-mixed-operators": ["error", {
+        allowSamePrecedence: true,
+
+        groups: [[
+          "==",
+          "!=",
+          "===",
+          "!==",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "&&",
+          "||",
+          "in",
+          "instanceof"
+        ]]
+      }],
+
+      "@jsdoc/require-jsdoc": ["warn", {
+        require: {ClassExpression: true, FunctionDeclaration: true, MethodDefinition: true},
+        enableFixer: false,
+        checkSetters: "no-getter",
+        checkConstructors: false
+      }],
+      "@jsdoc/require-description": ["warn", {checkConstructors: false, contexts: ["FunctionDeclaration", "ClassDeclaration"]}],
+      "@jsdoc/require-description-complete-sentence": "warn"
+    }
+  }, {
+    files: ["**/*.hbs", "**/*.html"],
+    extends: compat.extends("plugin:@html-eslint/recommended"),
+
+    languageOptions: {
+      parser: parser
+    },
+
+    rules: {
+      "@html-eslint/attrs-newline": ["off", {
+        closeStyle: "sameline",
+        ifAttrsMoreThan: 9
+      }],
+
+      "@html-eslint/indent": ["error", 2]
+    }
   }
-}];
+]);

@@ -3,12 +3,11 @@ export const moduleID = "prime-psionics";
 export const modulePath = (path) => "modules/prime-psionics/" + path;
 
 /**
- *
- * @param {int} pp            Psi points a power uses
+ * Pluralizes a power point cost
+ * @param {int} pp            Psi points a power uses.
  * @param {boolean} lowercase Force tooltip to lowercase?
- * @returns {string}          Returns the properly format psi point label
+ * @returns {string}          Returns the properly format psi point label.
  */
-
 export function ppText(pp, lowercase = false) {
   let text = `${pp} ${
     pp === 1

@@ -1,7 +1,7 @@
-import {moduleID} from "./utils.mjs";
+import { moduleID } from "./utils.mjs";
 
 /**
- * Class implementing the new ActivityConsumptionTargetConfig using static members
+ * Class implementing the new ActivityConsumptionTargetConfig using static members.
  */
 export default class PsiPoints {
   /**
@@ -34,7 +34,7 @@ export default class PsiPoints {
     const points = Number(this.value ?? 0) + Number(config.scaling ?? 0);
     return {
       label: game.i18n.localize("PrimePsionics.Intensify"),
-      hint: game.i18n.format("PrimePsionics.ConsumptionHint", {points, limit})
+      hint: game.i18n.format("PrimePsionics.ConsumptionHint", { points, limit }),
     };
   }
 }

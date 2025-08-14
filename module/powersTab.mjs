@@ -1,4 +1,4 @@
-import {modulePath, typePower} from "./utils.mjs";
+import { modulePath, typePower } from "./utils.mjs";
 
 /** @import {CharacterActorSheet, NPCActorSheet} from "../dnd5e/module/applications/actor/_module.mjs" */
 /** @import {ApplicationRenderContext, ApplicationRenderOptions} from "@client/applications/_types.mjs" */
@@ -10,15 +10,15 @@ export function addPowerTab() {
   const powerTab = {
     tab: "primePowers",
     label: "TYPES.Item.prime-psionics.powerPl",
-    svg: modulePath("assets/icons/power.svg")
+    svg: modulePath("assets/icons/power.svg"),
   };
   const powerPart = {
-    container: {classes: ["tab-body"], id: "tabs"},
+    container: { classes: ["tab-body"], id: "tabs" },
     template: modulePath("templates/power-tab.hbs"),
-    scrollable: [""]
+    scrollable: [""],
   };
 
-  const {NPCActorSheet, CharacterActorSheet} = dnd5e.applications.actor;
+  const { NPCActorSheet, CharacterActorSheet } = dnd5e.applications.actor;
 
   // fail to find is -1, +1 makes 0 which is falsy.
   const npcSpells = NPCActorSheet.TABS.findIndex((t) => t.tab === "spells") + 1 || 3;
@@ -35,7 +35,7 @@ export function addPowerTab() {
     order: 100,
     priority: 100,
     label: "PrimePsionics.DisciplineHeader",
-    template: modulePath("templates/power-discipline.hbs")
+    template: modulePath("templates/power-discipline.hbs"),
   };
 }
 
@@ -67,9 +67,9 @@ export async function renderBaseActorSheet(app, html, context, options) {
       Item.implementation.create(
         {
           type: typePower,
-          name: Item.implementation.defaultName({type: typePower, parent: actor})
+          name: Item.implementation.defaultName({ type: typePower, parent: actor }),
         },
-        {parent: actor, renderSheet: true}
+        { parent: actor, renderSheet: true },
       );
     });
   }
@@ -87,10 +87,10 @@ export async function renderBaseActorSheet(app, html, context, options) {
     let targetHeader;
     const name = item.system.spellcasting.progression === sc.progression ? item.name : item.subclass?.name;
     for (const label of html.querySelectorAll("section[data-tab=\"spells\"] section.top div.spellcasting h3")) {
-      if (label.innerHTML === game.i18n.format("DND5E.SpellcastingClass", {class: name})) targetHeader = label;
+      if (label.innerHTML === game.i18n.format("DND5E.SpellcastingClass", { class: name })) targetHeader = label;
     }
     if (targetHeader) {
-      targetHeader.innerHTML = game.i18n.format("PrimePsionics.ManifestingClass", {class: name});
+      targetHeader.innerHTML = game.i18n.format("PrimePsionics.ManifestingClass", { class: name });
       manifesters.push(targetHeader.closest("div.spellcasting"));
     }
   }
@@ -111,10 +111,10 @@ export async function renderBaseActorSheet(app, html, context, options) {
 
 /**
  * Hook to modify context for actor sheets.
- * @param {object} sheet    The sheet class instance
- * @param {string} partId The part
- * @param {object} context  The Render context
- * @param {object} options  The Render options
+ * @param {object} sheet    The sheet class instance.
+ * @param {string} partId The part.
+ * @param {object} context  The Render context.
+ * @param {object} options  The Render options.
  */
 export function prepareSheetContext(sheet, partId, context, options) {
   const actorType = sheet.document.type;
@@ -132,11 +132,11 @@ export function prepareSheetContext(sheet, partId, context, options) {
 /* -------------------------------------------------- */
 
 /**
- * Remove powers from the feature tab
- * @param {object} sheet    The sheet class instance
- * @param {"powers"} partId The part
- * @param {object} context  The Render context
- * @param {object} options  The Render options
+ * Remove powers from the feature tab.
+ * @param {object} sheet    The sheet class instance.
+ * @param {"powers"} partId The part.
+ * @param {object} context  The Render context.
+ * @param {object} options  The Render options.
  */
 function removePowerFeatures(sheet, partId, context, options) {
   const features = context.itemCategories.features ?? [];
@@ -146,11 +146,11 @@ function removePowerFeatures(sheet, partId, context, options) {
 /* -------------------------------------------------- */
 
 /**
- * Put together context information for the inventory section
- * @param {object} sheet    The sheet class instance
- * @param {"powers"} partId The part
- * @param {object} context  The Render context
- * @param {object} options  The Render options
+ * Put together context information for the inventory section.
+ * @param {object} sheet    The sheet class instance.
+ * @param {"powers"} partId The part.
+ * @param {object} context  The Render context.
+ * @param {object} options  The Render options.
  */
 function preparePowerPartContext(sheet, partId, context, options) {
   context.psionics = CONFIG.PSIONICS;
@@ -161,30 +161,30 @@ function preparePowerPartContext(sheet, partId, context, options) {
     label: "PrimePsionics.SearchPowers",
     list: "powers",
     filters: [
-      {key: "action", label: "DND5E.Action"},
-      {key: "bonus", label: "DND5E.BonusAction"},
-      {key: "reaction", label: "DND5E.Reaction"},
-      {key: "concentration", label: "DND5E.Concentration"},
-      {key: "prepared", label: "DND5E.Prepared"},
-      ...Object.entries(CONFIG.PSIONICS.disciplines).map(([key, {label}]) => ({key, label}))
+      { key: "action", label: "DND5E.Action" },
+      { key: "bonus", label: "DND5E.BonusAction" },
+      { key: "reaction", label: "DND5E.Reaction" },
+      { key: "concentration", label: "DND5E.Concentration" },
+      { key: "prepared", label: "DND5E.Prepared" },
+      ...Object.entries(CONFIG.PSIONICS.disciplines).map(([key, { label }]) => ({ key, label })),
     ],
     sorting: [
       {
         key: "a",
         label: "SIDEBAR.SortModeAlpha",
-        dataset: {icon: "fa-solid fa-arrow-down-a-z"}
+        dataset: { icon: "fa-solid fa-arrow-down-a-z" },
       },
       {
         key: "p",
         label: "SIDEBAR.SortModePriority",
-        dataset: {icon: "fa-solid fa-arrow-down-1-9"}
+        dataset: { icon: "fa-solid fa-arrow-down-1-9" },
       },
       {
         key: "m",
         label: "SIDEBAR.SortModeManual",
-        dataset: {icon: "fa-solid fa-arrow-down-short-wide"}
-      }
-    ]
+        dataset: { icon: "fa-solid fa-arrow-down-short-wide" },
+      },
+    ],
   };
 }
 /* -------------------------------------------------- */
@@ -204,9 +204,9 @@ function preparePowers(sheet, context) {
       "range",
       "target",
       "roll",
-      {id: "uses", order: 650, priority: 300},
-      {id: "formula", priority: 200},
-      "controls"
+      { id: "uses", order: 650, priority: 300 },
+      { id: "formula", priority: 200 },
+      "controls",
     ]);
 
   const powerSections = Object.entries(CONFIG.PSIONICS.powerLevels).map(([i, label]) => ({
@@ -215,10 +215,10 @@ function preparePowers(sheet, context) {
     order: i,
     label,
     columns,
-    dataset: {type: typePower, level: i},
+    dataset: { type: typePower, level: i },
     draggable: true,
     items: [],
-    minWidth: 220
+    minWidth: 220,
   }));
 
   for (const item of context.actor.itemTypes[typePower]) {
@@ -234,7 +234,7 @@ function preparePowers(sheet, context) {
       reaction: "DND5E.ReactionAbbr",
       minute: "DND5E.TimeMinuteAbbr",
       hour: "DND5E.TimeHourAbbr",
-      day: "DND5E.TimeDayAbbr"
+      day: "DND5E.TimeDayAbbr",
     }[item.system.activation.type];
     ctx.activation = abbr ? `${cost}${game.i18n.localize(abbr)}` : item.labels.activation;
 
@@ -246,9 +246,9 @@ function preparePowers(sheet, context) {
           distance: true,
           value: item.system.range.value,
           unit: CONFIG.DND5E.movementUnits[units].abbreviation,
-          parts: dnd5e.utils.formatLength(item.system.range.value, units, {parts: true})
+          parts: dnd5e.utils.formatLength(item.system.range.value, units, { parts: true }),
         };
-      else ctx.range = {distance: false};
+      else ctx.range = { distance: false };
     }
   }
 

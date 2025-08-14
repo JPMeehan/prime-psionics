@@ -1,9 +1,9 @@
-import {typePower} from "./utils.mjs";
+import { typePower } from "./utils.mjs";
 import PsiPoints from "./psiPoints.mjs";
 
 const PP_CONFIG = {
   DND5E: {},
-  PSIONICS: {}
+  PSIONICS: {},
 };
 
 /**
@@ -11,7 +11,7 @@ const PP_CONFIG = {
  */
 PP_CONFIG.PSIONICS.powerPreparationModes = {
   always: "PrimePsionics.PowerPrepKnown",
-  innate: "PrimePsionics.PowerPrepInnate"
+  innate: "PrimePsionics.PowerPrepInnate",
 };
 
 /**
@@ -21,12 +21,12 @@ PP_CONFIG.PSIONICS.powerPreparationModes = {
 PP_CONFIG.PSIONICS.powerComponents = {
   auditory: {
     label: "PrimePsionics.ComponentAuditory",
-    abbreviation: "PrimePsionics.ComponentAuditoryAbbr"
+    abbreviation: "PrimePsionics.ComponentAuditoryAbbr",
   },
   observable: {
     label: "PrimePsionics.ComponentObservable",
-    abbreviation: "PrimePsionics.ComponentObservableAbbr"
-  }
+    abbreviation: "PrimePsionics.ComponentObservableAbbr",
+  },
 };
 
 /**
@@ -41,33 +41,33 @@ PP_CONFIG.PSIONICS.disciplines = {
   cla: {
     label: "PrimePsionics.DiscClair",
     icon: "modules/prime-psionics/assets/icons/clairsentience.svg",
-    fullKey: "clairsentience"
+    fullKey: "clairsentience",
   },
   mtc: {
     label: "PrimePsionics.DiscMTC",
     icon: "modules/prime-psionics/assets/icons/metacreativity.svg",
-    fullKey: "metacreativity"
+    fullKey: "metacreativity",
   },
   psk: {
     label: "PrimePsionics.DiscKinesis",
     icon: "modules/prime-psionics/assets/icons/psychokinesis.svg",
-    fullKey: "psychokinesis"
+    fullKey: "psychokinesis",
   },
   psm: {
     label: "PrimePsionics.DiscMetabolism",
     icon: "modules/prime-psionics/assets/icons/psychometabolism.svg",
-    fullKey: "psychometabolism"
+    fullKey: "psychometabolism",
   },
   pst: {
     label: "PrimePsionics.DiscPort",
     icon: "modules/prime-psionics/assets/icons/psychoportation.svg",
-    fullKey: "psychoportation"
+    fullKey: "psychoportation",
   },
   tlp: {
     label: "PrimePsionics.DiscTelepathy",
     icon: "modules/prime-psionics/assets/icons/telepathy.svg",
-    fullKey: "telepathy"
-  }
+    fullKey: "telepathy",
+  },
 };
 
 /**
@@ -79,27 +79,27 @@ PP_CONFIG.PSIONICS.powerScalingModes = {
   talent: "PrimePsionics.Talent",
   intensify: "PrimePsionics.Intensify",
   intensify2: "PrimePsionics.Intensify2",
-  intensify3: "PrimePsionics.Intensify3"
+  intensify3: "PrimePsionics.Intensify3",
 };
 
 /**
- * Intensify Ratios
+ * Intensify Ratios.
  * @enum {number}
  */
 PP_CONFIG.PSIONICS.scaling = {
   intensify: 1,
   intensify2: 2,
-  intensify3: 3
+  intensify3: 3,
 };
 
 /**
  * Power Point Progression Array
- * a[x] returns max power points at effective manifester level x
+ * a[x] returns max power points at effective manifester level x.
  */
 
 PP_CONFIG.PSIONICS.ppProgression = [
   0, 4, 6, 16, 20, 32, 38, 46, 54, 72, 82, 94, 94, 108, 108, 124, 124, 142, 152,
-  164, 178
+  164, 178,
 ];
 
 /**
@@ -116,25 +116,25 @@ PP_CONFIG.PSIONICS.powerLevels = {
   6: "DND5E.SpellLevel6",
   7: "DND5E.SpellLevel7",
   8: "DND5E.SpellLevel8",
-  9: "DND5E.SpellLevel9"
+  9: "DND5E.SpellLevel9",
 };
 
 PP_CONFIG.DND5E = {
   itemProperties: {
     auditory: {
       label: "PrimePsionics.ComponentAuditory",
-      abbr: "PrimePsionics.ComponentAuditoryAbbr"
+      abbr: "PrimePsionics.ComponentAuditoryAbbr",
     },
     observable: {
       label: "PrimePsionics.ComponentObservable",
-      abbr: "PrimePsionics.ComponentObservableAbbr"
-    }
+      abbr: "PrimePsionics.ComponentObservableAbbr",
+    },
   },
   validProperties: {
-    [typePower]: new Set(["auditory", "observable", "concentration", "ritual"])
+    [typePower]: new Set(["auditory", "observable", "concentration", "ritual"]),
   },
   specialTimePeriods: {
-    foc: "PrimePsionics.Focus"
+    foc: "PrimePsionics.Focus",
   },
   spellcasting: {
     psionics: {
@@ -145,34 +145,34 @@ PP_CONFIG.DND5E = {
       progression: {
         fullp: {
           label: "PrimePsionics.FullP",
-          divisor: 1
+          divisor: 1,
         },
         halfp: {
           label: "PrimePsionics.HalfP",
-          divisor: 2
+          divisor: 2,
         },
         thirdp: {
           label: "PrimePsionics.ThirdP",
-          divisor: 3
-        }
-      }
-    }
+          divisor: 3,
+        },
+      },
+    },
   },
   activityConsumptionTypes: {
     psiPoints: {
       label: PsiPoints.label,
       consume: PsiPoints.consume,
-      consumptionLabels: PsiPoints.consumptionLabels
-    }
+      consumptionLabels: PsiPoints.consumptionLabels,
+    },
   },
   defaultArtwork: {
     Item: {
-      [typePower]: "modules/prime-psionics/assets/icons/power.svg"
-    }
+      [typePower]: "modules/prime-psionics/assets/icons/power.svg",
+    },
   },
   sourceBooks: {
-    PsiPri: "Korranberg Chronicle: Psion's Primer"
-  }
+    PsiPri: "Korranberg Chronicle: Psion's Primer",
+  },
 };
 
 export default PP_CONFIG;
