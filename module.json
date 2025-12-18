@@ -14,7 +14,7 @@
         "type": "system",
         "compatibility": {
           "minimum": "5.1",
-          "verified": "5.1"
+          "verified": "5.2"
         }
       }
     ]
